@@ -54,6 +54,8 @@ namespace Gibbed.FarCry2.ArchiveViewer
 			this.FileNames = new Dictionary<uint, string>();
 			if (Directory.Exists(Path.Combine(Application.StartupPath, "filelists")))
 			{
+				this.saveFileListDialog.InitialDirectory = Path.Combine(Application.StartupPath, "filelists");
+
 				foreach (string listPath in Directory.GetFiles(Path.Combine(Application.StartupPath, "filelists"), "*.filelist"))
 				{
 					this.LoadFileNames(listPath);
@@ -218,6 +220,35 @@ namespace Gibbed.FarCry2.ArchiveViewer
 			progress.ShowSaveProgress(this, input, this.ArchiveFiles, this.FileNames, basePath, this.saveOnlyknownFilesMenuItem.Checked);
 
 			input.Close();
+		}
+
+		private void OnSaveKnownFileList(object sender, EventArgs e)
+		{
+			if (this.saveFileListDialog.ShowDialog() != DialogResult.OK)
+			{
+				return;
+			}
+
+			List<string> names = new List<string>();
+
+			foreach (ArchiveIndex index in this.ArchiveFiles)
+			{
+				if (this.FileNames.ContainsKey(index.Hash))
+				{
+					names.Add(this.FileNames[index.Hash]);
+				}
+			}
+
+			names.Sort();
+
+			TextWriter output = new StreamWriter(this.saveFileListDialog.OpenFile());
+
+			foreach (string name in names)
+			{
+				output.WriteLine(name);
+			}
+
+			output.Close();
 		}
 	}
 }

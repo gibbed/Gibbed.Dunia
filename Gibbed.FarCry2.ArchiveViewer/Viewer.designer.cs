@@ -36,9 +36,11 @@
 			this.openButton = new System.Windows.Forms.ToolStripButton();
 			this.saveAllButton = new System.Windows.Forms.ToolStripSplitButton();
 			this.saveOnlyknownFilesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveListOfKnownFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveFileButton = new System.Windows.Forms.ToolStripButton();
 			this.fileList = new System.Windows.Forms.TreeView();
 			this.fileListImages = new System.Windows.Forms.ImageList(this.components);
+			this.saveFileListDialog = new System.Windows.Forms.SaveFileDialog();
 			this.mainToolStrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -77,7 +79,8 @@
 			// 
 			this.saveAllButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.saveAllButton.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.saveOnlyknownFilesMenuItem});
+            this.saveOnlyknownFilesMenuItem,
+            this.saveListOfKnownFilesToolStripMenuItem});
 			this.saveAllButton.Image = global::Gibbed.FarCry2.ArchiveViewer.Properties.Resources.SaveAllFiles;
 			this.saveAllButton.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.saveAllButton.Name = "saveAllButton";
@@ -92,8 +95,15 @@
 			this.saveOnlyknownFilesMenuItem.CheckOnClick = true;
 			this.saveOnlyknownFilesMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.saveOnlyknownFilesMenuItem.Name = "saveOnlyknownFilesMenuItem";
-			this.saveOnlyknownFilesMenuItem.Size = new System.Drawing.Size(199, 22);
+			this.saveOnlyknownFilesMenuItem.Size = new System.Drawing.Size(207, 22);
 			this.saveOnlyknownFilesMenuItem.Text = "Save only &known files";
+			// 
+			// saveListOfKnownFilesToolStripMenuItem
+			// 
+			this.saveListOfKnownFilesToolStripMenuItem.Name = "saveListOfKnownFilesToolStripMenuItem";
+			this.saveListOfKnownFilesToolStripMenuItem.Size = new System.Drawing.Size(207, 22);
+			this.saveListOfKnownFilesToolStripMenuItem.Text = "Save list of known files";
+			this.saveListOfKnownFilesToolStripMenuItem.Click += new System.EventHandler(this.OnSaveKnownFileList);
 			// 
 			// saveFileButton
 			// 
@@ -127,6 +137,11 @@
 			this.fileListImages.Images.SetKeyName(2, "Directory");
 			this.fileListImages.Images.SetKeyName(3, "File");
 			// 
+			// saveFileListDialog
+			// 
+			this.saveFileListDialog.DefaultExt = "filelist";
+			this.saveFileListDialog.Filter = "File Lists (*.filelist)|*.filelist|All Files (*.*)|*.*";
+			// 
 			// Viewer
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -156,6 +171,8 @@
 		private System.Windows.Forms.ImageList fileListImages;
 		private System.Windows.Forms.ToolStripSplitButton saveAllButton;
 		private System.Windows.Forms.ToolStripMenuItem saveOnlyknownFilesMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveListOfKnownFilesToolStripMenuItem;
+		private System.Windows.Forms.SaveFileDialog saveFileListDialog;
     }
 }
 
