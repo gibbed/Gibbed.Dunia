@@ -6845,6 +6845,9 @@ soundbinary\004f0afa.spk
 soundbinary\004f0afc.spk
 soundbinary\004f2207.spk
 ui\textures\hud\notebook.xbt
+worlds\tmpla\generated\tmpla.game.xml
+worlds\tmpla\mapcompass.xbt
+worlds\tmpla\mapcompass_mip0.xbt
 worlds\world1\generated\entitylibrary.fcb
 worlds\world1\generated\moviedata.xml
 worlds\world1\generated\nv\sectors\nv.nvm
