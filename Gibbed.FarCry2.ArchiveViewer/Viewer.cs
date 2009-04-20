@@ -56,7 +56,7 @@ namespace Gibbed.FarCry2.ArchiveViewer
 			{
 				this.saveFileListDialog.InitialDirectory = Path.Combine(Application.StartupPath, "filelists");
 
-				foreach (string listPath in Directory.GetFiles(Path.Combine(Application.StartupPath, "filelists"), "*.filelist"))
+				foreach (string listPath in Directory.GetFiles(Path.Combine(Application.StartupPath, "filelists"), "*.filelist", SearchOption.AllDirectories))
 				{
 					this.LoadFileNames(listPath);
 				}
