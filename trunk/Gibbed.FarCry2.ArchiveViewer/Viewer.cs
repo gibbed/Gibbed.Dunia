@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using Gibbed.FarCry2.Archive;
 using Gibbed.FarCry2.Helpers;
+using Gibbed.FarCry2.FileFormats;
 
 namespace Gibbed.FarCry2.ArchiveViewer
 {

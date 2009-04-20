@@ -102,9 +102,9 @@
     <None Include="Resources\SaveFile.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Gibbed.FarCry2.Archive\Gibbed.FarCry2.Archive.csproj">
-      <Project>{A3CD0FC9-C979-46B8-933D-9058A8A7BA23}</Project>
-      <Name>Gibbed.FarCry2.Archive</Name>
+    <ProjectReference Include="..\Gibbed.FarCry2.FileFormats\Gibbed.FarCry2.FileFormats.csproj">
+      <Project>{988AD1C4-1D56-4836-BE15-6D7044C3BAC5}</Project>
+      <Name>Gibbed.FarCry2.FileFormats</Name>
     </ProjectReference>
     <ProjectReference Include="..\Gibbed.FarCry2.Helpers\Gibbed.FarCry2.Helpers.csproj">
       <Project>{21CAA0D6-752D-4D8B-B48C-99110C05F818}</Project>
