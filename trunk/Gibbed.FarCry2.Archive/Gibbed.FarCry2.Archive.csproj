@@ -53,6 +53,10 @@
       <Project>{21CAA0D6-752D-4D8B-B48C-99110C05F818}</Project>
       <Name>Gibbed.FarCry2.Helpers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Gibbed.Helpers\Gibbed.Helpers.csproj">
+      <Project>{5162A9FB-4DE1-4BBF-B7A2-5E8116AB0D26}</Project>
+      <Name>Gibbed.Helpers</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

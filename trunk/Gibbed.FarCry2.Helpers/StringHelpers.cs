@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Gibbed.Helpers;
 
 namespace Gibbed.FarCry2.Helpers
 {
