@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Gibbed.Helpers;
 using Gibbed.FarCry2.Helpers;
 
 namespace Gibbed.FarCry2.Archive
