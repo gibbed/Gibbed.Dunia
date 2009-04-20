@@ -1,0 +1,10 @@
+config\inputactionmapcommon.xml
+config\inputactionmapmulti.xml
+config\inputactionmapsingle.xml
+engine\gamemodes\gamemodesconfig.xml
+engine\online\onlineengine\engine.netobject.xml
+engine\settings\defaultrenderconfig.xml
+engine\settings\defaultthreadingconfig.xml
+ingameeditor\object_inventory.xml
+scripts\game\objects\pawn\statemachine\buddydown.gosm.xml
+scripts\game\objects\pawn\statemachine\revive.gosm.xml
