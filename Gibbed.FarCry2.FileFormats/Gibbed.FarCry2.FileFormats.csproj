@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A3CD0FC9-C979-46B8-933D-9058A8A7BA23}</ProjectGuid>
+    <ProjectGuid>{988AD1C4-1D56-4836-BE15-6D7044C3BAC5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gibbed.FarCry2.Archive</RootNamespace>
-    <AssemblyName>Gibbed.FarCry2.Archive</AssemblyName>
+    <RootNamespace>Gibbed.FarCry2.FileFormats</RootNamespace>
+    <AssemblyName>Gibbed.FarCry2.FileFormats</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -35,6 +35,8 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>

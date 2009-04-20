@@ -4,7 +4,7 @@ using System.IO;
 using Gibbed.Helpers;
 using Gibbed.FarCry2.Helpers;
 
-namespace Gibbed.FarCry2.Archive
+namespace Gibbed.FarCry2.FileFormats
 {
 	public class ArchiveFileException : Exception
 	{

@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
-using Gibbed.FarCry2.Archive;
+using Gibbed.FarCry2.FileFormats;
 
 namespace Gibbed.FarCry2.ArchiveViewer
 {
