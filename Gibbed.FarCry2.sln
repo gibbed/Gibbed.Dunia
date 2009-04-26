@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.Helpers", "Gibbed.He
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.FarCry2.FileFormats", "Gibbed.FarCry2.FileFormats\Gibbed.FarCry2.FileFormats.csproj", "{988AD1C4-1D56-4836-BE15-6D7044C3BAC5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gibbed.FarCry2.BuildArchive", "Gibbed.FarCry2.BuildArchive\Gibbed.FarCry2.BuildArchive.csproj", "{E0BFAB56-E300-4ACC-9206-AD750BF981C7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,16 @@ Global
 		{988AD1C4-1D56-4836-BE15-6D7044C3BAC5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{988AD1C4-1D56-4836-BE15-6D7044C3BAC5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{988AD1C4-1D56-4836-BE15-6D7044C3BAC5}.Release|Win32.ActiveCfg = Release|Any CPU
+		{E0BFAB56-E300-4ACC-9206-AD750BF981C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E0BFAB56-E300-4ACC-9206-AD750BF981C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E0BFAB56-E300-4ACC-9206-AD750BF981C7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E0BFAB56-E300-4ACC-9206-AD750BF981C7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E0BFAB56-E300-4ACC-9206-AD750BF981C7}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{E0BFAB56-E300-4ACC-9206-AD750BF981C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E0BFAB56-E300-4ACC-9206-AD750BF981C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E0BFAB56-E300-4ACC-9206-AD750BF981C7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E0BFAB56-E300-4ACC-9206-AD750BF981C7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E0BFAB56-E300-4ACC-9206-AD750BF981C7}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -52,7 +52,7 @@ namespace Gibbed.FarCry2.ArchiveViewer
 
 			for (int i = 0; i < info.Files.Length; i++)
 			{
-				ArchiveIndex index = info.Files[i];
+				ArchiveEntry index = info.Files[i];
 
 				string fileName = null;
 
@@ -68,7 +68,7 @@ namespace Gibbed.FarCry2.ArchiveViewer
 						continue;
 					}
 
-					fileName = Path.Combine("unknown", index.Hash.ToString("X8"));
+					fileName = Path.Combine("__UNKNOWN", index.Hash.ToString("X8"));
 				}
 
 				Directory.CreateDirectory(Path.Combine(info.BasePath, Path.GetDirectoryName(fileName)));
@@ -86,12 +86,16 @@ namespace Gibbed.FarCry2.ArchiveViewer
 				if (index.UncompressedSize != 0)
 				{
 					byte[] decompressedData = new byte[index.UncompressedSize];
-					UInt32 decompressedSize = 0;
-					Decompress(data, (uint)data.Length, decompressedData, ref decompressedSize);
+					UInt32 decompressedSize = index.UncompressedSize;
+					int rez = Decompress(data, (uint)data.Length, decompressedData, ref decompressedSize);
 
-					if (decompressedSize != index.UncompressedSize)
+					if (rez != 0)
 					{
-						throw new InvalidOperationException();
+						throw new ArchiveFileException("decompress returned " + rez.ToString());
+					}
+					else if (decompressedSize != index.UncompressedSize)
+					{
+						throw new ArchiveFileException("decompress size mismatch (" + decompressedSize.ToString() + " vs " + index.UncompressedSize.ToString());
 					}
 
 					data = decompressedData;
@@ -102,17 +106,6 @@ namespace Gibbed.FarCry2.ArchiveViewer
 				output.Close();
 			}
 
-			/*
-			TextWriter writer = new StreamWriter(File.OpenWrite(Path.Combine(info.BasePath, "SUPERFILELIST.txt")));
-
-			foreach (uint hash in UsedNames.Keys)
-			{
-				writer.WriteLine(UsedNames[hash]);
-			}
-
-			writer.Close();
-			*/
-
 			this.SaveDone();
 		}
 
@@ -120,13 +113,13 @@ namespace Gibbed.FarCry2.ArchiveViewer
 		{
 			public string BasePath;
 			public Stream Archive;
-			public ArchiveIndex[] Files;
+			public ArchiveEntry[] Files;
 			public Dictionary<uint, string> FileNames;
 			public bool SaveOnlyKnownFiles;
 		}
 
 		private Thread SaveThread;
-		public void ShowSaveProgress(IWin32Window owner, Stream archive, ArchiveIndex[] files, Dictionary<uint, string> fileNames, string basePath, bool saveOnlyKnown)
+		public void ShowSaveProgress(IWin32Window owner, Stream archive, ArchiveEntry[] files, Dictionary<uint, string> fileNames, string basePath, bool saveOnlyKnown)
 		{
 			SaveAllInformation info;
 			info.BasePath = basePath;

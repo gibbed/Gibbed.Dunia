@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{988AD1C4-1D56-4836-BE15-6D7044C3BAC5}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{E0BFAB56-E300-4ACC-9206-AD750BF981C7}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gibbed.FarCry2.FileFormats</RootNamespace>
-    <AssemblyName>Gibbed.FarCry2.FileFormats</AssemblyName>
+    <RootNamespace>Gibbed.FarCry2.BuildArchive</RootNamespace>
+    <AssemblyName>Gibbed.FarCry2.BuildArchive</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -35,7 +35,6 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -47,12 +46,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArchiveEntry.cs" />
-    <Compile Include="ArchiveFile.cs" />
-    <Compile Include="Exceptions.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Gibbed.FarCry2.FileFormats\Gibbed.FarCry2.FileFormats.csproj">
+      <Project>{988AD1C4-1D56-4836-BE15-6D7044C3BAC5}</Project>
+      <Name>Gibbed.FarCry2.FileFormats</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gibbed.FarCry2.Helpers\Gibbed.FarCry2.Helpers.csproj">
       <Project>{21CAA0D6-752D-4D8B-B48C-99110C05F818}</Project>
       <Name>Gibbed.FarCry2.Helpers</Name>

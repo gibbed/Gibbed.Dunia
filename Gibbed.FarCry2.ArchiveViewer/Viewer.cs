@@ -63,7 +63,7 @@ namespace Gibbed.FarCry2.ArchiveViewer
 			}
 		}
 
-		private int SortByFileNames(ArchiveIndex a, ArchiveIndex b)
+		private int SortByFileNames(ArchiveEntry a, ArchiveEntry b)
 		{
 			if (a == null || b == null)
 			{
@@ -101,7 +101,7 @@ namespace Gibbed.FarCry2.ArchiveViewer
 
 
 		// A stupid way to do it but it's for the Save All function.
-		private ArchiveIndex[] ArchiveFiles;
+		private ArchiveEntry[] ArchiveFiles;
 
 		private void OnOpen(object sender, EventArgs e)
 		{
@@ -119,9 +119,9 @@ namespace Gibbed.FarCry2.ArchiveViewer
 			ArchiveFile db = new ArchiveFile();
 			db.Read(input);
 
-			db.Indices.Sort(SortByFileNames);
+			db.Entries.Sort(SortByFileNames);
 
-			this.ArchiveFiles = db.Indices.ToArray();
+			this.ArchiveFiles = db.Entries.ToArray();
 
 			Dictionary<string, TreeNode> dirNodes = new Dictionary<string, TreeNode>();
 
@@ -134,7 +134,8 @@ namespace Gibbed.FarCry2.ArchiveViewer
 			
 			for (int i = 0; i < this.ArchiveFiles.Length; i++)
 			{
-				ArchiveIndex index = this.ArchiveFiles[i];
+				ArchiveEntry index = this.ArchiveFiles[i];
+				TreeNode node = null;
 
 				if (this.FileNames.ContainsKey(index.Hash) == true)
 				{
@@ -160,11 +161,23 @@ namespace Gibbed.FarCry2.ArchiveViewer
 						}
 					}
 
-					parentNodes.Add(null, Path.GetFileName(fileName), 3, 3).Tag = index;
+					node = parentNodes.Add(null, Path.GetFileName(fileName), 3, 3);
 				}
 				else
 				{
-					unknownNode.Nodes.Add(null, index.Hash.ToString("X8"), 3, 3).Tag = index;
+					node = unknownNode.Nodes.Add(null, index.Hash.ToString("X8"), 3, 3);
+				}
+
+				node.Tag = index;
+
+				if (index.Flags != 0)
+				{
+					throw new Exception();
+				}
+
+				if (index.UncompressedSize != 0)
+				{
+					node.ForeColor = Color.Blue;
 				}
 			}
 
@@ -231,7 +244,7 @@ namespace Gibbed.FarCry2.ArchiveViewer
 
 			List<string> names = new List<string>();
 
-			foreach (ArchiveIndex index in this.ArchiveFiles)
+			foreach (ArchiveEntry index in this.ArchiveFiles)
 			{
 				if (this.FileNames.ContainsKey(index.Hash))
 				{
