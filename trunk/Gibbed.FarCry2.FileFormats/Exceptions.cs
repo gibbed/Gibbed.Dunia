@@ -20,37 +20,37 @@ namespace Gibbed.FarCry2.FileFormats
 		}
 	}
 
-	public class NotAnArchiveException : FileFormatException
+	public class NotAnBigFileException : FileFormatException
 	{
-		public NotAnArchiveException()
+		public NotAnBigFileException()
 			: base()
 		{
 		}
 
-		public NotAnArchiveException(string message)
+		public NotAnBigFileException(string message)
 			: base(message)
 		{
 		}
 
-		public NotAnArchiveException(string message, Exception innerException)
+		public NotAnBigFileException(string message, Exception innerException)
 			: base(message, innerException)
 		{
 		}
 	}
 
-	public class UnsupportedArchiveVersionException : FileFormatException
+	public class UnsupportedBigFileVersionException : FileFormatException
 	{
-		public UnsupportedArchiveVersionException()
+		public UnsupportedBigFileVersionException()
 			: base()
 		{
 		}
 
-		public UnsupportedArchiveVersionException(string message)
+		public UnsupportedBigFileVersionException(string message)
 			: base(message)
 		{
 		}
 
-		public UnsupportedArchiveVersionException(string message, Exception innerException)
+		public UnsupportedBigFileVersionException(string message, Exception innerException)
 			: base(message, innerException)
 		{
 		}

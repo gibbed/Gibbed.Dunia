@@ -52,7 +52,7 @@ namespace Gibbed.FarCry2.ArchiveViewer
 
 			for (int i = 0; i < info.Files.Length; i++)
 			{
-				ArchiveEntry index = info.Files[i];
+				BigEntry index = info.Files[i];
 
 				string fileName = null;
 
@@ -113,13 +113,13 @@ namespace Gibbed.FarCry2.ArchiveViewer
 		{
 			public string BasePath;
 			public Stream Archive;
-			public ArchiveEntry[] Files;
+			public BigEntry[] Files;
 			public Dictionary<uint, string> FileNames;
 			public bool SaveOnlyKnownFiles;
 		}
 
 		private Thread SaveThread;
-		public void ShowSaveProgress(IWin32Window owner, Stream archive, ArchiveEntry[] files, Dictionary<uint, string> fileNames, string basePath, bool saveOnlyKnown)
+		public void ShowSaveProgress(IWin32Window owner, Stream archive, BigEntry[] files, Dictionary<uint, string> fileNames, string basePath, bool saveOnlyKnown)
 		{
 			SaveAllInformation info;
 			info.BasePath = basePath;

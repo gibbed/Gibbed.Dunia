@@ -6,33 +6,33 @@ using Gibbed.FarCry2.Helpers;
 
 namespace Gibbed.FarCry2.FileFormats
 {
-	public class ArchiveFile
+	public class BigFile
 	{
 		public UInt32 Version;
-		public List<ArchiveEntry> Entries = new List<ArchiveEntry>();
+		public List<BigEntry> Entries = new List<BigEntry>();
 
 		public void Read(Stream input)
 		{
 			uint magic = input.ReadU32();
 			if (magic != 0x46415432) // FAT2
 			{
-				throw new NotAnArchiveException();
+				throw new NotAnBigFileException();
 			}
 
 			uint version = input.ReadU32();
 			if (version != 5)
 			{
-				throw new UnsupportedArchiveVersionException();
+				throw new UnsupportedBigFileVersionException();
 			}
 
 			input.ReadU32();
 			UInt32 indexCount = indexCount = input.ReadU32();
 
-			this.Entries = new List<ArchiveEntry>();
+			this.Entries = new List<BigEntry>();
 
 			for (int i = 0; i < indexCount; i++)
 			{
-				ArchiveEntry index = new ArchiveEntry();
+				BigEntry index = new BigEntry();
 				index.Read(input);
 				this.Entries.Add(index);
 			}
@@ -53,7 +53,7 @@ namespace Gibbed.FarCry2.FileFormats
 			output.WriteU32(0x0301);
 			output.WriteU32((uint)this.Entries.Count);
 
-			foreach (ArchiveEntry entry in this.Entries)
+			foreach (BigEntry entry in this.Entries)
 			{
 				entry.Write(output);
 			}
