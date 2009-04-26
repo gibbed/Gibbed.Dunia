@@ -63,7 +63,7 @@ namespace Gibbed.FarCry2.ArchiveViewer
 			}
 		}
 
-		private int SortByFileNames(ArchiveEntry a, ArchiveEntry b)
+		private int SortByFileNames(BigEntry a, BigEntry b)
 		{
 			if (a == null || b == null)
 			{
@@ -101,7 +101,7 @@ namespace Gibbed.FarCry2.ArchiveViewer
 
 
 		// A stupid way to do it but it's for the Save All function.
-		private ArchiveEntry[] ArchiveFiles;
+		private BigEntry[] ArchiveFiles;
 
 		private void OnOpen(object sender, EventArgs e)
 		{
@@ -116,7 +116,7 @@ namespace Gibbed.FarCry2.ArchiveViewer
 			}
 
 			Stream input = this.openDialog.OpenFile();
-			ArchiveFile db = new ArchiveFile();
+			BigFile db = new BigFile();
 			db.Read(input);
 
 			db.Entries.Sort(SortByFileNames);
@@ -134,7 +134,7 @@ namespace Gibbed.FarCry2.ArchiveViewer
 			
 			for (int i = 0; i < this.ArchiveFiles.Length; i++)
 			{
-				ArchiveEntry index = this.ArchiveFiles[i];
+				BigEntry index = this.ArchiveFiles[i];
 				TreeNode node = null;
 
 				if (this.FileNames.ContainsKey(index.Hash) == true)
@@ -244,7 +244,7 @@ namespace Gibbed.FarCry2.ArchiveViewer
 
 			List<string> names = new List<string>();
 
-			foreach (ArchiveEntry index in this.ArchiveFiles)
+			foreach (BigEntry index in this.ArchiveFiles)
 			{
 				if (this.FileNames.ContainsKey(index.Hash))
 				{

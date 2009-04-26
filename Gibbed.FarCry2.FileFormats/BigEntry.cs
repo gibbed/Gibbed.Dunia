@@ -6,7 +6,7 @@ using Gibbed.FarCry2.Helpers;
 
 namespace Gibbed.FarCry2.FileFormats
 {
-	public class ArchiveEntry
+	public class BigEntry
 	{
 		public UInt32 Hash;
 		public UInt32 UncompressedSize;

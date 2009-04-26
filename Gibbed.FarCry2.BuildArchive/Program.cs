@@ -8,7 +8,7 @@ using Gibbed.Helpers;
 
 namespace Gibbed.SaintsRow2.BuildPackage
 {
-	public class MyArchiveEntry : ArchiveEntry
+	public class MyArchiveEntry : BigEntry
 	{
 		public Stream FileStream;
 	}
@@ -79,7 +79,7 @@ namespace Gibbed.SaintsRow2.BuildPackage
 				offset += entry.FileStream.Length;
 			}
 
-			ArchiveFile package = new ArchiveFile();
+			BigFile package = new BigFile();
 
 			foreach (MyArchiveEntry entry in files.Values)
 			{
