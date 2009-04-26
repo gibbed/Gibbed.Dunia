@@ -91,11 +91,11 @@ namespace Gibbed.FarCry2.ArchiveViewer
 
 					if (rez != 0)
 					{
-						throw new ArchiveFileException("decompress returned " + rez.ToString());
+						throw new FileFormatException("decompress returned " + rez.ToString());
 					}
 					else if (decompressedSize != index.UncompressedSize)
 					{
-						throw new ArchiveFileException("decompress size mismatch (" + decompressedSize.ToString() + " vs " + index.UncompressedSize.ToString());
+						throw new FileFormatException("decompress size mismatch (" + decompressedSize.ToString() + " vs " + index.UncompressedSize.ToString());
 					}
 
 					data = decompressedData;

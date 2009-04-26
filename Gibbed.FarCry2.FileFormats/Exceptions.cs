@@ -2,25 +2,25 @@
 
 namespace Gibbed.FarCry2.FileFormats
 {
-	public class ArchiveFileException : Exception
+	public class FileFormatException : Exception
 	{
-		public ArchiveFileException()
+		public FileFormatException()
 			: base()
 		{
 		}
 
-		public ArchiveFileException(string message)
+		public FileFormatException(string message)
 			: base(message)
 		{
 		}
 
-		public ArchiveFileException(string message, Exception innerException)
+		public FileFormatException(string message, Exception innerException)
 			: base(message, innerException)
 		{
 		}
 	}
 
-	public class NotAnArchiveException : ArchiveFileException
+	public class NotAnArchiveException : FileFormatException
 	{
 		public NotAnArchiveException()
 			: base()
@@ -38,7 +38,7 @@ namespace Gibbed.FarCry2.FileFormats
 		}
 	}
 
-	public class UnsupportedArchiveVersionException : ArchiveFileException
+	public class UnsupportedArchiveVersionException : FileFormatException
 	{
 		public UnsupportedArchiveVersionException()
 			: base()
