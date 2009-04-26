@@ -25,13 +25,13 @@ namespace Gibbed.FarCry2.FileFormats
 		// compressed size = 30 bits
 		// offset = 34 bits
 
-		public void Read(Stream stream)
+		public void Read(Stream input)
 		{
-			this.Hash = stream.ReadU32();
-			this.UncompressedSize = stream.ReadU32();
+			this.Hash = input.ReadU32();
+			this.UncompressedSize = input.ReadU32();
 			this.Flags = (byte)(this.UncompressedSize & 2);
 			this.UncompressedSize >>= 2;
-			this.Offset = stream.ReadU64();
+			this.Offset = input.ReadU64();
 			this.CompressedSize = (UInt32)(this.Offset & 0x3FFFFFFF);
 			this.Offset >>= 30;
 
@@ -40,15 +40,15 @@ namespace Gibbed.FarCry2.FileFormats
 			// Bit 2 is unknown.
 			if (this.Flags != 0)
 			{
-				throw new ArchiveFileException("got unsupported flags " + this.Flags.ToString());
+				throw new FileFormatException("got unsupported flags " + this.Flags.ToString());
 			}
 		}
 
-		public void Write(Stream stream)
+		public void Write(Stream output)
 		{
-			stream.WriteU32(this.Hash);
-			stream.WriteU32((UInt32)(this.UncompressedSize << 2) | (UInt32)(this.Flags & 2));
-			stream.WriteU64(this.Offset << 30 | (this.CompressedSize & 0x3FFFFFFF));
+			output.WriteU32(this.Hash);
+			output.WriteU32((UInt32)(this.UncompressedSize << 2) | (UInt32)(this.Flags & 2));
+			output.WriteU64(this.Offset << 30 | (this.CompressedSize & 0x3FFFFFFF));
 		}
 
 		public override string ToString()

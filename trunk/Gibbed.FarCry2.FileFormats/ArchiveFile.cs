@@ -11,56 +11,54 @@ namespace Gibbed.FarCry2.FileFormats
 		public UInt32 Version;
 		public List<ArchiveEntry> Entries = new List<ArchiveEntry>();
 
-		public void Read(Stream stream)
+		public void Read(Stream input)
 		{
-			UInt32 indexCount;
-
-			uint magic = stream.ReadU32();
+			uint magic = input.ReadU32();
 			if (magic != 0x46415432) // FAT2
 			{
 				throw new NotAnArchiveException();
 			}
 
-			uint version = stream.ReadU32();
+			uint version = input.ReadU32();
 			if (version != 5)
 			{
 				throw new UnsupportedArchiveVersionException();
 			}
 
-			stream.ReadU32();
-			indexCount = stream.ReadU32();
+			input.ReadU32();
+			UInt32 indexCount = indexCount = input.ReadU32();
 
 			this.Entries = new List<ArchiveEntry>();
 
 			for (int i = 0; i < indexCount; i++)
 			{
 				ArchiveEntry index = new ArchiveEntry();
-				index.Read(stream);
+				index.Read(input);
 				this.Entries.Add(index);
 			}
 
 			// There's a dword at the end of the file past the index entries, all observed
 			// Far Cry 2 archives all have it as 0, I assume it's another table for something.
 
-			if (stream.ReadU32() != 0)
+			if (input.ReadU32() != 0)
 			{
 				throw new Exception();
 			}
 		}
 
-		public void Write(Stream stream)
+		public void Write(Stream output)
 		{
-			stream.WriteU32(0x46415432);
-			stream.WriteU32(5);
-			stream.WriteU32(0x0301);
-			stream.WriteU32((uint)this.Entries.Count);
+			output.WriteU32(0x46415432);
+			output.WriteU32(5);
+			output.WriteU32(0x0301);
+			output.WriteU32((uint)this.Entries.Count);
 
 			foreach (ArchiveEntry entry in this.Entries)
 			{
-				entry.Write(stream);
+				entry.Write(output);
 			}
 
-			stream.WriteU32(0);
+			output.WriteU32(0);
 		}
 	}
 }
