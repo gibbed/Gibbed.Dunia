@@ -34,6 +34,11 @@ namespace Gibbed.FarCry2.ArchiveViewer
 						break;
 					}
 
+					if (line.Length <= 0)
+					{
+						continue;
+					}
+
 					uint hash = line.FileNameCRC32();
 					this.FileNames[hash] = line.ToLower();
 				}
