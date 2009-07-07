@@ -11,14 +11,14 @@ namespace Gibbed.FarCry2.FileFormats
 	{
 		public static UInt32 ReadPackedU32(this Stream stream)
 		{
-			byte value = stream.ReadU8();
+			byte value = stream.ReadValueU8();
 
 			if (value < 0xFE)
 			{
 				return value;
 			}
 
-			return stream.ReadU32();
+			return stream.ReadValueU32();
 		}
 	}
 
@@ -36,7 +36,7 @@ namespace Gibbed.FarCry2.FileFormats
 		{
 			get
 			{
-				return this.Data.ReadUTF8Z(index);
+				return this.Data.ToStringUTF8Z(index);
 			}
 		}
 	}
@@ -121,12 +121,12 @@ namespace Gibbed.FarCry2.FileFormats
 
 		public void Read(Stream stream)
 		{
-			if (stream.ReadU8() != 0)
+			if (stream.ReadValueU8() != 0)
 			{
 				throw new FileFormatException("not an xml resource file");
 			}
 
-			byte unknown1 = stream.ReadU8();
+			byte unknown1 = stream.ReadValueU8();
 			uint stringTableSize = stream.ReadPackedU32();
 			uint unknown3 = stream.ReadPackedU32();
 			uint unknown4 = stream.ReadPackedU32();

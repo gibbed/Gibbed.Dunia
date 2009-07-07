@@ -27,11 +27,11 @@ namespace Gibbed.FarCry2.FileFormats
 
 		public void Read(Stream input)
 		{
-			this.Hash = input.ReadU32();
-			this.UncompressedSize = input.ReadU32();
+			this.Hash = input.ReadValueU32();
+			this.UncompressedSize = input.ReadValueU32();
 			this.Flags = (byte)(this.UncompressedSize & 2);
 			this.UncompressedSize >>= 2;
-			this.Offset = input.ReadU64();
+			this.Offset = input.ReadValueU64();
 			this.CompressedSize = (UInt32)(this.Offset & 0x3FFFFFFF);
 			this.Offset >>= 30;
 
@@ -46,9 +46,9 @@ namespace Gibbed.FarCry2.FileFormats
 
 		public void Write(Stream output)
 		{
-			output.WriteU32(this.Hash);
-			output.WriteU32((UInt32)(this.UncompressedSize << 2) | (UInt32)(this.Flags & 2));
-			output.WriteU64(this.Offset << 30 | (this.CompressedSize & 0x3FFFFFFF));
+			output.WriteValueU32(this.Hash);
+			output.WriteValueU32((UInt32)(this.UncompressedSize << 2) | (UInt32)(this.Flags & 2));
+			output.WriteValueU64(this.Offset << 30 | (this.CompressedSize & 0x3FFFFFFF));
 		}
 
 		public override string ToString()
