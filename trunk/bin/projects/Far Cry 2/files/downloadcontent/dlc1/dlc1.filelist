@@ -1,4 +1,4 @@
-; 167/3942 (4%)
+; 170/3942 (4%)
 graphics\_materials\adolbec-m-2008051333697493.xbm
 graphics\_materials\apare-m-2008030756697580.xbm
 graphics\_materials\apare-m-2008042339495339.xbm
@@ -99,9 +99,12 @@ graphics\terrain\_textures\desert\dessert_dried_riverbed_d.xbt
 graphics\terrain\_textures\desert\dessert_dried_riverbed_d_mip0.xbt
 graphics\terrain\_textures\desert\dessert_dried_riverbed_n.xbt
 graphics\terrain\_textures\desert\dessert_dried_riverbed_n_mip0.xbt
+graphics\vegetation\jungle\realtrees\hy_banana_big_b.rtx
 graphics\vegetation\jungle\textures\bananatrunk02.xbt
 graphics\vegetation\jungle\textures\bananatrunk02_n.xbt
 graphics\vegetation\savannah\savannah_dead_b.xbg
+soundbinary\00456c11.spk
+soundbinary\00456c12.spk
 soundbinary\004b8a2c.spk
 soundbinary\004b8a30.spk
 soundbinary\004b8a87.spk
