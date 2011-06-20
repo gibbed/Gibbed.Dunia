@@ -20,22 +20,13 @@
  *    distribution.
  */
 
-using System;
-using System.Windows.Forms;
-
-namespace Gibbed.Dunia.ArchiveViewer
+namespace Gibbed.Dunia.FileFormats.Big
 {
-	internal static class Program
-	{
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		public static void Main()
-		{
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new Viewer());
-		}
-	}
+    public enum CompressionScheme : byte
+    {
+        None = 0,
+        LZO1x = 1,
+        Unknown2 = 2,
+        Unknown3 = 3,
+    }
 }

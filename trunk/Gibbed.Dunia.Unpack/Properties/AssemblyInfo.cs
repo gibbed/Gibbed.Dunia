@@ -26,11 +26,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Gibbed.Dunia.FileFormats")]
+[assembly: AssemblyTitle("Gibbed.Dunia.Unpack")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Gibbed.Dunia.FileFormats")]
+[assembly: AssemblyProduct("Gibbed.Dunia.Unpack")]
 [assembly: AssemblyCopyright("Copyright © Gibbed 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -41,7 +41,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("23483433-2591-47e8-9c06-47924dc268af")]
+[assembly: Guid("22d9290f-1e60-4fda-8e83-6f0f40eff54e")]
 
 // Version information for an assembly consists of the following four values:
 //

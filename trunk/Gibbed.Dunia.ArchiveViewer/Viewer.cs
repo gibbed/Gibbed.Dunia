@@ -1,10 +1,32 @@
-﻿using System;
+﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * 
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would
+ *    be appreciated but is not required.
+ * 
+ * 2. Altered source versions must be plainly marked as such, and must not
+ *    be misrepresented as being the original software.
+ * 
+ * 3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using Gibbed.Dunia.Helpers;
 using Gibbed.Dunia.FileFormats;
+using Big = Gibbed.Dunia.FileFormats.Big;
 
 namespace Gibbed.Dunia.ArchiveViewer
 {
@@ -68,23 +90,23 @@ namespace Gibbed.Dunia.ArchiveViewer
 			}
 		}
 
-		private int SortByFileNames(BigEntry a, BigEntry b)
+        private int SortByFileNames(Big.Entry a, Big.Entry b)
 		{
 			if (a == null || b == null)
 			{
 				return 0;
 			}
 
-			if (this.FileNames.ContainsKey(a.Hash) == false)
+			if (this.FileNames.ContainsKey(a.NameHash) == false)
 			{
-				if (this.FileNames.ContainsKey(b.Hash) == false)
+				if (this.FileNames.ContainsKey(b.NameHash) == false)
 				{
-					if (a.Hash == b.Hash)
+					if (a.NameHash == b.NameHash)
 					{
 						return 0;
 					}
 
-					return a.Hash < b.Hash ? -1 : 1;
+					return a.NameHash < b.NameHash ? -1 : 1;
 				}
 				else
 				{
@@ -93,20 +115,20 @@ namespace Gibbed.Dunia.ArchiveViewer
 			}
 			else
 			{
-				if (this.FileNames.ContainsKey(b.Hash) == false)
+				if (this.FileNames.ContainsKey(b.NameHash) == false)
 				{
 					return 1;
 				}
 				else
 				{
-					return String.Compare(this.FileNames[a.Hash], this.FileNames[b.Hash]);
+					return String.Compare(this.FileNames[a.NameHash], this.FileNames[b.NameHash]);
 				}
 			}
 		}
 
 
 		// A stupid way to do it but it's for the Save All function.
-		private BigEntry[] ArchiveFiles;
+		private Big.Entry[] ArchiveFiles;
 
 		private void OnOpen(object sender, EventArgs e)
 		{
@@ -120,9 +142,9 @@ namespace Gibbed.Dunia.ArchiveViewer
 				this.openDialog.InitialDirectory = null;
 			}
 
-			Stream input = this.openDialog.OpenFile();
-			BigFile db = new BigFile();
-			db.Read(input);
+			var input = this.openDialog.OpenFile();
+			var db = new BigFile();
+			db.Deserialize(input);
 
 			db.Entries.Sort(SortByFileNames);
 
@@ -139,12 +161,12 @@ namespace Gibbed.Dunia.ArchiveViewer
 			
 			for (int i = 0; i < this.ArchiveFiles.Length; i++)
 			{
-				BigEntry index = this.ArchiveFiles[i];
+				var index = this.ArchiveFiles[i];
 				TreeNode node = null;
 
-				if (this.FileNames.ContainsKey(index.Hash) == true)
+				if (this.FileNames.ContainsKey(index.NameHash) == true)
 				{
-					string fileName = this.FileNames[index.Hash];
+					string fileName = this.FileNames[index.NameHash];
 					string pathName = Path.GetDirectoryName(fileName);
 					TreeNodeCollection parentNodes = knownNode.Nodes;
 
@@ -170,12 +192,12 @@ namespace Gibbed.Dunia.ArchiveViewer
 				}
 				else
 				{
-					node = unknownNode.Nodes.Add(null, index.Hash.ToString("X8"), 3, 3);
+					node = unknownNode.Nodes.Add(null, index.NameHash.ToString("X8"), 3, 3);
 				}
 
 				node.Tag = index;
 
-				if (index.Flags != 0)
+				if (index.CompressionScheme != 0)
 				{
 					throw new Exception();
 				}
@@ -249,11 +271,11 @@ namespace Gibbed.Dunia.ArchiveViewer
 
 			List<string> names = new List<string>();
 
-			foreach (BigEntry index in this.ArchiveFiles)
+			foreach (var index in this.ArchiveFiles)
 			{
-				if (this.FileNames.ContainsKey(index.Hash))
+				if (this.FileNames.ContainsKey(index.NameHash))
 				{
-					names.Add(this.FileNames[index.Hash]);
+					names.Add(this.FileNames[index.NameHash]);
 				}
 			}
 
