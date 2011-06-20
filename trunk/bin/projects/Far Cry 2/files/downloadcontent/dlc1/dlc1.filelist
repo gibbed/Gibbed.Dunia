@@ -1,3 +1,4 @@
+; 167/3942 (4%)
 graphics\_materials\adolbec-m-2008051333697493.xbm
 graphics\_materials\apare-m-2008030756697580.xbm
 graphics\_materials\apare-m-2008042339495339.xbm
@@ -6,6 +7,7 @@ graphics\_materials\hlevasseur-m-2007080748167540.xbm
 graphics\_materials\hlevasseur-m-2007080948461613.xbm
 graphics\_materials\hlevasseur-m-2007081341775931.xbm
 graphics\_materials\hlevasseur-m-2007092861602049.xbm
+graphics\_materials\hlevasseur-m-2007101856972451.xbm
 graphics\_materials\hlevasseur-m-2008070442834453.xbm
 graphics\_materials\jdurocher-m-2007111349523514.xbm
 graphics\_materials\jfcarrier2-m-0511200748524461.xbm
@@ -83,6 +85,9 @@ graphics\objects\industrial\boxes\cardboxbigempty01.xbg
 graphics\objects\industrial\boxes\cardboxmediumfull01.xbg
 graphics\objects\industrial\boxes\woodencrate01.xbg
 graphics\objects\military\militarytrainingtires.xbg
+graphics\objects\particules\colonial_particule_01.xbg
+graphics\objects\particules\colonial_particule_02.xbg
+graphics\objects\particules\colonial_particule_03.xbg
 graphics\objects\particules\fishing_particule01.xbg
 graphics\objects\transportation\chariotplanks_a01_multi.xbg
 graphics\objects\transportation\pirogue02.xbg
@@ -105,6 +110,7 @@ soundbinary\004bf192.spk
 soundbinary\004c62c5.spk
 soundbinary\004e1fb7.spk
 soundbinary\004e1fb8.spk
+soundbinary\004e2f50.spk
 worlds\mp_dlc_gym\generated\entitylibrary.fcb
 worlds\mp_dlc_gym\generated\mp_dlc_gym.game.xml
 worlds\mp_dlc_gym\generated\mp_dlc_gym.managers.fcb

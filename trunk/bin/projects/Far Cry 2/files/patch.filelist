@@ -1,7 +1,9 @@
+; 121/216 (56%)
 config\inputactionmapcommon.xml
 config\inputactionmapmulti.xml
 config\inputactionmapsingle.xml
 engine\gamemodes\gamemodesconfig.xml
+engine\online\onlineengine\default.netgroup.xml
 engine\online\onlineengine\engine.netobject.xml
 engine\online\onlineengine\fcx.netobject.xml
 engine\settings\defaultrenderconfig.xml
@@ -18,6 +20,8 @@ languages\russian\oasisstrings.rml
 languages\spanish\oasisstrings.rml
 scripts\game\objects\pawn\statemachine\buddydown.gosm.xml
 scripts\game\objects\pawn\statemachine\revive.gosm.xml
+ui\localized\pc\eng\ui\common.mgb
+ui\localized\pc\eng\ui\common.mgb.desc
 ui\localized\pc\eng\ui\hud_mp.mgb
 ui\localized\pc\eng\ui\hud_mp.mgb.desc
 ui\localized\pc\eng\ui\mp_ingame_menus.mgb
@@ -26,6 +30,8 @@ ui\localized\pc\eng\ui\mp_menus.mgb
 ui\localized\pc\eng\ui\mp_menus.mgb.desc
 ui\localized\pc\eng\ui\options.mgb
 ui\localized\pc\eng\ui\options.mgb.desc
+ui\localized\pc\fre\ui\common.mgb
+ui\localized\pc\fre\ui\common.mgb.desc
 ui\localized\pc\fre\ui\hud_mp.mgb
 ui\localized\pc\fre\ui\hud_mp.mgb.desc
 ui\localized\pc\fre\ui\mp_ingame_menus.mgb
@@ -34,6 +40,8 @@ ui\localized\pc\fre\ui\mp_menus.mgb
 ui\localized\pc\fre\ui\mp_menus.mgb.desc
 ui\localized\pc\fre\ui\options.mgb
 ui\localized\pc\fre\ui\options.mgb.desc
+ui\localized\pc\ger\ui\common.mgb
+ui\localized\pc\ger\ui\common.mgb.desc
 ui\localized\pc\ger\ui\hud_mp.mgb
 ui\localized\pc\ger\ui\hud_mp.mgb.desc
 ui\localized\pc\ger\ui\mp_ingame_menus.mgb
@@ -42,6 +50,8 @@ ui\localized\pc\ger\ui\mp_menus.mgb
 ui\localized\pc\ger\ui\mp_menus.mgb.desc
 ui\localized\pc\ger\ui\options.mgb
 ui\localized\pc\ger\ui\options.mgb.desc
+ui\localized\pc\ita\ui\common.mgb
+ui\localized\pc\ita\ui\common.mgb.desc
 ui\localized\pc\ita\ui\hud_mp.mgb
 ui\localized\pc\ita\ui\hud_mp.mgb.desc
 ui\localized\pc\ita\ui\mp_ingame_menus.mgb
@@ -50,6 +60,8 @@ ui\localized\pc\ita\ui\mp_menus.mgb
 ui\localized\pc\ita\ui\mp_menus.mgb.desc
 ui\localized\pc\ita\ui\options.mgb
 ui\localized\pc\ita\ui\options.mgb.desc
+ui\localized\pc\spa\ui\common.mgb
+ui\localized\pc\spa\ui\common.mgb.desc
 ui\localized\pc\spa\ui\hud_mp.mgb
 ui\localized\pc\spa\ui\hud_mp.mgb.desc
 ui\localized\pc\spa\ui\mp_ingame_menus.mgb
@@ -58,6 +70,8 @@ ui\localized\pc\spa\ui\mp_menus.mgb
 ui\localized\pc\spa\ui\mp_menus.mgb.desc
 ui\localized\pc\spa\ui\options.mgb
 ui\localized\pc\spa\ui\options.mgb.desc
+ui\localized\pcwidescreen\eng\ui\common.mgb
+ui\localized\pcwidescreen\eng\ui\common.mgb.desc
 ui\localized\pcwidescreen\eng\ui\hud_mp.mgb
 ui\localized\pcwidescreen\eng\ui\hud_mp.mgb.desc
 ui\localized\pcwidescreen\eng\ui\mp_ingame_menus.mgb
@@ -66,6 +80,8 @@ ui\localized\pcwidescreen\eng\ui\mp_menus.mgb
 ui\localized\pcwidescreen\eng\ui\mp_menus.mgb.desc
 ui\localized\pcwidescreen\eng\ui\options.mgb
 ui\localized\pcwidescreen\eng\ui\options.mgb.desc
+ui\localized\pcwidescreen\fre\ui\common.mgb
+ui\localized\pcwidescreen\fre\ui\common.mgb.desc
 ui\localized\pcwidescreen\fre\ui\hud_mp.mgb
 ui\localized\pcwidescreen\fre\ui\hud_mp.mgb.desc
 ui\localized\pcwidescreen\fre\ui\mp_ingame_menus.mgb
@@ -74,6 +90,8 @@ ui\localized\pcwidescreen\fre\ui\mp_menus.mgb
 ui\localized\pcwidescreen\fre\ui\mp_menus.mgb.desc
 ui\localized\pcwidescreen\fre\ui\options.mgb
 ui\localized\pcwidescreen\fre\ui\options.mgb.desc
+ui\localized\pcwidescreen\ger\ui\common.mgb
+ui\localized\pcwidescreen\ger\ui\common.mgb.desc
 ui\localized\pcwidescreen\ger\ui\hud_mp.mgb
 ui\localized\pcwidescreen\ger\ui\hud_mp.mgb.desc
 ui\localized\pcwidescreen\ger\ui\mp_ingame_menus.mgb
@@ -82,6 +100,8 @@ ui\localized\pcwidescreen\ger\ui\mp_menus.mgb
 ui\localized\pcwidescreen\ger\ui\mp_menus.mgb.desc
 ui\localized\pcwidescreen\ger\ui\options.mgb
 ui\localized\pcwidescreen\ger\ui\options.mgb.desc
+ui\localized\pcwidescreen\ita\ui\common.mgb
+ui\localized\pcwidescreen\ita\ui\common.mgb.desc
 ui\localized\pcwidescreen\ita\ui\hud_mp.mgb
 ui\localized\pcwidescreen\ita\ui\hud_mp.mgb.desc
 ui\localized\pcwidescreen\ita\ui\mp_ingame_menus.mgb
@@ -90,6 +110,8 @@ ui\localized\pcwidescreen\ita\ui\mp_menus.mgb
 ui\localized\pcwidescreen\ita\ui\mp_menus.mgb.desc
 ui\localized\pcwidescreen\ita\ui\options.mgb
 ui\localized\pcwidescreen\ita\ui\options.mgb.desc
+ui\localized\pcwidescreen\spa\ui\common.mgb
+ui\localized\pcwidescreen\spa\ui\common.mgb.desc
 ui\localized\pcwidescreen\spa\ui\hud_mp.mgb
 ui\localized\pcwidescreen\spa\ui\hud_mp.mgb.desc
 ui\localized\pcwidescreen\spa\ui\mp_ingame_menus.mgb
