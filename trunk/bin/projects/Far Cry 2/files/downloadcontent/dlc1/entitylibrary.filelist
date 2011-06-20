@@ -1,4 +1,4 @@
-; 337/424 (79%)
+; 363/424 (85%)
 downloadcontent\dlc1\generated\entitylibrary.fcb
 downloadcontent\dlc1\generated\entitylibrary_depload.dat
 downloadcontent\dlc1\generated\entitylibrary_deploadnewparticles.rml
@@ -23,11 +23,19 @@ graphics\_materials\sdore2-m-2008091960882996.xbm
 graphics\_materials\sdore2-m-2008092935519316.xbm
 graphics\_materials\sdore2-m-2008092936424791.xbm
 graphics\_materials\sdore2-m-2008092937234280.xbm
+graphics\_materials\sdore2-m-2008100166269293.xbm
+graphics\_materials\sdore2-m-2008100239762442.xbm
+graphics\_materials\sdore2-m-2008100249623817.xbm
+graphics\_materials\sdore2-m-2008100649183233.xbm
+graphics\_materials\sdore2-m-2008100760171564.xbm
+graphics\_materials\sdore2-m-2008100852498503.xbm
 graphics\_materials\sdore2-m-2008101561760114.xbm
 graphics\_materials\sdore2-m-2008101739070784.xbm
 graphics\_materials\sdore2-m-2008102460824234.xbm
+graphics\_materials\trodrigue-m-2007040355403151.xbm
 graphics\_textures\mask\boxweapons_02_m.xbt
 graphics\_textures\mask\boxweapons_02_m_mip0.xbt
+graphics\_textures\specular\c_cm_leather_04_s.xbt
 graphics\characters\_common\animations\game_play\weapon_crate\1stge_uppb_dlc_magic_crate_drop_+000fw_nowep_i1.mab
 graphics\characters\_common\animations\game_play\weapon_crate\1stge_uppb_dlc_magic_crate_pick_+000fw_nowep_i1.mab
 graphics\characters\_common\animations\game_play\weapon_crate\1stge_uppb_dlc_magic_crate_switch_+000fw_nowep_i1.mab
@@ -201,6 +209,8 @@ graphics\objects\industrial\boxes\boxweapons_dlc.xbg
 graphics\objects\industrial\boxes\dlc_weaponscrate_m.xbt
 graphics\vehicles\land\quad\quad.hkx
 graphics\vehicles\land\quad\quad.xbg
+graphics\vehicles\land\quad\quad_dlc_m.xbt
+graphics\vehicles\land\quad\quad_dlc_m_mip0.xbt
 graphics\vehicles\land\quad\quad_ref.skeleton
 graphics\vehicles\land\quad\quad_single.hkx
 graphics\vehicles\land\quad\quad_single.xbg
@@ -289,6 +299,11 @@ soundbinary\004e8392.spk
 soundbinary\004e8393.spk
 soundbinary\004e8394.spk
 soundbinary\004e839a.spk
+soundbinary\004e83ba.spk
+soundbinary\004e83bb.spk
+soundbinary\004e83be.spk
+soundbinary\004e83bf.spk
+soundbinary\004e83cf.spk
 soundbinary\004e83da.spk
 soundbinary\004e83db.spk
 soundbinary\004e83dc.spk
@@ -301,6 +316,17 @@ soundbinary\004e8402.spk
 soundbinary\004e8403.spk
 soundbinary\004e8405.spk
 soundbinary\004e8406.spk
+soundbinary\004ee8bd.spk
+soundbinary\004ee8be.spk
+soundbinary\004ee8bf.spk
+soundbinary\004ee8c0.spk
+soundbinary\004ee8c2.spk
+soundbinary\004ee8c3.spk
+soundbinary\004ee8c4.spk
+soundbinary\004ee8c6.spk
+soundbinary\004ee8c7.spk
+soundbinary\004ee8c8.spk
+soundbinary\004ee8cd.spk
 soundbinary\004ee92f.spk
 soundbinary\004ee930.spk
 soundbinary\004ee931.spk

@@ -1,4 +1,4 @@
-; 323/1023 (31%)
+; 325/1023 (31%)
 graphics\_materials\dboivin-m-2007100228757443.xbm
 graphics\_materials\dboivin-m-2007100232938887.xbm
 graphics\_materials\dboivin-m-2008053058732063.xbm
@@ -222,7 +222,9 @@ graphics\vegetation\jungle\realtrees\rt_tree_slim_a.rtx
 graphics\vegetation\jungle\textures\bananatrunk02.xbt
 graphics\vegetation\jungle\textures\bananatrunk02_n.xbt
 graphics\vegetation\jungle\textures\jgroundcover01_d.xbt
+graphics\vegetation\jungle\textures\jgroundcover01_d_mip0.xbt
 graphics\vegetation\jungle\textures\jgroundcover01_n.xbt
+graphics\vegetation\jungle\textures\jgroundcover01_n_mip0.xbt
 graphics\vehicles\sea\bargearmsbazard\barge01_m.xbt
 graphics\vehicles\sea\bargearmsbazard\bargearmsbazard_multi_dlc.xbg
 graphics\vehicles\sea\bargearmsbazard\bargebody02_n.xbt
