@@ -1,4 +1,4 @@
-; 205/3942 (5%)
+; 210/3942 (5%)
 graphics\_materials\adolbec-m-2008051333697493.xbm
 graphics\_materials\apare-m-2008030756697580.xbm
 graphics\_materials\apare-m-2008041749088038.xbm
@@ -150,6 +150,7 @@ soundbinary\004e1fb8.spk
 soundbinary\004e2f50.spk
 soundbinary\004e7c4d.spk
 worlds\mp_dlc_gym\generated\entitylibrary.fcb
+worlds\mp_dlc_gym\generated\entitylibrary_full.fcb
 worlds\mp_dlc_gym\generated\mp_dlc_gym.game.xml
 worlds\mp_dlc_gym\generated\mp_dlc_gym.managers.fcb
 worlds\mp_dlc_gym\generated\mp_dlc_gym.mapsdata.fcb
@@ -161,6 +162,7 @@ worlds\mp_dlc_gym\generated\nv\sectors\nv.nvm
 worlds\mp_dlc_gym\mapcompass.xbt
 worlds\mp_dlc_gym\mapcompass_mip0.xbt
 worlds\mp_dlc01_resort\generated\entitylibrary.fcb
+worlds\mp_dlc01_resort\generated\entitylibrary_full.fcb
 worlds\mp_dlc01_resort\generated\mp_dlc01_resort.game.xml
 worlds\mp_dlc01_resort\generated\mp_dlc01_resort.managers.fcb
 worlds\mp_dlc01_resort\generated\mp_dlc01_resort.mapsdata.fcb
@@ -172,6 +174,7 @@ worlds\mp_dlc01_resort\generated\nv\sectors\nv.nvm
 worlds\mp_dlc01_resort\mapcompass.xbt
 worlds\mp_dlc01_resort\mapcompass_mip0.xbt
 worlds\mp_dlc02_lake\generated\entitylibrary.fcb
+worlds\mp_dlc02_lake\generated\entitylibrary_full.fcb
 worlds\mp_dlc02_lake\generated\mp_dlc02_lake.game.xml
 worlds\mp_dlc02_lake\generated\mp_dlc02_lake.managers.fcb
 worlds\mp_dlc02_lake\generated\mp_dlc02_lake.mapsdata.fcb
@@ -183,6 +186,7 @@ worlds\mp_dlc02_lake\generated\nv\sectors\nv.nvm
 worlds\mp_dlc02_lake\mapcompass.xbt
 worlds\mp_dlc02_lake\mapcompass_mip0.xbt
 worlds\mp_dlc04_bridge\generated\entitylibrary.fcb
+worlds\mp_dlc04_bridge\generated\entitylibrary_full.fcb
 worlds\mp_dlc04_bridge\generated\mp_dlc04_bridge.game.xml
 worlds\mp_dlc04_bridge\generated\mp_dlc04_bridge.managers.fcb
 worlds\mp_dlc04_bridge\generated\mp_dlc04_bridge.mapsdata.fcb
@@ -194,6 +198,7 @@ worlds\mp_dlc04_bridge\generated\nv\sectors\nv.nvm
 worlds\mp_dlc04_bridge\mapcompass.xbt
 worlds\mp_dlc04_bridge\mapcompass_mip0.xbt
 worlds\mp_dlc05_clinic\generated\entitylibrary.fcb
+worlds\mp_dlc05_clinic\generated\entitylibrary_full.fcb
 worlds\mp_dlc05_clinic\generated\mp_dlc05_clinic.game.xml
 worlds\mp_dlc05_clinic\generated\mp_dlc05_clinic.managers.fcb
 worlds\mp_dlc05_clinic\generated\mp_dlc05_clinic.mapsdata.fcb

@@ -1,4 +1,4 @@
-; 122/216 (56%)
+; 124/216 (57%)
 config\inputactionmapcommon.xml
 config\inputactionmapmulti.xml
 config\inputactionmapsingle.xml
@@ -121,3 +121,5 @@ ui\localized\pcwidescreen\spa\ui\mp_menus.mgb
 ui\localized\pcwidescreen\spa\ui\mp_menus.mgb.desc
 ui\localized\pcwidescreen\spa\ui\options.mgb
 ui\localized\pcwidescreen\spa\ui\options.mgb.desc
+worlds\tmpla\generated\entitylibrary.fcb
+worlds\tmpla\generated\tmpla_depload.dat

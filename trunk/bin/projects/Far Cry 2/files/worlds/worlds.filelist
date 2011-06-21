@@ -1,4 +1,4 @@
-; 15914/142369 (11%)
+; 15927/142369 (11%)
 279638735.rml
 domino\system\achievementdata.lua
 domino\system\addhistorypointstoprimarybuddy.lua
@@ -6346,6 +6346,7 @@ graphics\characters\buddies\warren\c_wc_cloth_d.xbt
 graphics\characters\buddies\warren\c_wc_cloth_d_mip0.xbt
 graphics\characters\buddies\warren\c_wc_cloth_n.xbt
 graphics\characters\buddies\warren\c_wc_cloth_n_mip0.xbt
+graphics\characters\buddies\warren\warren_avatar.xbg
 graphics\characters\mercenaries\c_mc_accesories_02_d.xbt
 graphics\characters\mercenaries\c_mc_accesories_02_d_mip0.xbt
 graphics\characters\mercenaries\c_mc_accesories_02_n.xbt
@@ -15886,10 +15887,21 @@ worlds\ige_map\generated\ige_map.omnis.fcb
 worlds\ige_map\generated\ige_map_depload.dat
 worlds\ige_map\generated\ige_map_deploadnewparticles.rml
 worlds\ige_map\generated\moviedata.xml
+worlds\tmpla\generated\entitylibrary.fcb
+worlds\tmpla\generated\entitylibrary_full.fcb
+worlds\tmpla\generated\moviedata.xml
+worlds\tmpla\generated\nv\sectors\nv.nvm
 worlds\tmpla\generated\tmpla.game.xml
+worlds\tmpla\generated\tmpla.managers.fcb
+worlds\tmpla\generated\tmpla.mapsdata.fcb
+worlds\tmpla\generated\tmpla.omnis.fcb
+worlds\tmpla\generated\tmpla.sectorsdep.fcb
+worlds\tmpla\generated\tmpla_depload.dat
+worlds\tmpla\generated\tmpla_deploadnewparticles.rml
 worlds\tmpla\mapcompass.xbt
 worlds\tmpla\mapcompass_mip0.xbt
 worlds\world1\generated\entitylibrary.fcb
+worlds\world1\generated\entitylibrary_full.fcb
 worlds\world1\generated\moviedata.xml
 worlds\world1\generated\nv\sectors\nv.nvm
 worlds\world1\generated\world1.game.xml
@@ -15902,6 +15914,7 @@ worlds\world1\generated\world1_deploadnewparticles.rml
 worlds\world1\mapcompass.xbt
 worlds\world1\mapcompass_mip0.xbt
 worlds\world2\generated\entitylibrary.fcb
+worlds\world2\generated\entitylibrary_full.fcb
 worlds\world2\generated\moviedata.xml
 worlds\world2\generated\nv\sectors\nv.nvm
 worlds\world2\generated\world2.game.xml
