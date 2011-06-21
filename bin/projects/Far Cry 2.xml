@@ -21,7 +21,7 @@
 			<action type="combine">Data_Win32</action>
 		</install_location>
 		<install_location>
-			<action type="registry" key="HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Valve\Steam" value="InstallPath" />
+			<action type="registry" key="HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Valve\Steam" value="InstallPath" />
 			<action type="combine">steamapps</action>
 			<action type="combine">common</action>
 			<action type="combine">far cry 2</action>
