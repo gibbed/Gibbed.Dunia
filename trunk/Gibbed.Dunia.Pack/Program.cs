@@ -52,7 +52,7 @@ namespace Gibbed.Dunia.Pack
                     v => verbose = v != null
                 },
                 {
-                    "lzo",
+                    "c|compress",
                     "compress data with LZO1x",
                     v => compress = v != null
                 },
@@ -150,17 +150,21 @@ namespace Gibbed.Dunia.Pack
                     }
                     else
                     {
-                        hash = partPath.FileNameCRC32();
+                        hash = partPath.HashFileNameCRC32();
                     }
 
                     if (paths.ContainsKey(hash) == true)
                     {
-                        Console.WriteLine("Ignoring {0} duplicate.", partPath);
+                        //if (verbose == true)
+                        {
+                            Console.WriteLine("Ignoring {0} duplicate.", partPath);
+                        }
+
                         continue;
                     }
 
                     paths[hash] = fullPath;
-                    Console.WriteLine(fullPath);
+                    //Console.WriteLine(fullPath);
                 }
             }
 
@@ -180,22 +184,52 @@ namespace Gibbed.Dunia.Pack
 
                     var entry = new Big.Entry();
                     entry.NameHash = hash;
-                    entry.CompressionScheme = compress == false ?
-                        Big.CompressionScheme.None :
-                        Big.CompressionScheme.LZO1x;
                     entry.Offset = output.Position;
 
                     using (var input = File.OpenRead(path))
                     {
                         if (compress == false)
                         {
-                            entry.UncompressedSize = (uint)input.Length;
+                            entry.CompressionScheme = Big.CompressionScheme.None;
+                            entry.UncompressedSize = 0;
                             entry.CompressedSize = (uint)input.Length;
                             output.WriteFromStream(input, input.Length);
                         }
                         else
                         {
-                            throw new NotImplementedException();
+                            var uncompressedData = new byte[input.Length];
+                            var uncompressedSize = (uint)uncompressedData.Length;
+                            input.Read(uncompressedData, 0, uncompressedData.Length);
+
+                            var compressedData = new byte[
+                                uncompressedData.Length +
+                                (uncompressedData.Length / 16) + 64 + 3];
+                            var compressedSize = (uint)compressedData.Length;
+
+                            var result = LZO1x.Compress(
+                                uncompressedData, uncompressedSize,
+                                compressedData, ref compressedSize);
+
+                            if (result != 0)
+                            {
+                                throw new InvalidOperationException("compression error " + result.ToString());
+                            }
+
+                            if (compressedSize < uncompressedSize)
+                            {
+                                entry.CompressionScheme = Big.CompressionScheme.LZO1x;
+                                entry.UncompressedSize = uncompressedSize;
+                                entry.CompressedSize = compressedSize;
+                                output.Write(compressedData, 0, (int)compressedSize);
+                            }
+                            else
+                            {
+                                input.Seek(0, SeekOrigin.Begin);
+                                entry.CompressionScheme = Big.CompressionScheme.None;
+                                entry.UncompressedSize = 0;
+                                entry.CompressedSize = (uint)input.Length;
+                                output.WriteFromStream(input, input.Length);
+                            }
                         }
 
                         output.Seek(output.Position.Align(16), SeekOrigin.Begin);

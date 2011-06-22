@@ -1,16 +1,52 @@
 <classes>
+	<class name="object">
+		<member name="hidIndex">UInt32</member>
+		<member hash="BF9B3A5C">String</member>
+		<member name="objModel">Hash</member>
+		<member name="hidMeshName">String</member>
+		<member hash="E1A0EE56">String</member>
+		<member name="hidNodeName">Hash</member>
+		<member hash="0D9C8B1A">String</member>
+		<member name="hidNodeNameLOD0">Hash</member>
+		<member name="hidDetailObject">Bool</member>
+	</class>
 	<class hash="256A1FF9">
 		<member name="Name">String</member>
 	</class>
 	<class hash="E0BDB3DB">
 		<member name="Name">String</member>
 	</class>
+	<class name="Effect">
+		<member hash="D986CE26">String</member>
+		<member name="sEffectName">Hash</member>
+	</class>
 	<class name="Entity">
+		<member name="hidName">String</member>
+		<member name="disEntityId">UInt64</member>
+		<member hash="D2B3429E">String</member>
+		<member name="hidEntityClass">Hash</member>
+		<member name="hidResourceCount">UInt32</member>
+		<member name="hidPos">Vector</member>
+		<member name="hidAngles">Vector</member>
+		<member name="hidPos_precise">Vector</member>
+		<member name="hidConstEntity">Bool</member>
+	</class>
+	<class name="Components">
 	</class>
 	<class name="enum">
-			<member name="Value">String</member>
+		<member name="Value">String</member>
 	</class>
 	<class name="enumAnimalSpecies">
+	</class>
+	<class name="World">
+		<member name="Objective">BinHex</member>
+		<member name="PGP">BinHex</member>
+		<member name="SafeHouse">BinHex</member>
+		<member name="CellTower">BinHex</member>
+	</class>
+	<class name="Area">
+	</class>
+	<class name="KeyLocation">
 	</class>
 	
 	<class name="CAABBPartitionManager" extends="CSingletonEntity" />
@@ -536,7 +572,7 @@
 	<class name="CFetchPrivilegesOperation" extends="CRendezVousOperation" />
 	<class name="CFileDescriptorComponent" extends="CEntityComponent">
 		<member hash="2A7BCA49">String</member>
-		<member name="fileName">BinHex</member>
+		<member name="fileName">Hash</member>
 		<member name="SerializationEvent">BinHex</member>
 		<member name="hidDescriptor">BinHex</member>
 	</class>

@@ -20,6 +20,7 @@
  *    distribution.
  */
 
+using System;
 using System.IO;
 using Gibbed.Helpers;
 
@@ -55,6 +56,26 @@ namespace Gibbed.Dunia.FileFormats.Big
             this.CompressionScheme = (CompressionScheme)((b & 0x00000003u) >> 0);
             this.Offset = (long)((c & 0xFFFFFFFFC0000000ul) >> 30);
             this.CompressedSize = (uint)((c & 0x000000003FFFFFFFul) >> 0);
+
+            if (this.CompressionScheme == Big.CompressionScheme.None)
+            {
+                if (this.UncompressedSize != 0)
+                {
+                    throw new FormatException();
+                }
+            }
+            else if (this.CompressionScheme == Big.CompressionScheme.LZO1x)
+            {
+                if (this.CompressedSize == 0 &&
+                    this.UncompressedSize > 0)
+                {
+                    throw new FormatException();
+                }
+            }
+            else
+            {
+                throw new FormatException();
+            }
         }
 
         public void Serialize(Stream output)

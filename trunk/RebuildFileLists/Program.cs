@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using Gibbed.Dunia.FileFormats;
 using NDesk.Options;
-using Setup = Gibbed.Dunia.Setup;
+using ProjectData = Gibbed.ProjectData;
 
 namespace RebuildFileLists
 {
@@ -58,7 +58,7 @@ namespace RebuildFileLists
         {
             bool showHelp = false;
 
-            OptionSet options = new OptionSet()
+            var options = new OptionSet()
             {
                 {
                     "h|help",
@@ -92,7 +92,7 @@ namespace RebuildFileLists
 
             Console.WriteLine("Loading project...");
 
-            var manager = Setup.Manager.Load();
+            var manager = ProjectData.Manager.Load();
             if (manager.ActiveProject == null)
             {
                 Console.WriteLine("Nothing to do: no active project loaded.");
@@ -100,6 +100,10 @@ namespace RebuildFileLists
             }
 
             var project = manager.ActiveProject;
+            var hashes = project.LoadLists(
+                "*.filelist",
+                s => s.HashFileNameCRC32(),
+                s => s.ToLowerInvariant());
 
             var installPath = project.InstallPath;
             var listsPath = project.ListsPath;
@@ -151,7 +155,7 @@ namespace RebuildFileLists
                 var names = new List<string>();
                 foreach (var entry in big.Entries)
                 {
-                    var name = project.GetFileName(entry.NameHash);
+                    var name = hashes[entry.NameHash];
                     if (name != null)
                     {
                         if (names.Contains(name) == false)

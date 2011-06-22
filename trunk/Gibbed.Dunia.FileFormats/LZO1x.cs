@@ -35,56 +35,68 @@ namespace Gibbed.Dunia.FileFormats
 
         private sealed class Native32
         {
-            [DllImport("lzo1x_32.dll", EntryPoint = "Compress")]
+            [DllImport("lzo1x_32.dll",
+                EntryPoint = "#67",
+                CallingConvention = CallingConvention.StdCall)]
             internal static extern int Compress(
-                [MarshalAs(UnmanagedType.LPArray)]
                 byte[] inbuf,
                 uint inlen,
-                [MarshalAs(UnmanagedType.LPArray)]
                 byte[] outbuf,
-                ref uint outlen);
+                ref uint outlen,
+                byte[] workbuf);
 
-            [DllImport("lzo1x_32.dll", EntryPoint = "Decompress")]
+            [DllImport("lzo1x_32.dll",
+                EntryPoint = "#68",
+                CallingConvention = CallingConvention.StdCall)]
             internal static extern int Decompress(
-                [MarshalAs(UnmanagedType.LPArray)]
                 byte[] inbuf,
                 uint inlen,
-                [MarshalAs(UnmanagedType.LPArray)]
                 byte[] outbuf,
                 ref uint outlen);
         }
 
         private sealed class Native64
         {
-            [DllImport("lzo1x_64.dll", EntryPoint = "Compress")]
+            [DllImport("lzo1x_64.dll",
+                EntryPoint = "#67",
+                CallingConvention = CallingConvention.StdCall)]
             internal static extern int Compress(
-                [MarshalAs(UnmanagedType.LPArray)]
                 byte[] inbuf,
                 uint inlen,
-                [MarshalAs(UnmanagedType.LPArray)]
                 byte[] outbuf,
-                ref uint outlen);
+                ref uint outlen,
+                byte[] workbuf);
 
-            [DllImport("lzo1x_64.dll", EntryPoint = "Decompress")]
+            [DllImport("lzo1x_64.dll",
+                EntryPoint = "#68",
+                CallingConvention = CallingConvention.StdCall)]
             internal static extern int Decompress(
-                [MarshalAs(UnmanagedType.LPArray)]
                 byte[] inbuf,
                 uint inlen,
-                [MarshalAs(UnmanagedType.LPArray)]
                 byte[] outbuf,
                 ref uint outlen);
         }
 
+        private const int lzo_sizeof_dict_t = 2;
+        private const int LZO1X_MEM_COMPRESS = LZO1X_1_MEM_COMPRESS;
+        private const int LZO1X_1_MEM_COMPRESS = (16384 * lzo_sizeof_dict_t);
+        private const int LZO1X_MEM_DECOMPRESS = 0;
+
+        private static byte[] CompressWork = new byte[LZO1X_1_MEM_COMPRESS];
+
         public static int Compress(
             byte[] inbuf, uint inlen, byte[] outbuf, ref uint outlen)
         {
-            if (Is64Bit == true)
+            lock (CompressWork)
             {
-                return Native64.Compress(inbuf, inlen, outbuf, ref outlen);
-            }
-            else
-            {
-                return Native32.Compress(inbuf, inlen, outbuf, ref outlen);
+                if (Is64Bit == true)
+                {
+                    return Native64.Compress(inbuf, inlen, outbuf, ref outlen, CompressWork);
+                }
+                else
+                {
+                    return Native32.Compress(inbuf, inlen, outbuf, ref outlen, CompressWork);
+                }
             }
         }
 

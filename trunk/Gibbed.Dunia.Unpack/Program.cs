@@ -23,7 +23,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Gibbed.Dunia.FileFormats;
 using Gibbed.Helpers;
 using NDesk.Options;
@@ -41,7 +40,7 @@ namespace Gibbed.Dunia.Unpack
         public static void Main(string[] args)
         {
             bool showHelp = false;
-            bool extractUnknowns = true;
+            bool extractUnknowns = false;
             bool overwriteFiles = false;
 
             OptionSet options = new OptionSet()
@@ -87,7 +86,7 @@ namespace Gibbed.Dunia.Unpack
             }
 
             string fatPath = extras[0];
-            string outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(fatPath, null);
+            string outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(fatPath, null) + "_unpack";
             string datPath;
 
             if (Path.GetExtension(fatPath) == ".dat")
@@ -100,24 +99,22 @@ namespace Gibbed.Dunia.Unpack
                 datPath = Path.ChangeExtension(fatPath, ".dat");
             }
 
-            var manager = Setup.Manager.Load();
-            if (manager.ActiveProject != null)
-            {
-                manager.ActiveProject.Load();
-            }
-            else
+            var manager = ProjectData.Manager.Load();
+            if (manager.ActiveProject == null)
             {
                 Console.WriteLine("Warning: no active project loaded.");
             }
-            var project = manager.ActiveProject;
+
+            var hashes = manager.LoadLists(
+                "*.filelist",
+                s => s.HashFileNameCRC32(),
+                s => s.ToLowerInvariant());
 
             var big = new BigFile();
             using (var input = File.OpenRead(fatPath))
             {
                 big.Deserialize(input);
             }
-
-            var test = big.Entries.Where(e => e.CompressionScheme == CompressionScheme.Unknown2).ToArray();
 
             using (var input = File.OpenRead(datPath))
             {
@@ -126,14 +123,9 @@ namespace Gibbed.Dunia.Unpack
 
                 foreach (var entry in big.Entries)
                 {
-                    string name = null;
                     bool isUnknown = false;
 
-                    if (project != null)
-                    {
-                        name = project.GetFileName(entry.NameHash);
-                    }
-
+                    string name = hashes[entry.NameHash];
                     if (name == null)
                     {
                         if (extractUnknowns == false)
@@ -152,9 +144,12 @@ namespace Gibbed.Dunia.Unpack
 
                             if (entry.CompressionScheme == CompressionScheme.None)
                             {
-                                input.Seek(entry.Offset, SeekOrigin.Begin);
-                                read = input.Read(guess, 0, (int)Math.Min(
-                                    entry.UncompressedSize, guess.Length));
+                                if (entry.CompressedSize > 0)
+                                {
+                                    input.Seek(entry.Offset, SeekOrigin.Begin);
+                                    read = input.Read(guess, 0, (int)Math.Min(
+                                        entry.CompressedSize, guess.Length));
+                                }
                             }
                             else if (entry.CompressionScheme == CompressionScheme.LZO1x)
                             {
@@ -212,6 +207,18 @@ namespace Gibbed.Dunia.Unpack
                         current, total, name);
                     current++;
 
+                    var ext = Path.GetExtension(name);
+                    if (ext == ".xbt" ||
+                        ext == ".xbg" ||
+                        ext == ".xbm" ||
+                        ext == ".spk" ||
+                        ext == ".mab" ||
+                        ext == ".lfe" ||
+                        ext == ".apm")
+                    {
+                        continue;
+                    }
+
                     var entryPath = Path.Combine(outputPath, name);
                     Directory.CreateDirectory(Path.GetDirectoryName(entryPath));
 
@@ -223,38 +230,45 @@ namespace Gibbed.Dunia.Unpack
 
                     using (var output = File.Create(entryPath))
                     {
-                        input.Seek(entry.Offset, SeekOrigin.Begin);
-
                         if (entry.CompressionScheme == CompressionScheme.None)
                         {
-                            output.WriteFromStream(input, entry.UncompressedSize);
+                            if (entry.CompressedSize > 0)
+                            {
+                                input.Seek(entry.Offset, SeekOrigin.Begin);
+                                output.WriteFromStream(input, entry.CompressedSize);
+                            }
                         }
                         else if (entry.CompressionScheme == CompressionScheme.LZO1x)
                         {
-                            var compressedData = new byte[entry.CompressedSize];
-                            if (input.Read(compressedData, 0, compressedData.Length) != compressedData.Length)
+                            if (entry.UncompressedSize > 0)
                             {
-                                throw new EndOfStreamException();
-                            }
+                                input.Seek(entry.Offset, SeekOrigin.Begin);
 
-                            var uncompressedData = new byte[entry.UncompressedSize];
-                            uint uncompressedSize = entry.UncompressedSize;
+                                var compressedData = new byte[entry.CompressedSize];
+                                if (input.Read(compressedData, 0, compressedData.Length) != compressedData.Length)
+                                {
+                                    throw new EndOfStreamException();
+                                }
 
-                            var result = LZO1x.Decompress(
-                                compressedData,
-                                entry.CompressedSize,
-                                uncompressedData,
-                                ref uncompressedSize);
-                            if (result != 0)
-                            {
-                                throw new InvalidOperationException("decompression error: " + result.ToString());
-                            }
-                            else if (uncompressedSize != entry.UncompressedSize)
-                            {
-                                throw new InvalidOperationException("did not decompress correct amount of data");
-                            }
+                                var uncompressedData = new byte[entry.UncompressedSize];
+                                uint uncompressedSize = entry.UncompressedSize;
 
-                            output.Write(uncompressedData, 0, uncompressedData.Length);
+                                var result = LZO1x.Decompress(
+                                    compressedData,
+                                    entry.CompressedSize,
+                                    uncompressedData,
+                                    ref uncompressedSize);
+                                if (result != 0)
+                                {
+                                    throw new InvalidOperationException("decompression error: " + result.ToString());
+                                }
+                                else if (uncompressedSize != entry.UncompressedSize)
+                                {
+                                    throw new InvalidOperationException("did not decompress correct amount of data");
+                                }
+
+                                output.Write(uncompressedData, 0, uncompressedData.Length);
+                            }
                         }
                         else
                         {
