@@ -28,9 +28,32 @@ namespace Gibbed.Dunia.FileFormats
 {
     public static class StreamHelpers
     {
-        public static uint ReadCount(this Stream stream)
+        public static uint ReadValuePackedU32(this Stream stream)
         {
-            throw new NotImplementedException();
+            var value = stream.ReadValueU8();
+            if (value < 0xFE)
+            {
+                return value;
+            }
+
+            if (value == 0xFE)
+            {
+                throw new FormatException();
+            }
+
+            return stream.ReadValueU32();
+        }
+
+        public static void WriteValuePackedU32(this Stream stream, uint value)
+        {
+            if (value >= 0xFE)
+            {
+                stream.WriteValueU8((byte)(0xFF));
+                stream.WriteValueU32(value);
+                return;
+            }
+
+            stream.WriteValueU8((byte)(value & 0xFF));
         }
 
         public static uint ReadCount(this Stream stream, out bool isOffset)
@@ -45,6 +68,23 @@ namespace Gibbed.Dunia.FileFormats
 
             isOffset = value != 0xFF;
             return stream.ReadValueU32();
+        }
+
+        public static void WriteCount(this Stream stream, int value, bool isOffset)
+        {
+            stream.WriteCount((uint)value, isOffset);
+        }
+
+        public static void WriteCount(this Stream stream, uint value, bool isOffset)
+        {
+            if (isOffset == true || value >= 0xFE)
+            {
+                stream.WriteValueU8((byte)(isOffset == true ? 0xFE : 0xFF));
+                stream.WriteValueU32(value);
+                return;
+            }
+
+            stream.WriteValueU8((byte)(value & 0xFF));
         }
     }
 }

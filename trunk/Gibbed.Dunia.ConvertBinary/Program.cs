@@ -125,7 +125,29 @@ namespace Gibbed.Dunia.ConvertBinary
                 string inputPath = extras[0];
                 string outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(Path.ChangeExtension(inputPath, null) + "_converted", ".fcb");
 
-                throw new NotImplementedException();
+                var bf = new BinaryResourceFile();
+
+                using (var input = File.OpenRead(inputPath))
+                {
+                    Console.WriteLine("Loading XML...");
+                    var doc = new XPathDocument(input);
+                    var nav = doc.CreateNavigator();
+
+                    var root = nav.SelectSingleNode("/object");
+                    if (root == null)
+                    {
+                        throw new FormatException();
+                    }
+
+                    Console.WriteLine("Reading XML...");
+                    bf.Root = ReadNode(root);
+                }
+
+                Console.WriteLine("Writing FCB...");
+                using (var output = File.Create(outputPath))
+                {
+                    bf.Serialize(output);
+                }
             }
             else if (mode == Mode.ToXML)
             {
@@ -134,7 +156,7 @@ namespace Gibbed.Dunia.ConvertBinary
 
                 Console.WriteLine("Reading binary...");
 
-                var bf = new BinaryFile();
+                var bf = new BinaryResourceFile();
                 using (var input = File.OpenRead(inputPath))
                 {
                     bf.Deserialize(input);
@@ -159,6 +181,121 @@ namespace Gibbed.Dunia.ConvertBinary
             {
                 throw new InvalidOperationException();
             }
+        }
+
+        private static BinaryResourceFile.Object ReadNode(XPathNavigator node)
+        {
+            string className;
+            uint classHash;
+
+            LoadTypeAndHash(node, out className, out classHash);
+
+            var parent = new BinaryResourceFile.Object();
+            parent.TypeHash = classHash;
+
+            var values = node.Select("value");
+            while (values.MoveNext() == true)
+            {
+                string valueName;
+                uint valueHash;
+
+                LoadNameAndHash(values.Current, out valueName, out valueHash);
+
+                ValueType valueType;
+                string _valueType;
+                _valueType = values.Current.GetAttribute("type", "");
+                if (string.IsNullOrWhiteSpace(_valueType) == true ||
+                    Enum.IsDefined(typeof(ValueType), _valueType) == false)
+                {
+                    throw new FormatException();
+                }
+                valueType = (ValueType)Enum.Parse(typeof(ValueType), _valueType);
+
+                byte[] valueData;
+                switch (valueType)
+                {
+                    case ValueType.BinHex:
+                    {
+                        using (var reader = new XmlTextReader(new StringReader(values.Current.OuterXml)))
+                        {
+                            reader.MoveToContent();
+                            valueData = new byte[0];
+                            int read = 0;
+                            do
+                            {
+                                Array.Resize(ref valueData, valueData.Length + 4096);
+                                read += reader.ReadBinHex(valueData, read, 4096);
+                            }
+                            while (reader.EOF == false);
+                            Array.Resize(ref valueData, read);
+                        }
+
+                        break;
+                    }
+
+                    case ValueType.Hash:
+                    {
+                        valueData = BitConverter.GetBytes(uint.Parse(values.Current.Value, NumberStyles.AllowHexSpecifier));
+                        break;
+                    }
+
+                    case ValueType.String:
+                    {
+                        valueData = Encoding.UTF8.GetBytes(values.Current.Value);
+                        Array.Resize(ref valueData, valueData.Length + 1);
+                        break;
+                    }
+
+                    case ValueType.Bool:
+                    {
+                        valueData = new byte[1];
+                        valueData[0] = (byte)(bool.Parse(values.Current.Value) == true ? 1 : 0);
+                        break;
+                    }
+
+                    case ValueType.UInt32:
+                    {
+                        valueData = BitConverter.GetBytes(uint.Parse(values.Current.Value, NumberStyles.AllowHexSpecifier));
+                        break;
+                    }
+
+                    case ValueType.UInt64:
+                    {
+                        valueData = BitConverter.GetBytes(ulong.Parse(values.Current.Value, NumberStyles.AllowHexSpecifier));
+                        break;
+                    }
+
+                    case ValueType.Float:
+                    {
+                        valueData = BitConverter.GetBytes(float.Parse(values.Current.Value));
+                        break;
+                    }
+
+                    case ValueType.Vector:
+                    {
+                        valueData = new byte[12];
+                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("x").Value)), 0, valueData, 0, 4);
+                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("y").Value)), 0, valueData, 4, 4);
+                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("z").Value)), 0, valueData, 8, 4);
+                        break;
+                    }
+
+                    default:
+                    {
+                        throw new FormatException();
+                    }
+                }
+
+                parent.Values.Add(valueHash, valueData);
+            }
+
+            var children = node.Select("object");
+            while (children.MoveNext() == true)
+            {
+                parent.Children.Add(ReadNode(children.Current));
+            }
+
+            return parent;
         }
 
         private static MemberDefinition GetMember(
@@ -187,7 +324,7 @@ namespace Gibbed.Dunia.ConvertBinary
             }
         }
 
-        private static void WriteNode(XmlWriter writer, BinaryFile.Object parent, Dictionary<uint, ClassDefinition> classes)
+        private static void WriteNode(XmlWriter writer, BinaryResourceFile.Object parent, Dictionary<uint, ClassDefinition> classes)
         {
             writer.WriteStartElement("object");
             //writer.WriteAttributeString("i", parent.Index.ToString());
@@ -262,7 +399,7 @@ namespace Gibbed.Dunia.ConvertBinary
                                     throw new FormatException();
                                 }
 
-                                writer.WriteValue(Encoding.ASCII.GetString(kv.Value, 0, kv.Value.Length - 1));
+                                writer.WriteValue(Encoding.UTF8.GetString(kv.Value, 0, kv.Value.Length - 1));
                                 break;
                             }
 
@@ -317,10 +454,9 @@ namespace Gibbed.Dunia.ConvertBinary
                                     throw new FormatException();
                                 }
 
-                                writer.WriteValue(string.Format("{0}, {1}, {2}",
-                                    BitConverter.ToSingle(kv.Value, 0),
-                                    BitConverter.ToSingle(kv.Value, 4),
-                                    BitConverter.ToSingle(kv.Value, 8)));
+                                writer.WriteElementString("x", BitConverter.ToSingle(kv.Value, 0).ToString());
+                                writer.WriteElementString("y", BitConverter.ToSingle(kv.Value, 4).ToString());
+                                writer.WriteElementString("z", BitConverter.ToSingle(kv.Value, 8).ToString());
                                 break;
                             }
 
@@ -332,7 +468,7 @@ namespace Gibbed.Dunia.ConvertBinary
                     }
 
                     //writer.WriteBinHex(kv.Value, 0, kv.Value.Length);
-                    //writer.WriteValue(Encoding.ASCII.GetString(kv.Value));
+                    //writer.WriteValue(Encoding.UTF8.GetString(kv.Value));
 
                     writer.WriteEndElement();
                 }
@@ -370,6 +506,22 @@ namespace Gibbed.Dunia.ConvertBinary
 
             name = string.IsNullOrWhiteSpace(_name) == false ? _name : null;
             hash = name != null ? name.HashCRC32() : uint.Parse(_hash, NumberStyles.AllowHexSpecifier);
+        }
+
+        private static void LoadTypeAndHash(
+                    XPathNavigator node, out string type, out uint hash)
+        {
+            var _type = node.GetAttribute("type", "");
+            var _hash = node.GetAttribute("hash", "");
+
+            if (string.IsNullOrWhiteSpace(_type) == true &&
+                string.IsNullOrWhiteSpace(_hash) == true)
+            {
+                throw new FormatException();
+            }
+
+            type = string.IsNullOrWhiteSpace(_type) == false ? _type : null;
+            hash = type != null ? type.HashCRC32() : uint.Parse(_hash, NumberStyles.AllowHexSpecifier);
         }
 
         private static Dictionary<uint, ClassDefinition> LoadClasses(string path)

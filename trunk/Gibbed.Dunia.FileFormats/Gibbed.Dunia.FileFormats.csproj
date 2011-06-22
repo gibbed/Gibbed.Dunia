@@ -71,7 +71,7 @@
     <Compile Include="BigFile.cs" />
     <Compile Include="Big\CompressionScheme.cs" />
     <Compile Include="Big\Entry.cs" />
-    <Compile Include="BinaryFile.cs" />
+    <Compile Include="BinaryResourceFile.cs" />
     <Compile Include="FileExtensions.cs" />
     <Compile Include="LZO1x.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

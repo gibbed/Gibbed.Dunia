@@ -40,7 +40,7 @@ namespace Gibbed.Dunia.Unpack
         public static void Main(string[] args)
         {
             bool showHelp = false;
-            bool extractUnknowns = false;
+            bool extractUnknowns = true;
             bool overwriteFiles = false;
 
             OptionSet options = new OptionSet()
@@ -207,6 +207,7 @@ namespace Gibbed.Dunia.Unpack
                         current, total, name);
                     current++;
 
+                    /*
                     var ext = Path.GetExtension(name);
                     if (ext == ".xbt" ||
                         ext == ".xbg" ||
@@ -218,6 +219,7 @@ namespace Gibbed.Dunia.Unpack
                     {
                         continue;
                     }
+                    */
 
                     var entryPath = Path.Combine(outputPath, name);
                     Directory.CreateDirectory(Path.GetDirectoryName(entryPath));
