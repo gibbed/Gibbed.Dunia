@@ -62,6 +62,39 @@ namespace Gibbed.Dunia.FileFormats
                 return "xbt";
             }
             else if (
+                read >= 4 &&
+                guess[0] == 1 &&
+                guess[1] == 'K' &&
+                guess[2] == 'P' &&
+                guess[3] == 'S')
+            {
+                return "spk";
+            }
+            else if (
+                read >= 4 &&
+                guess[0] == 'n' &&
+                guess[1] == 'b' &&
+                guess[2] == 'C' &&
+                guess[3] == 'F')
+            {
+                return "fcb";
+            }
+            else if (
+                read >= 4 &&
+                guess[0] == 0x89 &&
+                guess[1] == 'P' &&
+                guess[2] == 'N' &&
+                guess[3] == 'G')
+            {
+                return "png";
+            }
+            else if (
+                read >= 6 &&
+                Encoding.ASCII.GetString(guess, 0, 6) == "<root>")
+            {
+                return "defz";
+            }
+            else if (
                 read >= 9 &&
                 Encoding.ASCII.GetString(guess, 0, 9) == "<package>")
             {

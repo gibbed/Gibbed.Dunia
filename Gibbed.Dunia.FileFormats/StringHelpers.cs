@@ -24,7 +24,30 @@ namespace Gibbed.Dunia.FileFormats
 {
     public static class StringHelpers
     {
-        public static uint CRC32(this string input)
+        public static uint HashFNV32(this string input)
+        {
+            return input.HashFNV32(0x811C9DC5);
+        }
+
+        public static uint HashFNV32(this string input, uint hash)
+        {
+            if (input.Length == 0)
+            {
+                return 0;
+            }
+
+            string lower = input.ToLowerInvariant();
+
+            for (int i = 0; i < lower.Length; i++)
+            {
+                hash *= 0x1000193;
+                hash ^= (char)(lower[i]);
+            }
+
+            return hash;
+        }
+
+        public static uint HashCRC32(this string input)
         {
             uint hash = 0xFFFFFFFF;
             for (int i = 0; i < input.Length; i++)
@@ -34,9 +57,9 @@ namespace Gibbed.Dunia.FileFormats
             return ~hash;
         }
 
-        public static uint FileNameCRC32(this string input)
+        public static uint HashFileNameCRC32(this string input)
         {
-            return input.ToLowerInvariant().CRC32();
+            return input.ToLowerInvariant().HashCRC32();
         }
 
         private static uint[] CRC32Table =

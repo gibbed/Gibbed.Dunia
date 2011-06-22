@@ -27,32 +27,17 @@ using Gibbed.Helpers;
 
 namespace Gibbed.Dunia.FileFormats
 {
-	public static class XmlResourceFileHelpers
-	{
-		public static UInt32 ReadPackedU32(this Stream stream)
-		{
-			byte value = stream.ReadValueU8();
-
-			if (value < 0xFE)
-			{
-				return value;
-			}
-
-			return stream.ReadValueU32();
-		}
-	}
-
 	public class XmlResourceStringTable
 	{
 		protected byte[] Data;
 
-		public void Read(Stream input, uint size)
+		public void Deserialize(Stream input, uint size)
 		{
 			this.Data = new byte[size];
 			input.Read(this.Data, 0, (int)size);
 		}
 
-		public string this[uint index]
+        public string this[uint index]
 		{
 			get
 			{
@@ -63,17 +48,17 @@ namespace Gibbed.Dunia.FileFormats
 
 	public class XmlResourceAttribute
 	{
-		public UInt32 Unknown;
+		public uint Unknown;
 		public string Name;
-		public UInt32 NameIndex;
+        public uint NameIndex;
 		public string Value;
-		public UInt32 ValueIndex;
+        public uint ValueIndex;
 
 		public void Read(Stream stream)
 		{
-			this.Unknown = stream.ReadPackedU32();
-			this.NameIndex = stream.ReadPackedU32();
-			this.ValueIndex = stream.ReadPackedU32();
+			this.Unknown = stream.ReadCount();
+			this.NameIndex = stream.ReadCount();
+			this.ValueIndex = stream.ReadCount();
 		}
 
 		public void Resolve(XmlResourceStringTable strings)
@@ -86,20 +71,20 @@ namespace Gibbed.Dunia.FileFormats
 	public class XmlResourceNode
 	{
 		public string Name;
-		public UInt32 NameIndex;
+        public uint NameIndex;
 		public string Value;
-		public UInt32 ValueIndex;
+        public uint ValueIndex;
 
 		public List<XmlResourceAttribute> Attributes;
 		public List<XmlResourceNode> Children;
 
-		public void Read(Stream stream)
+		public void Deserialize(Stream stream)
 		{
-			this.NameIndex = stream.ReadPackedU32();
-			this.ValueIndex = stream.ReadPackedU32();
+			this.NameIndex = stream.ReadCount();
+			this.ValueIndex = stream.ReadCount();
 			
-			uint attributeCount = stream.ReadPackedU32();
-			uint childCount = stream.ReadPackedU32();
+			var attributeCount = stream.ReadCount();
+			var childCount = stream.ReadCount();
 
 			this.Attributes = new List<XmlResourceAttribute>();
 			for (int i = 0; i < attributeCount; i++)
@@ -113,7 +98,7 @@ namespace Gibbed.Dunia.FileFormats
 			for (int i = 0; i < childCount; i++)
 			{
 				XmlResourceNode child = new XmlResourceNode();
-				child.Read(stream);
+				child.Deserialize(stream);
 				this.Children.Add(child);
 			}
 		}
@@ -139,23 +124,23 @@ namespace Gibbed.Dunia.FileFormats
 	{
 		public XmlResourceNode Root;
 
-		public void Read(Stream stream)
+		public void Deserialize(Stream stream)
 		{
 			if (stream.ReadValueU8() != 0)
 			{
 				throw new FormatException("not an xml resource file");
 			}
 
-			byte unknown1 = stream.ReadValueU8();
-			uint stringTableSize = stream.ReadPackedU32();
-			uint unknown3 = stream.ReadPackedU32();
-			uint unknown4 = stream.ReadPackedU32();
+			var unknown1 = stream.ReadValueU8();
+            var stringTableSize = stream.ReadCount();
+			var unknown3 = stream.ReadCount();
+			var unknown4 = stream.ReadCount();
 
 			this.Root = new XmlResourceNode();
-			this.Root.Read(stream);
+			this.Root.Deserialize(stream);
 
-			XmlResourceStringTable strings = new XmlResourceStringTable();
-			strings.Read(stream, stringTableSize);
+			var strings = new XmlResourceStringTable();
+			strings.Deserialize(stream, stringTableSize);
 
 			this.Root.Resolve(strings);
 		}

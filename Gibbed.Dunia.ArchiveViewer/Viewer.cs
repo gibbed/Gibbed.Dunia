@@ -61,7 +61,7 @@ namespace Gibbed.Dunia.ArchiveViewer
 						continue;
 					}
 
-					uint hash = line.FileNameCRC32();
+					uint hash = line.HashFileNameCRC32();
 					this.FileNames[hash] = line.ToLower();
 				}
 
