@@ -8,8 +8,8 @@
     <ProjectGuid>{CA60A421-31CF-4AFA-A64B-5620513EADC5}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Gibbed.Dunia.ConvertXmlResource</RootNamespace>
-    <AssemblyName>Gibbed.Dunia.ConvertXmlResource</AssemblyName>
+    <RootNamespace>Gibbed.Dunia.ConvertXml</RootNamespace>
+    <AssemblyName>Gibbed.Dunia.ConvertXml</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Mode.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -74,6 +75,10 @@
     <ProjectReference Include="..\Gibbed.Dunia.FileFormats\Gibbed.Dunia.FileFormats.csproj">
       <Project>{988AD1C4-1D56-4836-BE15-6D7044C3BAC5}</Project>
       <Name>Gibbed.Dunia.FileFormats</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NDesk.Options\NDesk.Options.csproj">
+      <Project>{C98A6CD6-9422-4B35-8B7A-F520D75534D1}</Project>
+      <Name>NDesk.Options</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
