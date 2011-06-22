@@ -24,8 +24,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Gibbed.Dunia.FileFormats;
 using NDesk.Options;
 
@@ -109,17 +109,34 @@ namespace Gibbed.Dunia.ConvertXml
                 string inputPath = extras[0];
                 string outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(Path.ChangeExtension(inputPath, null) + "_converted", ".rml");
 
-                throw new NotImplementedException();
+                var rez = new XmlResourceFile();
+                using (var input = File.OpenRead(inputPath))
+                {
+                    var doc = new XPathDocument(input);
+                    var nav = doc.CreateNavigator();
+
+                    if (nav.MoveToFirstChild() == false)
+                    {
+                        throw new FormatException();
+                    }
+
+                    rez.Root = ReadNode(nav);
+                }
+
+                using (var output = File.Create(outputPath))
+                {
+                    rez.Serialize(output);
+                }
             }
             else if (mode == Mode.ToXML)
             {
                 string inputPath = extras[0];
                 string outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(Path.ChangeExtension(inputPath, null) + "_converted", ".xml");
 
-                var resource = new XmlResourceFile();
+                var rez = new XmlResourceFile();
                 using (var input = File.OpenRead(inputPath))
                 {
-                    resource.Deserialize(input);
+                    rez.Deserialize(input);
                 }
                 
                 var settings = new XmlWriterSettings();
@@ -127,10 +144,10 @@ namespace Gibbed.Dunia.ConvertXml
                 settings.Indent = true;
                 settings.OmitXmlDeclaration = true;
 
-                using (var writer = XmlWriter.Create(args[1], settings))
+                using (var writer = XmlWriter.Create(outputPath, settings))
                 {
                     writer.WriteStartDocument();
-                    WriteNode(writer, resource.Root);
+                    WriteNode(writer, rez.Root);
                     writer.WriteEndDocument();
                 }
             }
@@ -140,16 +157,51 @@ namespace Gibbed.Dunia.ConvertXml
             }
 		}
 
-        private static void WriteNode(XmlWriter writer, XmlResourceNode node)
+        private static XmlResourceFile.Node ReadNode(XPathNavigator nav)
+        {
+            var node = new XmlResourceFile.Node();
+            node.Name = nav.Name;
+            node.Value = nav.Value;
+
+            if (nav.MoveToFirstAttribute() == true)
+            {
+                node.Attributes = new List<XmlResourceFile.Attribute>();
+
+                do
+                {
+                    node.Attributes.Add(new XmlResourceFile.Attribute()
+                        {
+                            Name = nav.Name,
+                            Value = nav.Value,
+                        });
+                }
+                while (nav.MoveToNextAttribute() == true);
+                nav.MoveToParent();
+            }
+
+            var children = nav.SelectChildren(XPathNodeType.Element);
+            if (children.Count > 0)
+            {
+                node.Children = new List<XmlResourceFile.Node>();
+                while (children.MoveNext() == true)
+                {
+                    node.Children.Add(ReadNode(children.Current));
+                }
+            }
+
+            return node;
+        }
+
+        private static void WriteNode(XmlWriter writer, XmlResourceFile.Node node)
         {
             writer.WriteStartElement(node.Name);
 
-            foreach (XmlResourceAttribute attribute in node.Attributes)
+            foreach (var attribute in node.Attributes)
             {
                 writer.WriteAttributeString(attribute.Name, attribute.Value);
             }
 
-            foreach (XmlResourceNode child in node.Children)
+            foreach (var child in node.Children)
             {
                 WriteNode(writer, child);
             }

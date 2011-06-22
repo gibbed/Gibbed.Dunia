@@ -27,7 +27,7 @@ using Gibbed.Helpers;
 
 namespace Gibbed.Dunia.FileFormats
 {
-    public class BinaryFile
+    public class BinaryResourceFile
     {
         public ushort Flags;
         public uint Unknown3;
@@ -61,7 +61,15 @@ namespace Gibbed.Dunia.FileFormats
             this.Root = Object.Deserialize(input, pointers);
         }
 
-        private static int Counter = 0;
+        public void Serialize(Stream output)
+        {
+            output.WriteValueU32(0x4643626E);
+            output.WriteValueU16(2);
+            output.WriteValueU16(0);
+            output.WriteValueU32(0x62696700);
+            output.WriteValueU32(0x00646562);
+            this.Root.Serialize(output);
+        }
 
         public class Object
         {
@@ -168,9 +176,24 @@ namespace Gibbed.Dunia.FileFormats
                 }
             }
 
-            private void Serialize(Stream output)
+            public void Serialize(Stream output)
             {
-                throw new NotImplementedException();
+                output.WriteCount(this.Children.Count, false);
+                
+                output.WriteValueU32(this.TypeHash);
+
+                output.WriteCount(this.Values.Count, false);
+                foreach (var kv in this.Values)
+                {
+                    output.WriteValueU32(kv.Key);
+                    output.WriteCount(kv.Value.Length, false);
+                    output.Write(kv.Value, 0, kv.Value.Length);
+                }
+
+                foreach (var child in this.Children)
+                {
+                    child.Serialize(output);
+                }
             }
         }
     }

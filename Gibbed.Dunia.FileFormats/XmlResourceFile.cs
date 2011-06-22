@@ -23,126 +23,278 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Gibbed.Helpers;
 
 namespace Gibbed.Dunia.FileFormats
 {
-	public class XmlResourceStringTable
-	{
-		protected byte[] Data;
-
-		public void Deserialize(Stream input, uint size)
-		{
-			this.Data = new byte[size];
-			input.Read(this.Data, 0, (int)size);
-		}
-
-        public string this[uint index]
-		{
-			get
-			{
-                throw new NotImplementedException(); //return this.Data.ToStringUTF8Z(index);
-			}
-		}
-	}
-
-	public class XmlResourceAttribute
-	{
-		public uint Unknown;
-		public string Name;
-        public uint NameIndex;
-		public string Value;
-        public uint ValueIndex;
-
-		public void Read(Stream stream)
-		{
-			this.Unknown = stream.ReadCount();
-			this.NameIndex = stream.ReadCount();
-			this.ValueIndex = stream.ReadCount();
-		}
-
-		public void Resolve(XmlResourceStringTable strings)
-		{
-			this.Name = strings[this.NameIndex];
-			this.Value = strings[this.ValueIndex];
-		}
-	}
-
-	public class XmlResourceNode
-	{
-		public string Name;
-        public uint NameIndex;
-		public string Value;
-        public uint ValueIndex;
-
-		public List<XmlResourceAttribute> Attributes;
-		public List<XmlResourceNode> Children;
-
-		public void Deserialize(Stream stream)
-		{
-			this.NameIndex = stream.ReadCount();
-			this.ValueIndex = stream.ReadCount();
-			
-			var attributeCount = stream.ReadCount();
-			var childCount = stream.ReadCount();
-
-			this.Attributes = new List<XmlResourceAttribute>();
-			for (int i = 0; i < attributeCount; i++)
-			{
-				XmlResourceAttribute attribute = new XmlResourceAttribute();
-				attribute.Read(stream);
-				this.Attributes.Add(attribute);
-			}
-
-			this.Children = new List<XmlResourceNode>();
-			for (int i = 0; i < childCount; i++)
-			{
-				XmlResourceNode child = new XmlResourceNode();
-				child.Deserialize(stream);
-				this.Children.Add(child);
-			}
-		}
-
-		public void Resolve(XmlResourceStringTable strings)
-		{
-			this.Name = strings[this.NameIndex];
-			this.Value = strings[this.ValueIndex];
-
-			foreach (XmlResourceAttribute attribute in this.Attributes)
-			{
-				attribute.Resolve(strings);
-			}
-
-			foreach (XmlResourceNode child in this.Children)
-			{
-				child.Resolve(strings);
-			}
-		}
-	}
-
 	public class XmlResourceFile
 	{
-		public XmlResourceNode Root;
+        public byte Unknown1;
+		public Node Root;
 
-		public void Deserialize(Stream stream)
+		public void Deserialize(Stream input)
 		{
-			if (stream.ReadValueU8() != 0)
+			if (input.ReadValueU8() != 0)
 			{
 				throw new FormatException("not an xml resource file");
 			}
 
-			var unknown1 = stream.ReadValueU8();
-            var stringTableSize = stream.ReadCount();
-			var unknown3 = stream.ReadCount();
-			var unknown4 = stream.ReadCount();
+			this.Unknown1 = input.ReadValueU8();
+            var stringTableSize = input.ReadValuePackedU32();
+            var totalNodeCount = input.ReadValuePackedU32();
+            var totalAttributeCount = input.ReadValuePackedU32();
 
-			this.Root = new XmlResourceNode();
-			this.Root.Deserialize(stream);
+            uint actualNodeCount = 1, actualAttributeCount = 0;
 
-			var strings = new XmlResourceStringTable();
-			strings.Deserialize(stream, stringTableSize);
+			this.Root = new Node();
+			this.Root.Deserialize(
+                input, ref actualNodeCount, ref actualAttributeCount);
 
-			this.Root.Resolve(strings);
+            if (actualNodeCount != totalNodeCount ||
+                actualAttributeCount != totalAttributeCount)
+            {
+                throw new FormatException();
+            }
+
+            var stringTableData = new byte[stringTableSize];
+            input.Read(stringTableData, 0, stringTableData.Length);
+            var stringTable = new StringTable();
+            stringTable.Deserialize(stringTableData);
+
+            this.Root.ReadStringTable(stringTable);
 		}
+
+        public void Serialize(Stream output)
+        {
+            var stringTable = new StringTable();
+            this.Root.WriteStringTable(stringTable);
+            var stringTableData = stringTable.Serialize();
+
+            output.WriteValueU8(0);
+            output.WriteValueU8(0);
+
+            using (var data = new MemoryStream())
+            {
+                uint totalNodeCount = 1, totalAttributeCount = 0;
+                this.Root.Serialize(
+                    data,
+                    ref totalNodeCount,
+                    ref totalAttributeCount);
+
+                output.WriteValuePackedU32((uint)stringTableData.Length);
+                output.WriteValuePackedU32(totalNodeCount);
+                output.WriteValuePackedU32(totalAttributeCount);
+
+                data.Position = 0;
+                output.WriteFromStream(data, data.Length);
+
+                output.Write(stringTableData, 0, stringTableData.Length);
+            }
+        }
+
+        public class Node
+        {
+            public string Name;
+            public string Value;
+
+            internal uint _NameIndex;
+            internal uint _ValueIndex;
+
+            public List<Attribute> Attributes = new List<Attribute>();
+            public List<Node> Children = new List<Node>();
+
+            public void Deserialize(
+                Stream input,
+                ref uint totalNodeCount,
+                ref uint totalAttributeCount)
+            {
+                this._NameIndex = input.ReadValuePackedU32();
+                this._ValueIndex = input.ReadValuePackedU32();
+
+                var attributeCount = input.ReadValuePackedU32();
+                var childCount = input.ReadValuePackedU32();
+
+                totalNodeCount += childCount;
+                totalAttributeCount += attributeCount;
+
+                this.Attributes.Clear();
+                for (uint i = 0; i < attributeCount; i++)
+                {
+                    var attribute = new Attribute();
+                    attribute.Deserialize(input);
+                    this.Attributes.Add(attribute);
+                }
+
+                this.Children.Clear();
+                for (uint i = 0; i < childCount; i++)
+                {
+                    var child = new Node();
+                    child.Deserialize(
+                        input,
+                        ref totalNodeCount,
+                        ref totalAttributeCount);
+                    this.Children.Add(child);
+                }
+            }
+
+            public void Serialize(
+                Stream output,
+                ref uint totalNodeCount,
+                ref uint totalAttributeCount)
+            {
+                output.WriteValuePackedU32(this._NameIndex);
+                output.WriteValuePackedU32(this._ValueIndex);
+
+                totalAttributeCount += (uint)this.Attributes.Count;
+                totalNodeCount += (uint)this.Children.Count;
+
+                output.WriteValuePackedU32((uint)this.Attributes.Count);
+                output.WriteValuePackedU32((uint)this.Children.Count);
+
+                foreach (var attribute in this.Attributes)
+                {
+                    attribute.Serialize(output);
+                }
+
+                foreach (var child in this.Children)
+                {
+                    child.Serialize(
+                        output,
+                        ref totalNodeCount,
+                        ref totalAttributeCount);
+                }
+            }
+
+            internal void ReadStringTable(StringTable stringTable)
+            {
+                this.Name = stringTable.Read(this._NameIndex);
+                this.Value = stringTable.Read(this._ValueIndex);
+
+                foreach (var attribute in this.Attributes)
+                {
+                    attribute.ReadStringTable(stringTable);
+                }
+
+                foreach (var child in this.Children)
+                {
+                    child.ReadStringTable(stringTable);
+                }
+            }
+
+            internal void WriteStringTable(StringTable stringTable)
+            {
+                this._NameIndex = stringTable.Write(this.Name);
+                this._ValueIndex = stringTable.Write(this.Value);
+
+                foreach (var attribute in this.Attributes)
+                {
+                    attribute.WriteStringTable(stringTable);
+                }
+
+                foreach (var child in this.Children)
+                {
+                    child.WriteStringTable(stringTable);
+                }
+            }
+        }
+
+        public class Attribute
+        {
+            public uint Unknown;
+            public string Name;
+            public string Value;
+
+            internal uint _NameIndex;
+            internal uint _ValueIndex;
+
+            public void Deserialize(Stream input)
+            {
+                this.Unknown = input.ReadValuePackedU32();
+
+                if (this.Unknown != 0)
+                {
+                    throw new FormatException();
+                }
+
+                this._NameIndex = input.ReadValuePackedU32();
+                this._ValueIndex = input.ReadValuePackedU32();
+            }
+
+            public void Serialize(Stream output)
+            {
+                output.WriteValuePackedU32(this.Unknown);
+                output.WriteValuePackedU32(this._NameIndex);
+                output.WriteValuePackedU32(this._ValueIndex);
+            }
+
+            internal void ReadStringTable(StringTable stringTable)
+            {
+                this.Name = stringTable.Read(this._NameIndex);
+                this.Value = stringTable.Read(this._ValueIndex);
+            }
+
+            internal void WriteStringTable(StringTable stringTable)
+            {
+                this._NameIndex = stringTable.Write(this.Name);
+                this._ValueIndex = stringTable.Write(this.Value);
+            }
+        }
+
+        internal class StringTable
+        {
+            private MemoryStream Data = new MemoryStream();
+
+            // this is dumb :effort:
+            private Dictionary<uint, string> Offsets = new Dictionary<uint, string>();
+            private Dictionary<string, uint> Values = new Dictionary<string, uint>();
+
+            public string Read(uint index)
+            {
+                if (this.Offsets.ContainsKey(index) == false)
+                {
+                    throw new KeyNotFoundException();
+                }
+
+                return this.Offsets[index];
+            }
+
+            public uint Write(string value)
+            {
+                if (this.Values.ContainsKey(value) == true)
+                {
+                    return this.Values[value];
+                }
+
+                var offset = (uint)this.Data.Position;
+                this.Offsets.Add(offset, value);
+                this.Values.Add(value, offset);
+                this.Data.WriteStringZ(value, Encoding.UTF8);
+                return offset;
+            }
+
+            public void Deserialize(byte[] buffer)
+            {
+                this.Offsets.Clear();
+                this.Values.Clear();
+
+                this.Data = new MemoryStream(buffer);
+
+                while (this.Data.Position < this.Data.Length)
+                {
+                    var offset = (uint)this.Data.Position;
+                    var value = this.Data.ReadStringZ(Encoding.UTF8);
+                    this.Offsets.Add(offset, value);
+                    this.Values.Add(value, offset);
+                }
+            }
+
+            public byte[] Serialize()
+            {
+                var buffer = new byte[this.Data.Length];
+                Array.Copy(this.Data.GetBuffer(), buffer, buffer.Length);
+                return buffer;
+            }
+        }
 	}
 }
