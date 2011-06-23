@@ -1,4 +1,4 @@
-; 325/1023 (31%)
+; 340/1023 (33%)
 graphics\_materials\dboivin-m-2007100228757443.xbm
 graphics\_materials\dboivin-m-2007100232938887.xbm
 graphics\_materials\dboivin-m-2008053058732063.xbm
@@ -31,11 +31,17 @@ graphics\_textures\diffuse\metal\metalgrey_d.xbt
 graphics\_textures\diffuse\metal\metalgrey_d_mip0.xbt
 graphics\_textures\normal\metal\metaltank02_n.xbt
 graphics\buildings\fishingvillage\fishingmdbuilding_02a.xbg
+graphics\buildings\fishingvillage\fishingmdbuilding_02window01.hkx
 graphics\buildings\fishingvillage\fishingmdbuilding_02window01.xbg
+graphics\buildings\fishingvillage\fishingmdroof_02.hkx
 graphics\buildings\fishingvillage\fishingmdroof_02.xbg
+graphics\buildings\huts\hutsjungle\hutmd04roofframe_02.hkx
 graphics\buildings\huts\hutsjungle\hutmd04roofframe_02.xbg
+graphics\buildings\huts\hutsjungle\hutmd04wallwood_04.hkx
 graphics\buildings\huts\hutsjungle\hutmd04wallwood_04.xbg
+graphics\buildings\huts\hutsjungle\hutmd04wallwood_05.hkx
 graphics\buildings\huts\hutsjungle\hutmd04wallwood_05.xbg
+graphics\buildings\huts\hutsjungle\hutmd05roof_02a.hkx
 graphics\buildings\huts\hutsjungle\hutmd05roof_02a.xbg
 graphics\characters\_common\animations\game_play\weapon_crate\1stge_uppb_dlc_magic_crate_drop_+000fw_nowep_i1.mab
 graphics\characters\_common\animations\game_play\weapon_crate\1stge_uppb_dlc_magic_crate_pick_+000fw_nowep_i1.mab
@@ -203,13 +209,21 @@ graphics\characters\_common\animations\weapons\dlc\silencedshotgun\dlc1_1stge_up
 graphics\characters\_common\animations\weapons\dlc\silencedshotgun\dlc1_1stge_uppb_jumpstart_+000fw_prsso_i1.mab
 graphics\characters\_common\animations\weapons\dlc\silencedshotgun\dlc1_1stge_uppb_run_+000fw_prsso_i1.mab
 graphics\characters\_common\animations\weapons\dlc\silencedshotgun\dlc1_1stge_uppb_walk_+000fw_prsso_i1.mab
+graphics\infrastructures\bridges\scaffolddogon02.hkx
 graphics\infrastructures\bridges\scaffolddogon02.xbg
+graphics\infrastructures\fences\fencehardwood_03.hkx
 graphics\infrastructures\fences\fencehardwood_03.xbg
+graphics\objects\transportation\pirogue_dt.hkx
 graphics\objects\transportation\pirogue_dt.xbg
+graphics\terrain\cliffs\jungle\hodrockcliff_04.hkx
 graphics\terrain\cliffs\jungle\hodrockcliff_04.xbg
+graphics\terrain\rocks\jungle\ter_junglerock60_.hkx
 graphics\terrain\rocks\jungle\ter_junglerock60_.xbg
+graphics\terrain\rocks\jungle\ter_junglesharprock03_.hkx
 graphics\terrain\rocks\jungle\ter_junglesharprock03_.xbg
+graphics\terrain\rocks\river\jungleriverrocks_02.hkx
 graphics\terrain\rocks\river\jungleriverrocks_02.xbg
+graphics\terrain\rocks\river\jungleriverrocks_03.hkx
 graphics\terrain\rocks\river\jungleriverrocks_03.xbg
 graphics\vegetation\jungle\1_groundcover_a.xbg
 graphics\vegetation\jungle\realtrees\hy_banana_big_b.rtx
@@ -229,6 +243,7 @@ graphics\vehicles\sea\bargearmsbazard\barge01_m.xbt
 graphics\vehicles\sea\bargearmsbazard\bargearmsbazard_multi_dlc.xbg
 graphics\vehicles\sea\bargearmsbazard\bargebody02_n.xbt
 graphics\vehicles\sea\bargearmsbazard\bargedeck02_m.xbt
+graphics\vehicles\wrecks\hindhelicopter\helicopterparts.hkx
 graphics\vehicles\wrecks\hindhelicopter\helicopterparts.xbg
 graphics\weapons\dlc\crossbow\arrow.hkx
 graphics\weapons\dlc\crossbow\arrow.xbg

@@ -1,4 +1,4 @@
-; 3396/3428 (99%)
+; 3399/3428 (99%)
 config\alwaysloaded.xml
 config\defaultengineconfig.xml
 config\defaultusercontrols.xml
@@ -1133,6 +1133,9 @@ engine\shaders\meta\commonoptions.xml
 engine\shaders\samplerstates.xml
 engine\shaders\usage_d3d10.bin
 engine\shaders\usage_d3d9.bin
+graphics\editor\blueteam.xbg
+graphics\editor\greyteam.xbg
+graphics\editor\redteam.xbg
 graphics\fonts\couriernew11x18.xbt
 graphics\fonts\couriernew9x16.xbt
 graphics\move\movemgr.bin
