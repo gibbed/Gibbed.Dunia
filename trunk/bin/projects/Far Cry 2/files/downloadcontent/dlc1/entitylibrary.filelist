@@ -1,4 +1,4 @@
-; 363/424 (85%)
+; 366/424 (86%)
 downloadcontent\dlc1\generated\entitylibrary.fcb
 downloadcontent\dlc1\generated\entitylibrary_depload.dat
 downloadcontent\dlc1\generated\entitylibrary_deploadnewparticles.rml
@@ -29,7 +29,10 @@ graphics\_materials\sdore2-m-2008100249623817.xbm
 graphics\_materials\sdore2-m-2008100649183233.xbm
 graphics\_materials\sdore2-m-2008100760171564.xbm
 graphics\_materials\sdore2-m-2008100852498503.xbm
+graphics\_materials\sdore2-m-2008101549108296.xbm
+graphics\_materials\sdore2-m-2008101549131546.xbm
 graphics\_materials\sdore2-m-2008101561760114.xbm
+graphics\_materials\sdore2-m-2008101652084625.xbm
 graphics\_materials\sdore2-m-2008101739070784.xbm
 graphics\_materials\sdore2-m-2008102460824234.xbm
 graphics\_materials\trodrigue-m-2007040355403151.xbm
