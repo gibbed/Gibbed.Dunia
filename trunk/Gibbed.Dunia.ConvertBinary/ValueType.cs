@@ -30,7 +30,8 @@ namespace Gibbed.Dunia.ConvertBinary
         Float,
         UInt32,
         UInt64,
-        Vector,
+        Vector2,
+        Vector3,
         Hash,
     }
 }

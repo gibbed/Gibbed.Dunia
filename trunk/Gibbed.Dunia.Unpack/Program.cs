@@ -118,12 +118,12 @@ namespace Gibbed.Dunia.Unpack
 
             using (var input = File.OpenRead(datPath))
             {
-                long current = 1;
+                long current = 0;
                 long total = big.Entries.Count;
 
                 foreach (var entry in big.Entries)
                 {
-                    bool isUnknown = false;
+                    current++;
 
                     string name = hashes[entry.NameHash];
                     if (name == null)
@@ -133,13 +133,11 @@ namespace Gibbed.Dunia.Unpack
                             continue;
                         }
 
-                        isUnknown = true;
-
                         string extension;
 
                         // detect type
                         {
-                            var guess = new byte[16];
+                            var guess = new byte[64];
                             int read = 0;
 
                             if (entry.CompressionScheme == CompressionScheme.None)
@@ -155,14 +153,14 @@ namespace Gibbed.Dunia.Unpack
                             {
                                 input.Seek(entry.Offset, SeekOrigin.Begin);
 
-                                var compressedData = new byte[entry.CompressedSize];
+                                var compressedData = new byte[Math.Min(96, entry.CompressedSize)];
                                 if (input.Read(compressedData, 0, compressedData.Length) != compressedData.Length)
                                 {
                                     throw new EndOfStreamException();
                                 }
 
-                                var uncompressedData = new byte[entry.UncompressedSize];
-                                uint uncompressedSize = entry.UncompressedSize;
+                                var uncompressedData = new byte[Math.Min(64, entry.UncompressedSize)];
+                                uint uncompressedSize = Math.Min(32, entry.UncompressedSize);
 
                                 var result = LZO1x.Decompress(
                                     compressedData,
@@ -178,7 +176,7 @@ namespace Gibbed.Dunia.Unpack
                                     throw new InvalidOperationException("did not decompress correct amount of data");
                                 }
 
-                                Array.Copy(uncompressedData, 0, guess, 0, Math.Min(16, uncompressedData.Length));
+                                Array.Copy(uncompressedData, 0, guess, 0, Math.Min(guess.Length, uncompressedData.Length));
                                 read = uncompressedData.Length;
                             }
                             else
@@ -186,7 +184,7 @@ namespace Gibbed.Dunia.Unpack
                                 throw new NotSupportedException();
                             }
 
-                            extension = FileExtensions.Detect(guess, read);
+                            extension = FileExtensions.Detect(guess, Math.Min(guess.Length, read));
                         }
 
                         name = entry.NameHash.ToString("X8");
@@ -202,10 +200,6 @@ namespace Gibbed.Dunia.Unpack
                             name = name.Substring(1);
                         }
                     }
-
-                    Console.WriteLine("[{0}/{1}] {2}",
-                        current, total, name);
-                    current++;
 
                     /*
                     var ext = Path.GetExtension(name);
@@ -229,6 +223,9 @@ namespace Gibbed.Dunia.Unpack
                     {
                         continue;
                     }
+
+                    Console.WriteLine("[{0}/{1}] {2}",
+                        current, total, name);
 
                     using (var output = File.Create(entryPath))
                     {

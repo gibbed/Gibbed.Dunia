@@ -42,7 +42,6 @@ namespace Gibbed.Dunia.ConvertXml
         {
             var mode = Mode.Unknown;
             bool showHelp = false;
-            bool overwriteFiles = false;
 
             OptionSet options = new OptionSet()
             {

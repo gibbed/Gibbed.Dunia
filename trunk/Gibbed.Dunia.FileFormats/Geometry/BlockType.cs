@@ -20,43 +20,24 @@
  *    distribution.
  */
 
-namespace Gibbed.Dunia.FileFormats
+namespace Gibbed.Dunia.FileFormats.Geometry
 {
-    public static class StringHelpers
+    public enum BlockType : uint
     {
-        public static uint HashFNV32(this string input)
-        {
-            return input.HashFNV32(0x811C9DC5);
-        }
-
-        public static uint HashFNV32(this string input, uint hash)
-        {
-            if (input.Length == 0)
-            {
-                return 0;
-            }
-
-            string lower = input.ToLowerInvariant();
-
-            for (int i = 0; i < lower.Length; i++)
-            {
-                hash *= 0x1000193;
-                hash ^= (char)(lower[i]);
-            }
-
-            return hash;
-        }
-
-        public static uint HashCRC32(this string input)
-        {
-            return CRC32.Hash(input);
-        }
-
-        public static uint HashFileNameCRC32(this string input)
-        {
-            return input.ToLowerInvariant().HashCRC32();
-        }
-
-        
+        Root = 0x00000000,
+        RMTL = 0x524D544C,
+        Node = 0x4E4F4445,
+        O2BM = 0x4F32424D,
+        SKID = 0x534B4944,
+        SKND = 0x534B4E44,
+        CLUS = 0x434C5553,
+        LODS = 0x04C4F4453,
+        BoundingBox = 0x42424F58,
+        BSPH = 0x42535048,
+        LOD = 0x004C4F44,
+        PCMP = 0x50434D50,
+        UCMP = 0x55434D50,
+        IKDA = 0x494B4441,
+        DMTL = 0x444D544C,
     }
 }

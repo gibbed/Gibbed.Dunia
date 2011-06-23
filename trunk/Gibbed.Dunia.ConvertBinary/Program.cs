@@ -43,7 +43,6 @@ namespace Gibbed.Dunia.ConvertBinary
         {
             var mode = Mode.Unknown;
             bool showHelp = false;
-            bool overwriteFiles = false;
 
             var options = new OptionSet()
             {
@@ -255,13 +254,13 @@ namespace Gibbed.Dunia.ConvertBinary
 
                     case ValueType.UInt32:
                     {
-                        valueData = BitConverter.GetBytes(uint.Parse(values.Current.Value, NumberStyles.AllowHexSpecifier));
+                        valueData = BitConverter.GetBytes(uint.Parse(values.Current.Value));
                         break;
                     }
 
                     case ValueType.UInt64:
                     {
-                        valueData = BitConverter.GetBytes(ulong.Parse(values.Current.Value, NumberStyles.AllowHexSpecifier));
+                        valueData = BitConverter.GetBytes(ulong.Parse(values.Current.Value));
                         break;
                     }
 
@@ -271,7 +270,15 @@ namespace Gibbed.Dunia.ConvertBinary
                         break;
                     }
 
-                    case ValueType.Vector:
+                    case ValueType.Vector2:
+                    {
+                        valueData = new byte[8];
+                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("x").Value)), 0, valueData, 0, 4);
+                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("y").Value)), 0, valueData, 4, 4);
+                        break;
+                    }
+
+                    case ValueType.Vector3:
                     {
                         valueData = new byte[12];
                         Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("x").Value)), 0, valueData, 0, 4);
@@ -447,7 +454,19 @@ namespace Gibbed.Dunia.ConvertBinary
                                 break;
                             }
 
-                            case ValueType.Vector:
+                            case ValueType.Vector2:
+                            {
+                                if (kv.Value.Length != 4 * 2)
+                                {
+                                    throw new FormatException();
+                                }
+
+                                writer.WriteElementString("x", BitConverter.ToSingle(kv.Value, 0).ToString());
+                                writer.WriteElementString("y", BitConverter.ToSingle(kv.Value, 4).ToString());
+                                break;
+                            }
+
+                            case ValueType.Vector3:
                             {
                                 if (kv.Value.Length != 4 * 3)
                                 {
