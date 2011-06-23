@@ -126,9 +126,16 @@ namespace RebuildFileLists
             var outputPaths = new List<string>();
 
             Console.WriteLine("Processing...");
-            foreach (var inputpath in inputPaths)
+            foreach (var inputPath in inputPaths)
             {
-                var outputPath = GetListPath(installPath, inputpath);
+                // fuck you, colliding fat *g*
+                if (Path.GetFileNameWithoutExtension(inputPath).ToLowerInvariant()
+                    == "shadersobj")
+                {
+                    continue;
+                }
+
+                var outputPath = GetListPath(installPath, inputPath);
                 if (outputPath == null)
                 {
                     throw new InvalidOperationException();
@@ -145,9 +152,20 @@ namespace RebuildFileLists
                 outputPaths.Add(outputPath);
 
                 var big = new BigFile();
-                using (var input = File.OpenRead(inputpath))
+
+                if (File.Exists(inputPath + ".bak") == true)
                 {
-                    big.Deserialize(input);
+                    using (var input = File.OpenRead(inputPath + ".bak"))
+                    {
+                        big.Deserialize(input);
+                    }
+                }
+                else
+                {
+                    using (var input = File.OpenRead(inputPath))
+                    {
+                        big.Deserialize(input);
+                    }
                 }
 
                 var localBreakdown = new Breakdown();
@@ -155,6 +173,10 @@ namespace RebuildFileLists
                 var names = new List<string>();
                 foreach (var entry in big.Entries)
                 {
+                    if (entry.UncompressedSize == 4680308)
+                    {
+                    }
+
                     var name = hashes[entry.NameHash];
                     if (name != null)
                     {

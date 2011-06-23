@@ -20,43 +20,51 @@
  *    distribution.
  */
 
-namespace Gibbed.Dunia.FileFormats
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Gibbed.Helpers;
+
+namespace Gibbed.Dunia.FileFormats.Geometry
 {
-    public static class StringHelpers
+    public class BSPH : IBlock
     {
-        public static uint HashFNV32(this string input)
+        public BlockType Type
         {
-            return input.HashFNV32(0x811C9DC5);
+            get { return BlockType.BSPH; }
         }
 
-        public static uint HashFNV32(this string input, uint hash)
+        public float X;
+        public float Y;
+        public float Z;
+        public float W;
+
+        public void Deserialize(IBlock parent, Stream input)
         {
-            if (input.Length == 0)
-            {
-                return 0;
-            }
-
-            string lower = input.ToLowerInvariant();
-
-            for (int i = 0; i < lower.Length; i++)
-            {
-                hash *= 0x1000193;
-                hash ^= (char)(lower[i]);
-            }
-
-            return hash;
+            this.X = input.ReadValueF32();
+            this.Y = input.ReadValueF32();
+            this.Z = input.ReadValueF32();
+            this.W = input.ReadValueF32();
         }
 
-        public static uint HashCRC32(this string input)
+        public void Serialize(IBlock parent, Stream output)
         {
-            return CRC32.Hash(input);
+            throw new NotImplementedException();
         }
 
-        public static uint HashFileNameCRC32(this string input)
+        public IBlock CreateBlock(BlockType type)
         {
-            return input.ToLowerInvariant().HashCRC32();
+            throw new NotImplementedException();
         }
 
-        
+        public void AddChild(IBlock child)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<IBlock> GetChildren()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

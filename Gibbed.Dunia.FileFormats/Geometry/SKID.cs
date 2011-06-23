@@ -20,43 +20,53 @@
  *    distribution.
  */
 
-namespace Gibbed.Dunia.FileFormats
+using System;
+using System.Collections.Generic;
+using System.IO;
+using Gibbed.Helpers;
+
+namespace Gibbed.Dunia.FileFormats.Geometry
 {
-    public static class StringHelpers
+    public class SKID : IBlock
     {
-        public static uint HashFNV32(this string input)
+        public BlockType Type
         {
-            return input.HashFNV32(0x811C9DC5);
+            get { return BlockType.SKID; }
         }
-
-        public static uint HashFNV32(this string input, uint hash)
-        {
-            if (input.Length == 0)
-            {
-                return 0;
-            }
-
-            string lower = input.ToLowerInvariant();
-
-            for (int i = 0; i < lower.Length; i++)
-            {
-                hash *= 0x1000193;
-                hash ^= (char)(lower[i]);
-            }
-
-            return hash;
-        }
-
-        public static uint HashCRC32(this string input)
-        {
-            return CRC32.Hash(input);
-        }
-
-        public static uint HashFileNameCRC32(this string input)
-        {
-            return input.ToLowerInvariant().HashCRC32();
-        }
-
         
+        public List<byte[]> Unknown = new List<byte[]>();
+
+        public void Deserialize(IBlock parent, Stream input)
+        {
+            var count = input.ReadValueU32();
+
+            this.Unknown.Clear();
+            for (uint i = 0; i < count; i++)
+            {
+                var data = new byte[8];
+                input.Read(data, 0, data.Length);
+                this.Unknown.Add(data);
+            }
+        }
+
+        public void Serialize(IBlock parent, Stream output)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IBlock CreateBlock(BlockType type)
+        {
+            throw new NotSupportedException();
+        }
+
+        public void AddChild(IBlock child)
+        {
+            throw new NotSupportedException();
+        }
+
+        public IEnumerable<IBlock> GetChildren()
+        {
+            throw new NotSupportedException();
+        }
     }
 }

@@ -59,7 +59,7 @@ namespace Gibbed.Dunia.FileFormats
                 guess[2] == 'E' &&
                 guess[3] == 'M')
             {
-                return "xbt";
+                return "xbg";
             }
             else if (
                 read >= 4 &&
@@ -89,16 +89,52 @@ namespace Gibbed.Dunia.FileFormats
                 return "png";
             }
             else if (
-                read >= 6 &&
-                Encoding.ASCII.GetString(guess, 0, 6) == "<root>")
+                read >= 3 &&
+                guess[0] == 0 &&
+                guess[1] == 0 &&
+                guess[2] == 0xFF)
             {
-                return "defz";
+                return "maybe.rml";
             }
             else if (
-                read >= 9 &&
-                Encoding.ASCII.GetString(guess, 0, 9) == "<package>")
+                read >= 8 &&
+                guess[4] == 0x68 &&
+                guess[5] == 0x4D &&
+                guess[6] == 0x76 &&
+                guess[7] == 0x4E)
+            {
+                return "hMvN";
+            }
+            else if (
+                read >= 20 &&
+                guess[16] == 0x57 &&
+                guess[17] == 0xE0 &&
+                guess[18] == 0xE0 &&
+                guess[19] == 0x57)
+            {
+                return "hkx";
+            }
+
+            string text = Encoding.ASCII.GetString(guess, 0, read);
+            if (read >= 6 && text.StartsWith("<root>") == true)
+            {
+                return "root.xml";
+            }
+            else if (read >= 9 && text.StartsWith("<package>") == true)
             {
                 return "mgb.desc";
+            }
+            else if (read >= 6 && text.StartsWith("<root>") == true)
+            {
+                return "root.xml";
+            }
+            else if (read >= 12 && text.StartsWith("<NewPartLib>") == true)
+            {
+                return "NewPartLib.xml";
+            }
+            else if (read >= 11 && text.StartsWith("<MovieData>") == true)
+            {
+                return "MovieData.xml";
             }
 
             return "unknown";

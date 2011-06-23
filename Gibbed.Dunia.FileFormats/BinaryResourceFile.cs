@@ -30,8 +30,6 @@ namespace Gibbed.Dunia.FileFormats
     public class BinaryResourceFile
     {
         public ushort Flags;
-        public uint Unknown3;
-        public uint Unknown4;
         public Object Root;
 
         public void Deserialize(Stream input)
@@ -52,8 +50,8 @@ namespace Gibbed.Dunia.FileFormats
                 throw new FormatException();
             }
 
-            this.Unknown3 = input.ReadValueU32();
-            this.Unknown4 = input.ReadValueU32();
+            var totalObjectCount = input.ReadValueU32();
+            var totalValueCount = input.ReadValueU32();
 
             var pointers = new List<Object>();
             /*this.Root = new Object();
@@ -63,12 +61,23 @@ namespace Gibbed.Dunia.FileFormats
 
         public void Serialize(Stream output)
         {
-            output.WriteValueU32(0x4643626E);
-            output.WriteValueU16(2);
-            output.WriteValueU16(0);
-            output.WriteValueU32(0x62696700);
-            output.WriteValueU32(0x00646562);
-            this.Root.Serialize(output);
+            using (var data = new MemoryStream())
+            {
+                uint totalObjectCount = 0, totalValueCount = 0;
+
+                this.Root.Serialize(
+                    data,
+                    ref totalObjectCount,
+                    ref totalValueCount);
+                data.Position = 0;
+
+                output.WriteValueU32(0x4643626E);
+                output.WriteValueU16(2);
+                output.WriteValueU16(0);
+                output.WriteValueU32(totalObjectCount);
+                output.WriteValueU32(totalValueCount);
+                output.WriteFromStream(data, data.Length);
+            }
         }
 
         public class Object
@@ -100,7 +109,8 @@ namespace Gibbed.Dunia.FileFormats
                 return child;
             }
 
-            private void Deserialize(Stream input, uint childCount, List<Object> pointers)
+            private void Deserialize(
+                Stream input, uint childCount, List<Object> pointers)
             {
                 long position;
                 bool isOffset;
@@ -176,8 +186,14 @@ namespace Gibbed.Dunia.FileFormats
                 }
             }
 
-            public void Serialize(Stream output)
+            public void Serialize(
+                Stream output,
+                ref uint totalObjectCount,
+                ref uint totalValueCount)
             {
+                totalObjectCount += (uint)this.Children.Count;
+                totalValueCount += (uint)this.Values.Count;
+
                 output.WriteCount(this.Children.Count, false);
                 
                 output.WriteValueU32(this.TypeHash);
@@ -192,7 +208,10 @@ namespace Gibbed.Dunia.FileFormats
 
                 foreach (var child in this.Children)
                 {
-                    child.Serialize(output);
+                    child.Serialize(
+                        output,
+                        ref totalObjectCount,
+                        ref totalValueCount);
                 }
             }
         }
