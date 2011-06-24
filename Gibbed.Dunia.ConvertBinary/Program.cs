@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.XPath;
@@ -42,6 +43,7 @@ namespace Gibbed.Dunia.ConvertBinary
         public static void Main(string[] args)
         {
             var mode = Mode.Unknown;
+            bool multiExport = false;
             bool showHelp = false;
 
             var options = new OptionSet()
@@ -55,6 +57,11 @@ namespace Gibbed.Dunia.ConvertBinary
                     "xml",
                     "convert FCB to XML", 
                     v => mode = v != null ? Mode.ToXML : mode
+                },
+                {
+                    "m|multi-export",
+                    "when converting FCB to XML, export to many files when possible",
+                    v => multiExport = v != null
                 },
                 {
                     "h|help",
@@ -122,7 +129,24 @@ namespace Gibbed.Dunia.ConvertBinary
             if (mode == Mode.ToFCB)
             {
                 string inputPath = extras[0];
-                string outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(Path.ChangeExtension(inputPath, null) + "_converted", ".fcb");
+                string outputPath;
+                string basePath;
+
+                if (extras.Count > 1)
+                {
+                    outputPath = extras[1];
+                }
+                else
+                {
+                    outputPath = Path.ChangeExtension(inputPath, null);
+                    outputPath += "_converted.fcb";
+                }
+
+                basePath = Path.ChangeExtension(inputPath, null);
+
+                inputPath = Path.GetFullPath(inputPath);
+                outputPath = Path.GetFullPath(outputPath);
+                basePath = Path.GetFullPath(basePath);
 
                 var bf = new BinaryResourceFile();
 
@@ -139,7 +163,7 @@ namespace Gibbed.Dunia.ConvertBinary
                     }
 
                     Console.WriteLine("Reading XML...");
-                    bf.Root = ReadNode(root);
+                    bf.Root = ReadNode(basePath, root);
                 }
 
                 Console.WriteLine("Writing FCB...");
@@ -151,7 +175,24 @@ namespace Gibbed.Dunia.ConvertBinary
             else if (mode == Mode.ToXML)
             {
                 string inputPath = extras[0];
-                string outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(Path.ChangeExtension(inputPath, null) + "_converted", ".xml");
+                string outputPath;
+                string basePath;
+                if (extras.Count > 1)
+                {
+                    outputPath = extras[1];
+                    basePath = Path.ChangeExtension(outputPath, null);
+                }
+                else
+                {
+                    outputPath = Path.ChangeExtension(inputPath, null);
+                    outputPath += "_converted";
+                    basePath = outputPath;
+                    outputPath += ".xml";
+                }
+
+                inputPath = Path.GetFullPath(inputPath);
+                outputPath = Path.GetFullPath(outputPath);
+                basePath = Path.GetFullPath(basePath);
 
                 Console.WriteLine("Reading binary...");
 
@@ -169,11 +210,73 @@ namespace Gibbed.Dunia.ConvertBinary
 
                 Console.WriteLine("Writing XML...");
 
-                using (var writer = XmlWriter.Create(outputPath, settings))
+                if (multiExport == true &&
+                    bf.Root.Values.Count == 0 &&
+                    bf.Root.TypeHash == 0xBCDD10B4 &&
+                    bf.Root.Children.Where(c => c.TypeHash != 0xE0BDB3DB).Count() == 0)
                 {
-                    writer.WriteStartDocument();
-                    WriteNode(writer, bf.Root, classes);
-                    writer.WriteEndDocument();
+                    using (var writer = XmlWriter.Create(outputPath, settings))
+                    {
+                        writer.WriteStartDocument();
+
+                        var root = bf.Root;
+                        {
+                            writer.WriteStartElement("object");
+
+                            if (classes.ContainsKey(root.TypeHash) == true &&
+                                classes[root.TypeHash].Name != null)
+                            {
+                                writer.WriteAttributeString("type", classes[root.TypeHash].Name);
+                            }
+                            else
+                            {
+                                writer.WriteAttributeString("hash", root.TypeHash.ToString("X8"));
+                            }
+
+                            int counter = 0;
+                            int padLength = root.Children.Count.ToString().Length;
+                            foreach (var child in root.Children)
+                            {
+                                counter++;
+
+                                string childName = counter.ToString().PadLeft(padLength, '0');
+
+                                // name
+                                if (child.Values.ContainsKey(0xFE11D138) == true)
+                                {
+                                    var value = child.Values[0xFE11D138];
+                                    childName += "_" + Encoding.UTF8.GetString(value, 0, value.Length - 1);
+                                }
+
+                                Directory.CreateDirectory(basePath);
+
+                                var childPath = Path.Combine(basePath, childName + ".xml");
+                                using (var childWriter = XmlWriter.Create(childPath, settings))
+                                {
+                                    childWriter.WriteStartDocument();
+                                    WriteNode(childWriter, child, classes);
+                                    childWriter.WriteEndDocument();
+                                }
+
+                                writer.WriteStartElement("object");
+                                writer.WriteAttributeString("external", Path.GetFileName(childPath));
+                                writer.WriteEndElement();
+                            }
+
+                            writer.WriteEndElement();
+                        }
+
+                        writer.WriteEndDocument();
+                    }
+                }
+                else
+                {
+                    using (var writer = XmlWriter.Create(outputPath, settings))
+                    {
+                        writer.WriteStartDocument();
+                        WriteNode(writer, bf.Root, classes);
+                        writer.WriteEndDocument();
+                    }
                 }
             }
             else
@@ -182,7 +285,33 @@ namespace Gibbed.Dunia.ConvertBinary
             }
         }
 
-        private static BinaryResourceFile.Object ReadNode(XPathNavigator node)
+        private static BinaryResourceFile.Object LoadNode(string basePath, XPathNavigator node)
+        {
+            string external = node.GetAttribute("external", "");
+            if (string.IsNullOrWhiteSpace(external) == true)
+            {
+                return ReadNode(basePath, node);
+            }
+
+            var inputPath = Path.Combine(basePath, external);
+
+            using (var input = File.OpenRead(inputPath))
+            {
+                Console.WriteLine("Loading object from '{0}'...", Path.GetFileName(inputPath));
+                var doc = new XPathDocument(input);
+                var nav = doc.CreateNavigator();
+
+                var root = nav.SelectSingleNode("/object");
+                if (root == null)
+                {
+                    throw new InvalidOperationException();
+                }
+
+                return LoadNode(Path.ChangeExtension(inputPath, null), root);
+            }
+        }
+
+        private static BinaryResourceFile.Object ReadNode(string basePath, XPathNavigator node)
         {
             string className;
             uint classHash;
@@ -299,7 +428,7 @@ namespace Gibbed.Dunia.ConvertBinary
             var children = node.Select("object");
             while (children.MoveNext() == true)
             {
-                parent.Children.Add(ReadNode(children.Current));
+                parent.Children.Add(LoadNode(basePath, children.Current));
             }
 
             return parent;
@@ -334,8 +463,6 @@ namespace Gibbed.Dunia.ConvertBinary
         private static void WriteNode(XmlWriter writer, BinaryResourceFile.Object parent, Dictionary<uint, ClassDefinition> classes)
         {
             writer.WriteStartElement("object");
-            //writer.WriteAttributeString("i", parent.Index.ToString());
-            //writer.WriteAttributeString("offset", parent.Position.ToString());
 
             if (classes.ContainsKey(parent.TypeHash) == true &&
                 classes[parent.TypeHash].Name != null)
@@ -350,8 +477,6 @@ namespace Gibbed.Dunia.ConvertBinary
             if (parent.Values != null &&
                 parent.Values.Count > 0)
             {
-                //writer.WriteStartElement("values");
-
                 foreach (var kv in parent.Values)
                 {
                     writer.WriteStartElement("value");
@@ -486,26 +611,17 @@ namespace Gibbed.Dunia.ConvertBinary
                         }
                     }
 
-                    //writer.WriteBinHex(kv.Value, 0, kv.Value.Length);
-                    //writer.WriteValue(Encoding.UTF8.GetString(kv.Value));
-
                     writer.WriteEndElement();
                 }
-
-                //writer.WriteEndElement();
             }
 
             if (parent.Children != null &&
                 parent.Children.Count > 0)
             {
-                //writer.WriteStartElement("children");
-
                 foreach (var child in parent.Children)
                 {
                     WriteNode(writer, child, classes);
                 }
-
-                //writer.WriteEndElement();
             }
 
             writer.WriteEndElement();

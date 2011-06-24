@@ -59,7 +59,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
                 case BlockType.PCMP: return new PCMP();
                 case BlockType.UCMP: return new UCMP();
                 case BlockType.IKDA: return new IKDA();
-                case BlockType.DMTL: return new DMTL();
+                case BlockType.MaterialDescriptor: return new MaterialDescriptor();
             }
 
             throw new NotSupportedException();
