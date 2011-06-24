@@ -22,11 +22,9 @@
 
 namespace Gibbed.Dunia.FileFormats.Geometry
 {
-    public struct Vector4
+    public struct Float2
     {
         public float X;
         public float Y;
-        public float Z;
-        public float W;
     }
 }

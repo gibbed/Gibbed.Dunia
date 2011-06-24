@@ -27,23 +27,31 @@ using Gibbed.Helpers;
 
 namespace Gibbed.Dunia.FileFormats.Geometry
 {
-    public class DMTL : IBlock
+    // Refer to common\engine\providerdescriptors.xml
+    public class MaterialDescriptor : IBlock
     {
         public BlockType Type
         {
-            get { return BlockType.DMTL; }
+            get { return BlockType.MaterialDescriptor; }
         }
 
-        public string Unknown0;
+        public string Name;
         public string Unknown1;
         public string Unknown2;
-        public Dictionary<string, string> Unknown3 = new Dictionary<string, string>();
-        public Dictionary<string, float> Unknown4 = new Dictionary<string, float>();
-        public Dictionary<string, Vector2> Unknown5 = new Dictionary<string, Vector2>();
-        public Dictionary<string, Vector3> Unknown6 = new Dictionary<string, Vector3>();
-        public Dictionary<string, Vector4> Unknown7 = new Dictionary<string, Vector4>();
-        public Dictionary<string, int> Unknown8 = new Dictionary<string, int>();
-        public Dictionary<string, byte> Unknown9 = new Dictionary<string, byte>();
+        public Dictionary<string, string> TextureProperties
+            = new Dictionary<string, string>();
+        public Dictionary<string, float> Float1Properties
+            = new Dictionary<string, float>();
+        public Dictionary<string, Float2> Float2Properties
+            = new Dictionary<string, Float2>();
+        public Dictionary<string, Float3> Float3Properties
+            = new Dictionary<string, Float3>();
+        public Dictionary<string, Float4> Float4Properties
+            = new Dictionary<string, Float4>();
+        public Dictionary<string, int> IntProperties
+            = new Dictionary<string, int>();
+        public Dictionary<string, bool> BoolProperties
+            = new Dictionary<string, bool>();
 
         public void Deserialize(IBlock parent, Stream input)
         {
@@ -51,7 +59,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             int count;
 
             length = input.ReadValueU32();
-            this.Unknown0 = input.ReadString(length);
+            this.Name = input.ReadString(length);
             input.Seek(1, SeekOrigin.Current); // skip null
 
             length = input.ReadValueU32();
@@ -62,7 +70,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             this.Unknown2 = input.ReadString(length);
             input.Seek(1, SeekOrigin.Current); // skip null
 
-            this.Unknown3.Clear();
+            this.TextureProperties.Clear();
             count = input.ReadValueS32();
             for (int i = 0; i < count; i++)
             {
@@ -74,10 +82,10 @@ namespace Gibbed.Dunia.FileFormats.Geometry
                 var key = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
-                this.Unknown3[key] = value;
+                this.TextureProperties[key] = value;
             }
 
-            this.Unknown4.Clear();
+            this.Float1Properties.Clear();
             count = input.ReadValueS32();
             for (int i = 0; i < count; i++)
             {
@@ -85,10 +93,10 @@ namespace Gibbed.Dunia.FileFormats.Geometry
                 var key = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
-                this.Unknown4[key] = input.ReadValueF32();
+                this.Float1Properties[key] = input.ReadValueF32();
             }
 
-            this.Unknown5.Clear();
+            this.Float2Properties.Clear();
             count = input.ReadValueS32();
             for (int i = 0; i < count; i++)
             {
@@ -96,14 +104,14 @@ namespace Gibbed.Dunia.FileFormats.Geometry
                 var key = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
-                var value = new Vector2();
+                var value = new Float2();
                 value.X = input.ReadValueF32();
                 value.Y = input.ReadValueF32();
 
-                this.Unknown5[key] = value;
+                this.Float2Properties[key] = value;
             }
 
-            this.Unknown6.Clear();
+            this.Float3Properties.Clear();
             count = input.ReadValueS32();
             for (int i = 0; i < count; i++)
             {
@@ -111,15 +119,15 @@ namespace Gibbed.Dunia.FileFormats.Geometry
                 var key = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
-                var value = new Vector3();
+                var value = new Float3();
                 value.X = input.ReadValueF32();
                 value.Y = input.ReadValueF32();
                 value.Z = input.ReadValueF32();
 
-                this.Unknown6[key] = value;
+                this.Float3Properties[key] = value;
             }
 
-            this.Unknown7.Clear();
+            this.Float4Properties.Clear();
             count = input.ReadValueS32();
             for (int i = 0; i < count; i++)
             {
@@ -127,16 +135,16 @@ namespace Gibbed.Dunia.FileFormats.Geometry
                 var key = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
-                var value = new Vector4();
+                var value = new Float4();
                 value.X = input.ReadValueF32();
                 value.Y = input.ReadValueF32();
                 value.Z = input.ReadValueF32();
                 value.W = input.ReadValueF32();
 
-                this.Unknown7[key] = value;
+                this.Float4Properties[key] = value;
             }
 
-            this.Unknown8.Clear();
+            this.IntProperties.Clear();
             count = input.ReadValueS32();
             for (int i = 0; i < count; i++)
             {
@@ -144,10 +152,10 @@ namespace Gibbed.Dunia.FileFormats.Geometry
                 var key = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
-                this.Unknown8[key] = input.ReadValueS32();
+                this.IntProperties[key] = input.ReadValueS32();
             }
 
-            this.Unknown9.Clear();
+            this.BoolProperties.Clear();
             count = input.ReadValueS32();
             for (int i = 0; i < count; i++)
             {
@@ -155,7 +163,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
                 var key = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
-                this.Unknown9[key] = input.ReadValueU8();
+                this.BoolProperties[key] = input.ReadValueB8();
             }
         }
 

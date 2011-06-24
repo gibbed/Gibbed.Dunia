@@ -38,6 +38,6 @@ namespace Gibbed.Dunia.FileFormats.Geometry
         PCMP = 0x50434D50,
         UCMP = 0x55434D50,
         IKDA = 0x494B4441,
-        DMTL = 0x444D544C,
+        MaterialDescriptor = 0x444D544C,
     }
 }
