@@ -41,9 +41,10 @@ namespace Gibbed.Dunia.Unpack
         {
             bool showHelp = false;
             bool extractUnknowns = true;
+            bool noArt = true;
             bool overwriteFiles = false;
 
-            OptionSet options = new OptionSet()
+            var options = new OptionSet()
             {
                 {
                     "o|overwrite",
@@ -51,7 +52,12 @@ namespace Gibbed.Dunia.Unpack
                     v => overwriteFiles = v != null
                 },
                 {
-                    "u|no-unknowns",
+                    "na|no-art",
+                    "don't extract art files (textures, models, etc)",
+                    v => noArt = v != null
+                },
+                {
+                    "nu|no-unknowns",
                     "don't extract unknown files",
                     v => extractUnknowns = v == null
                 },
@@ -153,14 +159,14 @@ namespace Gibbed.Dunia.Unpack
                             {
                                 input.Seek(entry.Offset, SeekOrigin.Begin);
 
-                                var compressedData = new byte[Math.Min(96, entry.CompressedSize)];
+                                var compressedData = new byte[entry.CompressedSize];
                                 if (input.Read(compressedData, 0, compressedData.Length) != compressedData.Length)
                                 {
                                     throw new EndOfStreamException();
                                 }
 
-                                var uncompressedData = new byte[Math.Min(64, entry.UncompressedSize)];
-                                uint uncompressedSize = Math.Min(32, entry.UncompressedSize);
+                                var uncompressedData = new byte[entry.UncompressedSize];
+                                uint uncompressedSize = entry.UncompressedSize;
 
                                 var result = LZO1x.Decompress(
                                     compressedData,
@@ -201,19 +207,22 @@ namespace Gibbed.Dunia.Unpack
                         }
                     }
 
-                    /*
-                    var ext = Path.GetExtension(name);
-                    if (ext == ".xbt" ||
-                        ext == ".xbg" ||
-                        ext == ".xbm" ||
-                        ext == ".spk" ||
-                        ext == ".mab" ||
-                        ext == ".lfe" ||
-                        ext == ".apm")
+                    if (noArt == true)
                     {
-                        continue;
+                        var ext = Path.GetExtension(name);
+                        if (ext == ".xbt" ||
+                            ext == ".xbg" ||
+                            ext == ".xbm" ||
+                            ext == ".spk" ||
+                            ext == ".mab" ||
+                            ext == ".lfe" ||
+                            ext == ".lfa" ||
+                            ext == ".rtx" ||
+                            ext == ".apm")
+                        {
+                            continue;
+                        }
                     }
-                    */
 
                     var entryPath = Path.Combine(outputPath, name);
                     Directory.CreateDirectory(Path.GetDirectoryName(entryPath));
