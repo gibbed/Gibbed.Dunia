@@ -33,7 +33,7 @@ using NDesk.Options;
 
 namespace Gibbed.Dunia.ConvertBinary
 {
-    internal class Program
+    public class Program
     {
         private static string GetExecutableName()
         {
@@ -45,6 +45,7 @@ namespace Gibbed.Dunia.ConvertBinary
             var mode = Mode.Unknown;
             bool multiExport = true;
             bool showHelp = false;
+            bool quiet = false;
 
             var options = new OptionSet()
             {
@@ -62,6 +63,11 @@ namespace Gibbed.Dunia.ConvertBinary
                     "m|multi-export",
                     "when converting FCB to XML, export to many files when possible",
                     v => multiExport = v != null
+                },
+                {
+                    "q|quiet",
+                    "be quiet",
+                    v => quiet = v != null
                 },
                 {
                     "h|help",
@@ -111,7 +117,10 @@ namespace Gibbed.Dunia.ConvertBinary
                 return;
             }
 
-            Console.WriteLine("Loading project...");
+            if (quiet == false)
+            {
+                Console.WriteLine("Loading project...");
+            }
 
             var manager = ProjectData.Manager.Load();
             IDefinitionProvider defs = null;
@@ -152,7 +161,11 @@ namespace Gibbed.Dunia.ConvertBinary
 
                 using (var input = File.OpenRead(inputPath))
                 {
-                    Console.WriteLine("Loading XML...");
+                    if (quiet == false)
+                    {
+                        Console.WriteLine("Loading XML...");
+                    }
+
                     var doc = new XPathDocument(input);
                     var nav = doc.CreateNavigator();
 
@@ -162,11 +175,19 @@ namespace Gibbed.Dunia.ConvertBinary
                         throw new FormatException();
                     }
 
-                    Console.WriteLine("Reading XML...");
+                    if (quiet == false)
+                    {
+                        Console.WriteLine("Reading XML...");
+                    }
+
                     bf.Root = ReadNode(basePath, root);
                 }
 
-                Console.WriteLine("Writing FCB...");
+                if (quiet == false)
+                {
+                    Console.WriteLine("Writing FCB...");
+                }
+
                 using (var output = File.Create(outputPath))
                 {
                     bf.Serialize(output);
@@ -194,7 +215,10 @@ namespace Gibbed.Dunia.ConvertBinary
                 outputPath = Path.GetFullPath(outputPath);
                 basePath = Path.GetFullPath(basePath);
 
-                Console.WriteLine("Reading binary...");
+                if (quiet == false)
+                {
+                    Console.WriteLine("Reading binary...");
+                }
 
                 var bf = new BinaryResourceFile();
                 using (var input = File.OpenRead(inputPath))
@@ -208,7 +232,10 @@ namespace Gibbed.Dunia.ConvertBinary
                 settings.CheckCharacters = false;
                 settings.OmitXmlDeclaration = true;
 
-                Console.WriteLine("Writing XML...");
+                if (quiet == false)
+                {
+                    Console.WriteLine("Writing XML...");
+                }
 
                 if (multiExport == true &&
                     bf.Root.Values.Count == 0 &&
