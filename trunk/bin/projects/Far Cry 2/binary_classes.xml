@@ -1628,7 +1628,7 @@ tool to generate a (hopefully) friendly looking XML dump.
 		<member name="fWalkingMaxSpeedCrouch">Float</member>
 		<member name="fWalkingAcceleration">Float</member>
 		<member name="fWalkingDeceleration">Float</member>
-		<member name="archSprintCurve">BinHex</member>
+		<member name="archSprintCurve">String</member>
 		<member name="fSprintingDeceleration">Float</member>
 		<member name="fClimbSpeed">Float</member>
 		<member name="fSwimmingMinDepth">Float</member>
