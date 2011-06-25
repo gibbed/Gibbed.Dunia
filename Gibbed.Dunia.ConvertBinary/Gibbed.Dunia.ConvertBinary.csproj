@@ -53,6 +53,10 @@
     <Compile Include="ValueType.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Gibbed.Dunia.ConvertXml\Gibbed.Dunia.ConvertXml.csproj">
+      <Project>{CA60A421-31CF-4AFA-A64B-5620513EADC5}</Project>
+      <Name>Gibbed.Dunia.ConvertXml</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Gibbed.Dunia.FileFormats\Gibbed.Dunia.FileFormats.csproj">
       <Project>{988AD1C4-1D56-4836-BE15-6D7044C3BAC5}</Project>
       <Name>Gibbed.Dunia.FileFormats</Name>
