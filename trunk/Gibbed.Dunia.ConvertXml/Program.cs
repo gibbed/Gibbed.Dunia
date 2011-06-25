@@ -31,7 +31,7 @@ using NDesk.Options;
 
 namespace Gibbed.Dunia.ConvertXml
 {
-	internal class Program
+	public class Program
 	{
 		private static string GetExecutableName()
         {
@@ -156,7 +156,7 @@ namespace Gibbed.Dunia.ConvertXml
             }
 		}
 
-        private static XmlResourceFile.Node ReadNode(XPathNavigator nav)
+        public static XmlResourceFile.Node ReadNode(XPathNavigator nav)
         {
             var node = new XmlResourceFile.Node();
             node.Name = nav.Name;
@@ -191,7 +191,7 @@ namespace Gibbed.Dunia.ConvertXml
             return node;
         }
 
-        private static void WriteNode(XmlWriter writer, XmlResourceFile.Node node)
+        public static void WriteNode(XmlWriter writer, XmlResourceFile.Node node)
         {
             writer.WriteStartElement(node.Name);
 

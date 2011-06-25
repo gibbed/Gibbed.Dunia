@@ -415,6 +415,30 @@ namespace Gibbed.Dunia.ConvertBinary
                         break;
                     }
 
+                    case ValueType.Rml:
+                    {
+                        var rez = new XmlResourceFile();
+
+                        var nav = values.Current.CreateNavigator();
+                        if (nav.MoveToFirstChild() == false)
+                        {
+                            throw new FormatException();
+                        }
+
+                        rez.Root = ConvertXml.Program.ReadNode(nav);
+
+                        using (var output = new MemoryStream())
+                        {
+                            rez.Serialize(output);
+                            output.Position = 0;
+
+                            valueData = new byte[output.Length];
+                            output.Read(valueData, 0, valueData.Length);
+                        }
+
+                        break;
+                    }
+
                     default:
                     {
                         throw new FormatException();
@@ -578,6 +602,20 @@ namespace Gibbed.Dunia.ConvertBinary
                                 writer.WriteElementString("x", BitConverter.ToSingle(kv.Value, 0).ToString());
                                 writer.WriteElementString("y", BitConverter.ToSingle(kv.Value, 4).ToString());
                                 writer.WriteElementString("z", BitConverter.ToSingle(kv.Value, 8).ToString());
+                                break;
+                            }
+
+                            case ValueType.Rml:
+                            {
+                                var rez = new XmlResourceFile();
+                                using (var input = new MemoryStream(kv.Value))
+                                {
+                                    rez.Deserialize(input);
+                                }
+
+                                writer.WriteStartElement("rml");
+                                ConvertXml.Program.WriteNode(writer, rez.Root);
+                                writer.WriteEndElement();
                                 break;
                             }
 

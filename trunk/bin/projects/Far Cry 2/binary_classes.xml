@@ -999,7 +999,7 @@ tool to generate a (hopefully) friendly looking XML dump.
 		<member hash="2A7BCA49">String</member>
 		<member name="fileName">Hash</member>
 		<member name="SerializationEvent">BinHex</member>
-		<member name="hidDescriptor">BinHex</member>
+		<member name="hidDescriptor">Rml</member>
 	</class>
 	
 	<class name="CFireComponent" extends="CEntityComponent" />
@@ -1340,7 +1340,15 @@ tool to generate a (hopefully) friendly looking XML dump.
 	<class name="CMemoryStreamFile" extends="IFile" />
 	<class name="CMenuPage" extends="CUIPageBase" />
 	<class name="CMetaSector" extends="CWorldSector" />
-	<class name="CMissionComponent" extends="CEntityComponent" />
+	
+	<class name="CMissionComponent" extends="CEntityComponent">
+		<member hash="7AF1FD74">String</member>
+		<member name="hidMissionLayerPath">Hash</member>
+		<member hash="27B31D2E">String</member>
+		<member name="hidCategory">Hash</member>
+		<member name="ForceMerge">Bool</member>
+	</class>	
+	
 	<class name="CMissionHandlerEvent" extends="CScriptEvent" />
 	<class name="CMortarIncoming" extends="CEntityEvent" />
 	<class name="CMountedWeapon" extends="CEntityComponent" />

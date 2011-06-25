@@ -33,5 +33,6 @@ namespace Gibbed.Dunia.ConvertBinary
         Vector2,
         Vector3,
         Hash,
+        Rml,
     }
 }
