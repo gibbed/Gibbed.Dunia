@@ -22,9 +22,8 @@
 
 namespace Gibbed.Dunia.ConvertBinary
 {
-    internal class MemberDefinition
+    internal interface IDefinitionProvider
     {
-        public string Name;
-        public ValueType Type;
+        IClassDefinition GetClassDefinition(uint hash);
     }
 }

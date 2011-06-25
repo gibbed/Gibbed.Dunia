@@ -20,15 +20,11 @@
  *    distribution.
  */
 
-using System.Collections.Generic;
-
 namespace Gibbed.Dunia.ConvertBinary
 {
-    internal class ClassDefinition
+    internal interface IMemberDefinition
     {
-        public string Name;
-        public string Parent;
-        public Dictionary<uint, MemberDefinition> Members
-            = new Dictionary<uint, MemberDefinition>();
+        string Name { get; }
+        ValueType Type { get; }
     }
 }

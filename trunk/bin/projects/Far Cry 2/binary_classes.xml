@@ -1,74 +1,419 @@
+<!--
+This file defines the various classes that are found in
+binary resource files (*.fcb) and is used by the ConveryBinary
+tool to generate a (hopefully) friendly looking XML dump.
+-->
+
+<!-- Lasciate ogne speranza, voi ch'intrate -->
+
 <classes>
-	<class name="object">
-		<member name="hidIndex">UInt32</member>
-		<member hash="BF9B3A5C">String</member>
-		<member name="objModel">Hash</member>
-		<member name="hidMeshName">String</member>
-		<member hash="E1A0EE56">String</member>
-		<member name="hidNodeName">Hash</member>
-		<member hash="0D9C8B1A">String</member>
-		<member name="hidNodeNameLOD0">Hash</member>
-		<member name="hidDetailObject">Bool</member>
-	</class>
+	<!-- Entity library category -->
 	<class hash="256A1FF9">
 		<member name="Name">String</member>
 	</class>
+	
+	<!-- Entity object definition -->
 	<class hash="E0BDB3DB">
 		<member name="Name">String</member>
 	</class>
+	
+	<!--
+	The following definitions need to be moved to their proper
+	place in native classes. They're here from when there wasn't
+	any subclass handling.
+	-->
+	
+	<class name="WorldSector">
+		<member name="Id">UInt32</member>
+		<member name="X">UInt32</member>
+		<member name="Y">UInt32</member>
+	</class>
+	
+	<class name="hidEffectBones" />
+	
+	<class name="enumCollisionLayer" />
+
+	<class name="Impact">
+		<member hash="67F06359">String</member>
+	</class>
+	
 	<class name="Effect">
 		<member hash="D986CE26">String</member>
 		<member name="sEffectName">Hash</member>
 	</class>
+	
 	<class name="Entity">
 		<member name="hidName">String</member>
 		<member name="disEntityId">UInt64</member>
 		<member hash="D2B3429E">String</member>
 		<member name="hidEntityClass">Hash</member>
 		<member name="hidResourceCount">UInt32</member>
-		<member name="hidPos">Vector</member>
-		<member name="hidAngles">Vector</member>
-		<member name="hidPos_precise">Vector</member>
+		<member name="hidPos">Vector3</member>
+		<member name="hidAngles">Vector3</member>
+		<member name="hidPos_precise">Vector3</member>
 		<member name="hidConstEntity">Bool</member>
 	</class>
+	
 	<class name="Components">
 	</class>
+	
 	<class name="enum">
 		<member name="Value">String</member>
 	</class>
-	<class name="enumAnimalSpecies">
-	</class>
+	
+	<class name="enumAnimalSpecies" />
+	
 	<class name="World">
 		<member name="Objective">BinHex</member>
 		<member name="PGP">BinHex</member>
 		<member name="SafeHouse">BinHex</member>
 		<member name="CellTower">BinHex</member>
 	</class>
-	<class name="Area">
+	
+	<class name="Area" />
+	
+	<class name="KeyLocation" />
+	
+	<class name="StimsToExplode" />
+	
+	<class name="_Stim">
+		<member name="bPierceStim">Bool</member>
+		<member name="bCrushStim">Bool</member>
+		<member name="bBurnStim">Bool</member>
+		<member name="fBulletImpulseScale">Float</member>
+		<member name="fExplosionImpulseScale">Float</member>
+		<member name="selType">UInt32</member>
+		<member name="selStimType">UInt32</member>
+		<member name="hidEventName">String</member>
+		<member name="eventMask">UInt32</member>
+		<member name="hidTargetEntityId">UInt64</member>
+		<member hash="FC25E1F1">String</member>
+		<member name="sDetail">Hash</member>
+		<member name="nLevel">UInt32</member>
+		<member name="fRadius">Float</member>
+		<member name="bFalloff">Bool</member>
+		<member name="nFalloffMinLevel">UInt32</member>
+		<member name="hidShowType">BinHex</member>
+		<member name="hidShowRadius">BinHex</member>
+		<member name="fPhysImpulse">Float</member>
 	</class>
-	<class name="KeyLocation">
+	
+	<class name="Stim_ImpactDamage" extends="_Stim" />
+	
+	<class name="Stim" extends="_Stim" />
+	
+	<class name="enumStimType" />
+	
+	<class name="enumType" />
+	
+	<class name="Sound">
+		<member name="sndActive">String</member>
+		<member name="sndtpActive">Hash</member>
+		<member hash="EDFBC3D2">String</member>
+		<member name="matimpExplosionFx">Hash</member>
 	</class>
+	
+	<class name="DustBlast">
+		<member name="sndLeftSound">String</member>
+		<member name="sndRightSound">String</member>
+		<member name="sndtpSoundType">Hash</member>
+		<member name="fDistance">Float</member>
+		<member name="fSoundDuration">Float</member>
+	</class>
+	
+	<class name="ExplosionSound">
+		<member name="sndExplosionSound">String</member>
+		<member name="sndtpExplosionSoundType">UInt32</member>
+		<member name="sndLandSoundStart">String</member>
+		<member name="sndLandSoundStop">String</member>
+		<member name="sndtpLandSoundType">Hash</member>
+	</class>
+	
+	<class name="enumDelayExplodeType" />
+	
+	<class name="CameraShakeAndRumble" />
+	
+	<class name="ExplodeStims" />
+	
+	<class name="Stims" />
+	
+	<class name="RemainStims" />
+	
+	<class name="Particles">
+		<member hash="6D980293">String</member>
+		<member name="psTrail">Hash</member>
+		<member hash="38680A74">String</member>
+		<member name="psLand">Hash</member>
+		<member hash="8DF2AAC6">String</member>
+		<member name="psExplosion">Hash</member>
+		<member hash="8E6613D3">String</member>
+		<member name="psExplosionUnderwater">Hash</member>
+		<member hash="BC45A121">String</member>
+		<member name="psRemains">Hash</member>
+	</class>
+	
+	<class name="Light" />
+	
+	<class name="LightExplosion" />
+	
+	<class name="LightRemains" />
+	
+	<class name="Stages">
+		<member name="fMaxDistance">Float</member>
+		<member name="fMaxLifeTime">Float</member>
+	</class>
+	
+	<class name="Malfunction">
+		<member name="fFireSpeed">Float</member>
+		<member name="fFireTime">Float</member>
+		<member name="fGravity">Float</member>
+		<member name="fMalfunctionInAirProbability">Float</member>
+	</class>
+	
+	<class name="enumCategory" />
+	
+	<class name="MuzzleStims" />
+	
+	<class name="WeaponStims" />
+	
+	<class name="ImpactStims" />
+	
+	<class name="VictimStims" />
+	
+	<class name="_Stage">
+		<member name="fImpulse">Float</member>
+		<member name="fTime">Float</member>
+		<member name="fSpeed">Float</member>
+		<member name="fGravity">Float</member>
+		<member name="fMinTimeSpinning">Float</member>
+		<member name="fMaxTimeSpinning">Float</member>
+		<member name="fTimeStartSpinOnAir">Float</member>
+		<member name="fForce">Float</member>
+		<member name="fOnAirTurnSpeed">Float</member>
+		<member name="fSpinChangeDestTime">Float</member>
+		<member name="vectorPropellerStartPoint">Vector3</member>
+		<member name="vectorPropellerEndPoint">Vector3</member>
+		<member name="psStartPS">Hash</member>
+		<member name="psLoopPS">Hash</member>
+		<member name="sndStartSound">String</member>
+		<member name="sndtpStartSound">Hash</member>
+		<member name="sndLoopSound">String</member>
+		<member name="sndtpLoopSound">Hash</member>
+		<member name="sndLoopEndSound">String</member>
+		<member name="sndtpLoopEndSound">Hash</member>
+	</class>
+	
+	<class name="Fire" extends="_Stage" />
+	
+	<class name="Ignite" extends="_Stage" />
+	
+	<class name="Fall" extends="_Stage" />
+	
+	<class name="Spin" extends="_Stage" />
+	
+	<class name="FireStrategy" />
+	
+	<class name="ReliabilityLevelsData" />
+	
+	<class name="_ReliabilityLevelData">
+		<member name="fHorizontalRecoilPerShot">Float</member>
+		<member name="fVerticalRecoilPerShot">Float</member>
+		<member name="fBulletDeviationMax">Float</member>
+		<member name="fJamProbabilityPerReload">Float</member>
+	</class>
+	
+	<class name="Failure" extends="_ReliabilityLevelData" />
+	
+	<class name="Low" extends="_ReliabilityLevelData" />
+	
+	<class name="Medium" extends="_ReliabilityLevelData" />
+	
+	<class name="High" extends="_ReliabilityLevelData" />
+	<class name="enumLevel" />
+	
+	<class name="CommonProperties">
+		<member name="sName">String</member>
+		<member name="sDisplayName">String</member>
+		<member name="fReloadTime">Float</member>
+		<member name="bAutoReload">Bool</member>
+		<member name="bIsSilent">Bool</member>
+		<member name="bVisibleHolstered">Bool</member>
+		<member name="bEmitLight">Bool</member>
+		<member name="selReloadType">UInt32</member>
+		<member name="selWeaponClass">UInt32</member>
+		<member name="selFireStrategy">UInt32</member>
+		<member name="selReticleType">UInt32</member>
+		<member name="crosshairMagmaAreaName">String</member>
+		<member name="iBaseAccuracyLevel">UInt32</member>
+		<member name="fRange">Float</member>
+		<member name="vectorEffectiveRange">Vector2</member>
+		<member name="vectorEffectiveRangeIS">Vector2</member>
+		<member name="fUnjamTime">Float</member>
+		<member name="selJamType">UInt32</member>
+		<member name="iClipsForSelfDestruct">UInt32</member>
+		<member name="bIsIndestructible">Bool</member>
+		<member name="bIsBreakable">Bool</member>
+		<member name="fLookSensitivityFactor">Float</member>
+		<member name="fMoveSpeedFactor">Float</member>
+		<member name="fForcedReliability">Float</member>
+		<member name="fInitialJamCounter">Float</member>
+		<member name="archPickupArchetype">String</member>
+		<member name="fShootingAngle">Float</member>
+		<member name="fShootingIronsightAngle">Float</member>
+		<member name="bSingleHitHealthFailure">Bool</member>
+		<member name="fHealthFailureChanceModifier">Float</member>
+		<member name="selHitLocation_Torso_Severity">UInt32</member>
+		<member name="selHitLocation_Limb_Severity">UInt32</member>
+		<member name="selCategory">UInt32</member>
+		<member hash="E0FF29E0">String</member>
+		<member name="HolsterHandle">Hash</member>
+	</class>
+	<class name="enumReloadType" />
+	
+	<class name="enumWeaponClass" />
+	
+	<class name="enumFireStrategy" />
+	
+	<class name="enumReticleType" />
+	
+	<class name="FireRate">
+		<member name="fBusyDuration">Float</member>
+		<member name="iFireRate">Float</member>
+		<member name="selFireRateMode">UInt32</member>
+	</class>
+	
+	<class name="enumFireRateMode" />
+	
+	<class name="FireStrategyProperties">
+		<member hash="A58AA772">String</member>
+		<member name="StartBone">Hash</member>
+		<member name="fConsumeAmmoRate">Float</member>
+		<member name="bUseAngleSpread">Bool</member>
+		<member name="iBulletsShot">UInt32</member>
+		<member name="iBurstLength">UInt32</member>
+		<member name="fAngleYawBulletSpread">Float</member>
+		<member name="fAnglePitchBulletSpread">Float</member>
+		<member name="bHasMuzzleLight">Bool</member>
+		<member hash="F8F5F0F8">String</member>
+		<member name="matimpShellImpactFx">Hash</member>
+		<member hash="EB8DE264">String</member>
+		<member name="matimpBulletImpactFx">Hash</member>
+		<member hash="74A94828">String</member>
+		<member name="matimpSecondaryBulletImpactFx">Hash</member>
+		<member name="archProjectileArchetype">String</member>
+		<member name="fInitialImpulse">Float</member>
+		<member name="fMalfunctionImpulse">Float</member>
+		<member name="fMalfunctionDetonateAfterHit">Float</member>
+		<member name="bActivateOnLaunch">Bool</member>
+		<member name="bProjectileBoundOnWeapon">Bool</member>
+		<member hash="16E19113">String</member>
+		<member name="sShootBone">Hash</member>
+		<member name="sndMalfunctionLoopSound">String</member>
+		<member name="sndtpMalfunctionLoopSound">Hash</member>
+		<member name="sndMalfunctionEndLoopSound">String</member>
+		<member name="sndtpMalfunctionEndLoopSound">Hash</member>
+		<member name="sndMalfunctionLoopTPSound">String</member>
+		<member name="sndtpMalfunctionLoopTPSound">Hash</member>
+		<member name="sndMalfunctionEndTPLoopSound">String</member>
+		<member name="sndtpMalfunctionEndTPLoopSound">Hash</member>
+		<member name="bRotateBaril">Bool</member>
+	</class>
+	
+	<class name="Network">
+		<member name="strControllerNetobjectType">String</member>
+	</class>
+	
+	<class name="FuelGauge">
+		<member hash="F7A0C8D5">String</member>
+		<member name="sNeedleBone">Hash</member>
+		<member name="fNeedleMaxRotationInDegrees">Float</member>
+	</class>
+	
+	<class name="FlameMesh">
+		<member name="fSize">Float</member>
+		<member name="fSplineTension">Float</member>
+		<member name="fSplineContinuity">Float</member>
+		<member name="fSplineBias">Float</member>
+		<member name="fPSSpawnTime">Float</member>
+		<member name="archSpawnTimeAngularSpeedRatioCurve">String</member>
+		<member name="fSegmentLength">Float</member>
+		<member name="fRestitutionInterpolationDist">Float</member>
+		<member name="fSizeGrowInterpolationDist">Float</member>
+		<member name="fSizeShrinkInterpolationDist">Float</member>
+		<member name="fGravityScalePlayerPitch">Float</member>
+		<member name="fGravityInterpolationDist">Float</member>
+		<member name="iRingNVertex">Float</member>
+		<member name="fRingStartAngle">Float</member>
+		<member name="fTeselation">Float</member>
+		<member name="fSpeed">Float</member>
+		<member name="bInterpolate">Bool</member>
+		<member hash="93D2AFB5">String</member>
+		<member name="psParticleSystem">Hash</member>
+		<member hash="3924E150">String</member>
+		<member name="texTexture">Hash</member>
+		<member name="fTextureFrames">Float</member>
+		<member name="fTextureChangeTime">Float</member>
+	</class>
+	
+	<class name="Sounds">
+		<member name="sndPickupGrabSound_1st">String</member>
+		<member name="sndtpPickupGrabSoundType_1st">UInt32</member>
+		<member name="sndPickupGrabSound_3rd">String</member>
+		<member name="sndtpPickupGrabSoundType_3rd">UInt32</member>
+		<member name="sndPickupEquipSound_1st">String</member>
+		<member name="sndtpPickupEquipSoundType_1st">UInt32</member>
+		<member name="sndPickupEquipSound_3rd">String</member>
+		<member name="sndtpPickupEquipSoundType_3rd">UInt32</member>
+	</class>
+	
+	<class name="SoundsWeapon">
+		<member name="sndPickAmmo">String</member>
+		<member name="sndtpPickAmmoSoundType">UInt32</member>
+	</class>
+	
+	<!-- Native classes -->
 	
 	<class name="CAABBPartitionManager" extends="CSingletonEntity" />
 	<class name="CAccountService" extends="IGameModeService" />
 	<class name="CAction" extends="CTask" />
 	<class name="CAddSEFactEvent" extends="CEntityEvent" />
+	
 	<class name="CAgent" extends="CAIObject">
-		<member name="AgentBlackboard">BinHex</member>
+		<member hash="24B313D8">String</member>
 		<member name="Brain">BinHex</member>
-		<member name="CAgent">BinHex</member>
+		<member hash="071B548C">String</member>
+		<member name="aiwsBrainWorkspace">Hash</member>
+		
+		<class name="PersonalityComponent">
+			<member hash="2B928622">String</member>
+			<member name="Type">Hash</member>
+			<!-- Personality -->
+		</class>
 	</class>
+	
 	<class name="CAgentAction" extends="CAction" />
 	<class name="CAgentDecision" extends="CDecision" />
 	<class name="CAgentScanner" extends="CScanner" />
 	<class name="CAIAlertedNearby" extends="CEntityEvent" />
 	<class name="CAIBuilding" extends="CGameAIObject" />
+	
 	<class name="CAIComponent" extends="CEntityComponent">
-		<member name="Type">BinHex</member>
-		<member name="AIObject">BinHex</member>
+		<member hash="2B928622">String</member>
+		<member name="Type">Hash</member>
+		<class name="AIObject">
+			<class name="DensityManagement">
+				<member name="bNeverDelete">Bool</member>
+				<member name="bLastToBeDeleted">Bool</member>
+			</class>
+		</class>
 	</class>
+	
 	<class name="CAIMountedWeapon" extends="CGameAIObject" />
-	<class name="CAIObject" extends="CAIObjectRoot" />
+	
+	<class name="CAIObject" extends="CAIObjectRoot">
+		<!-- AIObjectID -->
+	</class>
+	
 	<class name="CAIObjectRoot" extends="CNomadObject" />
 	<class name="CAIOcclusionVolumeComponent" extends="CEntityComponent" />
 	<class name="CAIShootMeEvent" extends="CEntityEvent" />
@@ -79,13 +424,31 @@
 	<class name="CAIWorld" extends="CCollective" />
 	<class name="CAlwaysLoaded" extends="CSingletonEntity" />
 	<class name="CAmbxComponent" extends="CEntityComponent" />
+	
 	<class name="CAnimal" extends="CGameObject">
 		<member hash="4E784950">String</member>
 	</class>
+	
 	<class name="CAnimalAgent" extends="CGameAgent" />
 	<class name="CAnimalBeautifierSelector" extends="CEntityComponent" />
 	<class name="CAnimalPersonality" extends="CLivingCreature" />
-	<class name="CAnimationComponent" extends="CEntityComponent" />
+	
+	<class name="CAnimationComponent" extends="CEntityComponent">
+		<member hash="F9F2D5F4">String</member>
+		<member name="fileSkeleton">Hash</member>
+		<member hash="E0AAD6E5">String</member>
+		<member name="fileFacialFile">Hash</member>
+		
+		<class name="MercKitFacialFiles">
+			<class name="Faces">
+				<member hash="0AF17627">String</member>
+				<member name="sHeadTag">Hash</member>
+				<member hash="89CE658A">String</member>
+				<member name="fileFacialActor">Hash</member>
+			</class>
+		</class>
+	</class>
+	
 	<class name="CAnimationPackageResource" extends="CResourceContainer" />
 	<class name="CAnimationResource" extends="CResourceContainer" />
 	<class name="CAnimFacialEvent" extends="CEntityEvent" />
@@ -175,7 +538,33 @@
 	<class name="CChallengeComponent" extends="CEntityComponent" />
 	<class name="CChallengeProjectile" extends="CChallenge" />
 	<class name="CChallengeWeapon" extends="CChallenge" />
-	<class name="CCharacterPhysComponent" extends="CPhysComponent" />
+	
+	<class name="CPhysCharacterControllerStanceDimensions">
+		<member name="vecStandCapsulePointA">Vector3</member>
+		<member name="vecStandCapsulePointB">Vector3</member>
+		<member name="fStandCapsuleRadius">Float</member>
+	</class>
+	
+	<class name="CPhysCharacterControllerEntityCreateParams">
+		<member name="fMass">Float</member>
+		<member name="bUpdateRotation">Bool</member>
+		<member name="bUseRigidBased">Bool</member>
+		<member name="fMaxSlope">Float</member>
+		<member name="fMaxTerrainSlope">Float</member>
+		
+		<class name="StandDimensions" extends="CPhysCharacterControllerStanceDimensions" />
+		<class name="CrouchDimensions" extends="CPhysCharacterControllerStanceDimensions" />
+		<class name="SwimDimensions" extends="CPhysCharacterControllerStanceDimensions" />
+	</class>
+	
+	<class name="CCharacterPhysComponent" extends="CPhysComponent">
+		<member name="RagdollCollideSpeedLimit">Float</member>
+		<member hash="041E4C28">String</member>
+		<member name="LockBone">Hash</member>
+		
+		<class name="CharacterParams" extends="CPhysCharacterControllerEntityCreateParams" />
+	</class>
+	
 	<class name="CCheckScoutEvent" extends="CBaseEvent" />
 	<class name="CClientDescriptor" extends="CNetDescriptor" />
 	<class name="CClientDescriptor_Agora" extends="CClientDescriptor" />
@@ -209,7 +598,11 @@
 	<class name="CConvoyMission" extends="CGameAIObject" />
 	<class name="CCorpseComponent" extends="CEntityComponent" />
 	<class name="CCounterEvent" extends="CEntityEvent" />
-	<class name="CCountersComponent" extends="CEntityComponent" />
+	
+	<class name="CCountersComponent" extends="CEntityComponent">
+		<member name="archStimEffectTable">String</member>
+	</class>
+	
 	<class name="CCountersComponentGO" extends="CCountersComponent" />
 	<class name="CCounterThresholdCrossedEvent" extends="CEntityEvent" />
 	<class name="CCounterTriggerComponent" extends="CBaseTriggerComponent" />
@@ -248,7 +641,12 @@
 	<class name="CDMSpawnPointService" extends="CSpawnPointService" />
 	<class name="CDominoBoxInstance" extends="CResourceContainer" />
 	<class name="CDominoBoxResource" extends="CResourceContainer" />
-	<class name="CDominoComponent" extends="CEntityComponent" />
+	
+	<class name="CDominoComponent" extends="CEntityComponent">
+		<member name="fileBoxPath">String</member>
+		<member name="hidStartOnLoad">Bool</member>
+	</class>
+	
 	<class name="CDominoEvent" extends="CEntityEvent" />
 	<class name="CDominoManager" extends="CSingletonEntity" />
 	<class name="CDominoService" extends="IGameModeService" />
@@ -264,10 +662,12 @@
 	<class name="CEnableNavMeshVolumeEvent" extends="CEntityEvent" />
 	<class name="CEndOfGameLogosPage" extends="CMenuPage" />
 	<class name="CEndOfGamePage" extends="CMenuPage" />
+	
 	<class name="CEntityComponent" extends="CNomadObject">
 		<member name="hidHasAliasName">Bool</member>
 		<member name="hidComponentClassName">String</member>
 	</class>
+	
 	<class name="CEntityDieEvent" extends="CEntityEvent" />
 	<class name="CEntityEvent" extends="CBaseEvent" />
 	<class name="CEntityEventAddContainer" extends="CEntityEvent" />
@@ -297,7 +697,24 @@
 	<class name="CEquipmentUseStrategy" extends="CNomadObject" />
 	<class name="CEventComponent" extends="CEntityComponent" />
 	<class name="CEventDriveReportLostOccupant" extends="CAIEvent" />
-	<class name="CExplosive" extends="CGameObject" />
+	
+	<class name="CExplosive" extends="CGameObject">
+		<member name="sUseString">String</member>
+		<member name="sCategory">String</member>
+		<member name="selDelayExplodeType">BinHex</member>
+		<member name="fPenetrateDistance">Float</member>
+		<member name="fDelayRemoveAfterExplosion">Float</member>
+		<member name="fDelaySendStimsRemain">Float</member>
+		<member name="bApplyRemainStimsOnlyOnce">Bool</member>
+		<member name="fTimerSendRemainStims">Float</member>
+		<member name="fHealthFailureChanceModifier">Float</member>
+		<member name="ExplodeSendEvent">BinHex</member>
+		<member name="bShouldExplodeUnderwater">Bool</member>
+		<member name="bShotJustMissedIsUsed">Bool</member>
+		<member name="fShotJustMissedDistance">Float</member>
+		<member name="archStickyFireFlame">BinHex</member>
+	</class>
+	
 	<class name="CExplosiveEvent" extends="CEntityEvent" />
 	<class name="CExportWorldDependenciesEvent" extends="CEntityEvent" />
 	<class name="CFaceActorResource" extends="CResource" />
@@ -334,8 +751,7 @@
 	<class name="CFanComponent" extends="CEntityComponent" />
 	<class name="CFCXActivatePresenceOperation" extends="CFCXGameOperation" />
 	<class name="CFCXAIBehaviorService" extends="IGameModeService" />
-	<class name="CFCXAIComponent" extends="CAIComponent">
-	</class>
+	<class name="CFCXAIComponent" extends="CAIComponent" />
 	<class name="CFcxAIEventDesertChange" extends="CEntityEvent" />
 	<class name="CFCXAIEventMercDied" extends="CEntityEvent" />
 	<class name="CFCXAntiCheatService" extends="IGameModeService" />
@@ -566,16 +982,26 @@
 	<class name="CFCXUnloadWorldOperation" extends="CFCXGameOperation" />
 	<class name="CFCXWaitDownloadCustomMapOperation" extends="CFCXGameOperation" />
 	<class name="CFCXWaitForEmptySessionOperation" extends="CFCXGameOperation" />
-	<class name="CFCXWeapon" extends="CWeapon" />
+	
+	<class name="CFCXWeapon" extends="CWeapon">
+		<member name="iAnimationValue">UInt32</member>
+		<member name="sndswtpWeaponStatusSoundSwitchType">Hash</member>
+		<member name="WeaponStatusSwitchValues">BinHex</member>
+		<member name="bUseHiResScope">Bool</member>
+		<member name="fHiResLowResScopeSwitchTransitionPoint">Float</member>
+	</class>
+	
 	<class name="CFCXWeaponsService" extends="CWeaponsService" />
 	<class name="CFCXWorldDemoManager" extends="CSingletonEntity" />
 	<class name="CFetchPrivilegesOperation" extends="CRendezVousOperation" />
+	
 	<class name="CFileDescriptorComponent" extends="CEntityComponent">
 		<member hash="2A7BCA49">String</member>
 		<member name="fileName">Hash</member>
 		<member name="SerializationEvent">BinHex</member>
 		<member name="hidDescriptor">BinHex</member>
 	</class>
+	
 	<class name="CFireComponent" extends="CEntityComponent" />
 	<class name="CFireManager" extends="CSingletonEntity" />
 	<class name="CFireNode" extends="CNomadObject" />
@@ -595,7 +1021,14 @@
 	<class name="CFlagStationNetworkComponent" extends="CNetworkComponent" />
 	<class name="CFlare" extends="CGameObject" />
 	<class name="CFlareExplosionEvent" extends="CEntityEvent" />
-	<class name="CFrankensteinComponent" extends="CEntityComponent" />
+
+	<class name="CFrankensteinComponent" extends="CEntityComponent">
+		<!-- ScriptEventOverrideID -->
+		<!-- Enable -->
+		<!-- LookatEntityTargetIds, TargetId, TargetId -->
+		<member name="bCheatKnees">Bool</member>
+	</class>
+	
 	<class name="CFrankensteinEvent" extends="CEntityEvent" />
 	<class name="CFrankensteinPoseResource" extends="CResourceContainer" />
 	<class name="CFriendListService" extends="IGameModeService" />
@@ -609,6 +1042,7 @@
 	<class name="CGadgetUseStrategy" extends="CEquipmentUseStrategy" />
 	<class name="CGadgetUseThrowStrategy" extends="CGadgetUseStrategy" />
 	<class name="CGadgetUseWatchStrategy" extends="CGadgetUseStrategy" />
+	
 	<class name="CGameAgent" extends="CAgent">
 		<member name="FlagField">BinHex</member>
 		<member name="bIsScripted">Bool</member>
@@ -636,6 +1070,7 @@
 		<member name="bNeverDelete">Bool</member>
 		<member name="bLastToBeDeleted">Bool</member>
 	</class>
+	
 	<class name="CGameAIObject" extends="CAIObject" />
 	<class name="CGameConfig" extends="CNomadConfigObject" />
 	<class name="CGameConnectOperation" extends="CSessionOperation" />
@@ -743,8 +1178,61 @@
 	<class name="CGRAmmoPilesRespawn" extends="CGRQueryParams" />
 	<class name="CGRAmmoPilesSpawnProjectiles" extends="CGRQueryParams" />
 	<class name="CGraphicClusterComponent" extends="CClusterComponent" />
-	<class name="CGraphicComponent" extends="CBaseGraphicComponent" />
-	<class name="CGraphicKitComponent" extends="CEntityComponent" />
+	
+	<class name="CGraphicComponent" extends="CBaseGraphicComponent">
+		<member name="bCastShadow">Bool</member>
+		<member name="bReceiveShadow">Bool</member>
+		<member name="bCastAmbientShadow">Bool</member>
+		<member name="olgLightGroup">Hash</member>
+		<member name="bAllowCullBySize">Bool</member>
+		<member name="agAmbientGroup">Hash</member>
+		<member name="bBehaveLikeAPickup">Bool</member>
+		<member name="bShowInReflection">Bool</member>
+		<member name="bAlwaysShowInReflection">Bool</member>
+		<member name="bOverrideLODSphere">Bool</member>
+		<member name="fLODSphereRadius">Float</member>
+		<member name="hidSkyOcclusion0">Hash</member>
+		<member name="hidSkyOcclusion1">Hash</member>
+		<member name="hidSkyOcclusion2">Hash</member>
+		<member name="hidSkyOcclusion3">Hash</member>
+		<member name="hidGroundColor">Hash</member>
+		<member name="hidObjectHeight">Float</member>
+		<member name="hidHeightAbove">BinHex</member>
+		<member name="hidHasAmbientValues">Bool</member>
+		
+		<class name="object">
+			<member name="hidIndex">UInt32</member>
+			<member hash="BF9B3A5C">String</member>
+			<member name="objModel">Hash</member>
+			<member name="hidMeshName">String</member>
+			<member hash="E1A0EE56">String</member>
+			<member name="hidNodeName">Hash</member>
+			<member hash="0D9C8B1A">String</member>
+			<member name="hidNodeNameLOD0">Hash</member>
+			<member name="hidDetailObject">Bool</member>
+		</class>
+	</class>
+	
+	<class name="SPartOverwrite">
+		<member hash="CE56B704">String</member>
+		<member name="PartID">Hash</member>
+		<member name="TextureIndex">UInt32</member>
+		<member name="ColorIndex">UInt32</member>
+	</class>
+	
+	<class name="CGraphicKitComponent" extends="CEntityComponent">
+		<member name="bRadomize">Bool</member>
+		<class name="Tags">
+			<class name="SpecializationTag">
+				<member hash="9B35862A">String</member>
+				<member name="sTag">Hash</member>
+			</class>
+		</class>
+		<class name="PartOverwrite">
+			<class name="ActivePartOverwrite" extends="SPartOverwrite" />
+		</class>
+	</class>
+	
 	<class name="CGrassDisplacementComponent" extends="CEntityComponent" />
 	<class name="CGRCanBackstab" extends="CGRQueryParams" />
 	<class name="CGRCanRemoveInventoryEntities" extends="CGRQueryParams" />
@@ -932,14 +1420,166 @@
 	<class name="CPathFindTester" extends="CAgent" />
 	<class name="CPathFollower" extends="CNomadObject" />
 	<class name="CPatrolBrain" extends="CBrain" />
+	
 	<class name="CPawn" extends="CGameObject">
-		<member name="Implementation">BinHex</member>
+		<!--<member name="Implementation">BinHex</member>-->
+		<member name="bIsAI">Bool</member>
+		<!-- Skills -->
+		<member hash="502D1B6A">String</member>
+		<member name="filePawnStateMachine">Hash</member>
+		<!-- Inventory -->
+		<!-- DesiredData -->
+		<!-- EffectiveData -->
+		<!-- JumpHeight -->
+		<!-- SavedMoveState -->
+		<!-- BonusPlans -->
+		<!-- StateDriver -->
+		<!-- PawnBlackboard -->
+		<!-- SerializationEvent -->
+		<!-- SerializationEvent -->
+		
 		<member name="Usable">Bool</member>
 		<member name="Enabled">Bool</member>
-		<member name="IsUsableOrientationNeeded">Bool</member>
+		<member name="IsUsableOrientationNeeded">Bool</member>-->
+		
+		<class name="Body" extends="CPawnBody" />		
+		<class name="Skills" />
+		<class name="Inventory" extends="SInventoryViewPawnImpl" />
+		<class name="IdleCycleBreaker">
+			<member name="fMinTime">Float</member>
+			<member name="fMaxTime">Float</member>
+		</class>
 	</class>
+	
 	<class name="CPawnAction" extends="CAgentAction" />
-	<class name="CPawnAgent" extends="CGameAgent" />
+	
+	<class name="CPawnAgent" extends="CGameAgent">
+		<!-- RescueAttempt -->
+		<!-- RescueCooldown -->
+		<!-- IsDead -->
+		<!-- FlareCooldown -->
+		<!-- IsUsingMountedWeapon -->
+		<!-- CurrentArmyMemberState -->
+		<!-- PreviousArmyMemberState -->
+		<!-- CurrentArmyMemberRole -->
+		<!-- DesiredArmyMemberRole -->
+		<!-- CurrentArmyMemberRoleAction -->
+		<!-- DesiredArmyMemberRoleAction -->
+		<!-- GotoFireRange -->
+		<!-- FireStrategy -->
+		<!-- LookStrategy -->
+		<!-- EmotionStrategy -->
+		<!-- AimStrategy -->
+		<!-- SpecialStrategy -->
+		<!-- CurrentAttackZone -->
+		<!-- ThreatLevelTimeCounter -->
+		<!-- ThreatLevel -->
+		<!-- PillarThresholdCross -->
+		<!-- RescueState -->
+		<!-- ThreatEventTimeStamp -->
+		<!-- ThreatLevelCounter -->
+		<!-- ThreatPriority -->
+		<!-- HealthFailureWhileHealing -->
+		<!-- ThresholdStartTime -->
+		<!-- TimeSinceLastShot -->
+		<!-- TimeSinceHMRFailure -->
+		<!-- MercBrain -->
+		<!-- MercBrainST -->
+		<!-- RescueSafe -->
+		<!-- ThresholdLevel -->
+		<!-- CurrentBuildingId -->
+		<!-- BumpAngle -->
+		<!-- BumpSpeed -->
+		<!-- PreviousBestTarget -->
+		<!-- CurrentBestTarget -->
+		<!-- SawSomethingLevel -->
+		<!-- AlertLevel -->
+		<!-- BlindCombatLevel -->
+		<!-- FuzzyVisibility -->
+		<!-- ClearVisibility -->
+		<!-- TimeOfDeath -->
+		<!-- IsPlayerInAIvsAIZone -->
+		<!-- InitialReinforcementRegionId -->
+		<!-- InitialStrategicZoneId -->
+		<!-- WeaponReadyTimer -->
+		<!-- LastMuzzleFlashTime -->
+		<!-- AiShootMeObjectId -->
+		<!-- LastBlindCombatNotification -->
+		<!-- HighestSocialRegionType -->
+		<!-- AllSocialRegionType -->
+		<!-- IsPlayer -->
+		<!-- LastTimeHurt -->
+		<!-- AlertLostTargetRushType -->
+		<!-- ProjEscapeType -->
+		<!-- WagerHandle -->
+		<!-- IsSpecialMissionBehaviourMerc -->
+		<!-- IsSafeHouseMerc -->
+		<!-- OutsideWagerLifeTime -->
+		<!-- WeaponCurrentClass -->
+		<!-- WeaponPreviousClass -->
+		<!-- WeaponLastTransitionTime -->
+		<!-- WeaponSwitchTo -->
+		<!-- ReservedEntrance -->
+		<!-- ReadyForMoveCallback -->
+		<!-- MoveCallbackLayer -->
+		<!-- ShineLensCounter -->
+		<!-- DominoDataArray, DominiData, DominoData -->
+		<!-- AutomaticScriptedScenePrefab -->
+		<!-- PlayingAnim -->
+		<!-- NextAnim -->
+		<!-- IntuitionTimer -->
+		<!-- GotIntuition -->
+		<!-- BulletJustMissed -->
+		<!-- MustDieNow -->
+		<!-- VehicleFallBackPosTimer -->
+		<!-- VehicleFallBackPositions -->
+		<!-- VariationID -->
+		<!-- VariationID2 -->
+		<member name="bHasALongRangeWeapon">Bool</member>
+		<member name="bOppositeArmy">Bool</member>
+		<member name="m_IdleFuzzyVal">Float</member>
+		<member name="m_IdleClearVal">Float</member>
+		<member name="m_SocialFuzzyVal">Float</member>
+		<member name="m_SocialClearVal">Float</member>
+		<member name="m_AlertFuzzyVal">Float</member>
+		<member name="m_AlertClearVal">Float</member>
+		<member name="m_CombatFuzzyVal">Float</member>
+		<member name="m_CombatClearVal">Float</member>
+		<member name="m_ThresholdFuzzyVal">Float</member>
+		<member name="m_ThresholdClearVal">Float</member>
+		<member name="m_SpecialFuzzyVal">Float</member>
+		<member name="m_SpecialClearVal">Float</member>
+		<member name="m_DeadFuzzyVal">Float</member>
+		<member name="m_DeadClearVal">Float</member>
+		<member name="m_VehicleFuzzyVal">Float</member>
+		<member name="m_VehicleClearVal">Float</member>
+		<member name="selArmy">UInt32</member>
+		<member name="selODU">UInt32</member>
+		<member name="selSpecialCharacterType">UInt32</member>
+		<member name="selAIInfamyMode">UInt32</member>
+		
+		<class name="enumArmy" />
+		<class name="enumODU" />
+		<class name="enumSpecialCharacterType" />
+		<class name="enumAIInfamyMode" />
+		
+		<class name="ShootingSystem">
+			<member name="archGroupNumberCurve">String</member>
+			<!-- TargetStatus -->
+			<!-- AimingDot -->
+			<member name="fMissWidth">Float</member>
+			<member name="fMissHeight">Float</member>
+			<member name="fTimerToMissTarget">Float</member>
+			<member name="fPointBlankDistance">Float</member>
+			<member name="fTimerToPointBlank">Float</member>
+			
+			<class name="ShooterStatus" extends="CPawnFactorParam" />
+			<class name="TargetStatus" extends="CPawnFactorParam" />
+		</class>
+		
+		<class name="SensorySystem" extends="CSensorySystem" />
+	</class>
+	
 	<class name="CPawnAgentRescueEvent" extends="CEntityEvent" />
 	<class name="CPawnBarkEvent" extends="CEntityEvent" />
 	<class name="CPawnBeautifier" extends="CEntityComponent" />
@@ -971,6 +1611,31 @@
 	<class name="CPawnBeautifierVehiclePassenger" extends="CPawnBeautifier" />
 	<class name="CPawnBeautifierVehicleRide" extends="CPawnBeautifierVehicle" />
 	<class name="CPawnBeautifierVehicleRidePassenger" extends="CPawnBeautifierDominoPlayer" />
+	
+	<class name="CPawnBody">
+		<member name="fJumpHeight">Float</member>
+		<member name="fJumpHeightExhausted">Float</member>
+		<member name="fGravity">Float</member>
+		<member name="fWalkingMaxSpeed">Float</member>
+		<member name="fWalkingMaxSpeedCrouch">Float</member>
+		<member name="fWalkingAcceleration">Float</member>
+		<member name="fWalkingDeceleration">Float</member>
+		<member name="archSprintCurve">BinHex</member>
+		<member name="fSprintingDeceleration">Float</member>
+		<member name="fClimbSpeed">Float</member>
+		<member name="fSwimmingMinDepth">Float</member>
+		<member name="fSwimmingMaxSpeed">Float</member>
+		<member name="fSwimmingAcceleration">Float</member>
+		<member name="fSwimmingDeceleration">Float</member>
+		<member name="fDivingMaxSpeed">Float</member>
+		<member name="fDivingAcceleration">Float</member>
+		<member name="fDivingDeceleration">Float</member>
+		<member name="fSprintingTurnModifier">Float</member>
+		<member name="fSprintingStrafeLimit">Float</member>
+		<member name="SwimmingClimbMinHeight">Float</member>
+		<member name="SwimmingClimbMaxHeight">Float</member>
+	</class>
+	
 	<class name="CPawnBonusPlanManager" extends="CNomadObject" />
 	<class name="CPawnDecision" extends="CAgentDecision" />
 	<class name="CPawnEnemyMonitor" extends="CEntityComponent" />
@@ -979,6 +1644,21 @@
 	<class name="CPawnEventFakeBullet" extends="CEntityEvent" />
 	<class name="CPawnEventInstantKill" extends="CEntityEvent" />
 	<class name="CPawnEventProcessLanding" extends="CEntityEvent" />
+	
+	<class name="CPawnFactorParam">
+		<member name="fStandingFactor">Float</member>
+		<member name="fCrouchingFactor">Float</member>
+		<member name="fMoveSpeedBabyStepFactor">Float</member>
+		<member name="fMoveSpeedWalkFactor">Float</member>
+		<member name="fMoveSpeedJogFactor">Float</member>
+		<member name="fMoveSpeedRunFactor">Float</member>
+		<member name="fMoveSpeedSprintFactor">Float</member>
+		<member name="fDrivingFactor">Float</member>
+		<member name="fSwimmingFactor">Float</member>
+		<member name="fIronsightFactor">Float</member>
+		<member name="uiMaxHitPerSecondFactor">UInt32</member>
+	</class>
+	
 	<class name="CPawnInteractionMonitor" extends="CEntityComponent" />
 	<class name="CPawnMagicCrate" extends="CEntityComponent" />
 	<class name="CPawnNetworkComponent" extends="CNetworkComponent" />
@@ -986,13 +1666,26 @@
 	<class name="CPawnPushPlayerEvent" extends="CEntityEvent" />
 	<class name="CPawnScanner" extends="CAgentScanner" />
 	<class name="CPawnSoundAndFXComponent" extends="CCreatureSoundAndFXComponent" />
-	<class name="CPersistComponent" extends="CEntityComponent" />
+	
+	<class name="CPersistComponent" extends="CEntityComponent">
+		<member name="selLevel">UInt32</member>
+	</class>
+	
 	<class name="CPersistenceMgr" extends="IGameModeService" />
 	<class name="CPersonality" extends="CNomadObject" />
 	<class name="CPhoneCallEvent" extends="CEntityEvent" />
 	<class name="CPhysBulletHitStim" extends="CPhysStim" />
 	<class name="CPhysCollisionStim" extends="CPhysStim" />
-	<class name="CPhysComponent" extends="CEntityComponent" />
+	
+	<class name="CPhysComponent" extends="CEntityComponent">
+		<member hash="527E7674">String</member>
+		<member name="hidResourceId">Hash</member>
+		<!--<member name="PartType">BinHex</member>
+		<member name="Velocity">BinHex</member>
+		<member name="CollisionSystemGroup">BinHex</member>
+		<member name="Enable">BinHex</member>-->
+	</class>
+	
 	<class name="CPhysEntityCreateParams" extends="CNomadObject" />
 	<class name="CPhysExplosionStim" extends="CPhysStim" />
 	<class name="CPhysicalFile" extends="IFile" />
@@ -1022,7 +1715,24 @@
 	<class name="CPickupPile" extends="CPickup" />
 	<class name="CPickupPileNetworkComponent" extends="CCompoundPhysNetworkComponent" />
 	<class name="CPickupScoutedEvent" extends="CEntityEvent" />
-	<class name="CPickupWeapon" extends="CPickup" />
+	
+	<class name="CPickupWeapon" extends="CPickup">
+		<member name="bEnable">Bool</member>
+		<member name="fRespawnTime">Float</member>
+		<member name="bCustomBoundingBox">Bool</member>
+		<member name="vectorBoundingBoxSize">Vector3</member>
+		<member name="vectorBoundingBoxOffset">Vector3</member>
+		<member name="bAffectedLightPickup">Bool</member>
+		<member name="bPickable">Bool</member>
+		<member name="sUsageString">String</member>
+		<member name="objGeometryPreload">String</member>
+		<member name="Priority">UInt32</member>
+		<member name="bCanBeScouted">Bool</member>
+		<member name="archWeapon">String</member>
+		<member name="iMinAmmo">UInt32</member>
+		<member name="iMaxAmmo">UInt32</member>
+	</class>
+	
 	<class name="CPierAnchor" extends="CGameAIObject" />
 	<class name="CPlan" extends="CAction" />
 	<class name="CPlayActionBrain" extends="CBrain" />
@@ -1085,13 +1795,37 @@
 	<class name="CResourceNotifier" extends="CResourceContainer" />
 	<class name="CResourceWatch" extends="CResourceNotifier" />
 	<class name="CRigidGraphicComponent" extends="CStaticGraphicComponent" />
-	<class name="CRigidPhysComponent" extends="CPhysComponent" />
+	
+	<class name="CRigidPhysComponent" extends="CPhysComponent">
+		<member hash="527E7674">String</member>
+		<member name="hidResourceId">Hash</member>
+		<member name="bDisabledAtStart">Bool</member>
+		<member name="bAlwaysStatic">Bool</member>
+		<member name="bCreateAsStatic">Bool</member>
+		<member name="bUseFastCollision">Bool</member>
+		<member name="bDisappearOnDeath">Bool</member>
+		<member name="bUseMaxTerrainSlope">Bool</member>
+		<member name="sndDestructionSound">String</member>
+		<member name="fHealth">Float</member>
+		<member name="fSelfCollOverrideSpeed">Float</member>
+		<member name="selCollisionLayer">UInt32</member>
+		<member name="ResourceIndex">UInt32</member>
+		<member name="vectorCenterOfMassOffset">Vector3</member>
+		<member name="fFloatingScale">Float</member>
+		<member name="fWaterFriction">Float</member>
+		<member name="sndtpDestructionSoundType">Hash</member>
+	</class>
+	
 	<class name="CRigidPhysOnDamageEvent" extends="CEntityEvent" />
 	<class name="CRigidPhysOnDieEvent" extends="CEntityEvent" />
 	<class name="CRigidPhysOnStateChangeEvent" extends="CEntityEvent" />
 	<class name="CRoadSign" extends="CEntityComponent" />
 	<class name="CRoadSignManager" extends="CSingletonEntity" />
-	<class name="CRocket" extends="CGameObject" />
+	
+	<class name="CRocket" extends="CGameObject">
+		<member name="sFXBone">Hash</member>
+	</class>
+	
 	<class name="CSafeHouseComponent" extends="CEntityComponent" />
 	<class name="CSaveAtNextUpdateEvent" extends="CEntityEvent" />
 	<class name="CSaveGamePage" extends="CGameFilesListPage" />
@@ -1161,6 +1895,64 @@
 	<class name="CSectorPreloadResource" extends="CResource" />
 	<class name="CSectorResource" extends="CResourceContainer" />
 	<class name="CSectorSpawnCategory" extends="CResourceNotifier" />
+	
+	<class name="CSensorySystem" extends="CNomadObject">
+		<class name="FOVParameters">
+			<class name="FOVMultipliers">
+				<member name="fPreCombatMultiplier">Float</member>
+				<member name="fCombatMultiplier">Float</member>
+				<member name="fPostCombatMultiplier">Float</member>
+				<member name="fPlayerInVehicleMultiplier">Float</member>
+				<member name="fNightTimeMultiplier">Float</member>
+				<member name="fSniperLengthMultiplier">Float</member>
+				<member name="fSniperAngleMultiplier">Float</member>
+			</class>
+			
+			<class name="_RegionFOV">
+				<class name="_FOV">
+					<member name="fLength">Float</member>
+					<member name="fAngle">Float</member>
+				</class>
+				
+				<class name="FocusFOV" extends="_FOV" />
+				<class name="PeripheralFOV" extends="_FOV" />
+			</class>
+			
+			<class name="DesertFOV" extends="_RegionFOV" />
+			<class name="SavannahFOV" extends="_RegionFOV" />
+			<class name="JungleFOV" extends="_RegionFOV" />
+		</class>
+		
+		<class name="VisibilityEvaluatorParameters">
+			<class name="Weights">
+				<member name="fDistanceEvaluatorWeight">Float</member>
+				<member name="fFOVEvaluatorWeight">Float</member>
+				<member name="fPawnSamplingEvaluatorWeight">Float</member>
+				<member name="fOcclusionEvaluatorWeight">Float</member>
+				<member name="fVegetationEvaluatorWeight">Float</member>
+				<member name="fStanceEvaluatorWeight">Float</member>
+				<member name="fSpeedEvaluatorWeight">Float</member>
+				<member name="fAmbientLightEvaluatorWeight">Float</member>
+			</class>
+			<class name="InternalValues">
+				<member name="fDistanceEvaluator_FullVisibilityRatio">Float</member>
+				<member name="fDistanceEvaluator_MinVisibilityAtMaxFOVRange">Float</member>
+				<member name="fSpeedEvaluator_StandingStillVisibilityFactor">Float</member>
+				<member name="fFOVEvaluator_VisibilityFactorAtFOVLimit">Float</member>
+			</class>
+		</class>
+		
+		<class name="SocialMechanic">
+			<member name="fStareDetectionTime">Float</member>
+			<member name="fAimAtDetectionTime">Float</member>
+			<member name="fIntrusionDistanceInnerRing">Float</member>
+			<member name="fIntrusionDistanceMidRing">Float</member>
+			<member name="fIntrusionDistanceOuterRing">Float</member>
+			<member name="fMaxChargingDistance">Float</member>
+			<member name="fMaxChargingAngle">Float</member>
+		</class>
+	</class>
+	
 	<class name="CSessionCreateGameOperation" extends="CSessionOperation" />
 	<class name="CSessionCreateOperation" extends="CSessionOperation" />
 	<class name="CSessionCreateOperation_Agora" extends="CSessionCreateServiceOperation" />
@@ -1183,7 +1975,13 @@
 	<class name="CSetNetInstanceIdEvent" extends="CBaseEvent" />
 	<class name="CSettingsPage" extends="CListMenuPage" />
 	<class name="CShortRangeResource" extends="CSectorResource" />
-	<class name="CSimpleAnimationComponent" extends="CEntityComponent" />
+	
+	<class name="CSimpleAnimationComponent" extends="CEntityComponent">
+		<member hash="F9F2D5F4">String</member>
+		<member name="fileSkeleton">Hash</member>
+		<member name="sPartName">String</member>
+	</class>
+	
 	<class name="CSimpleEntityEvent" extends="CEntityEvent" />
 	<class name="CSimpleNetworkComponent" extends="CNetworkComponent" />
 	<class name="CSimplePrimitiveComponent" extends="CRenderableComponent" />
@@ -1196,7 +1994,11 @@
 	<class name="CSniperPoint" extends="CGameAIObject" />
 	<class name="CSocialRegion" extends="CBasicRegionEntity" />
 	<class name="CSomeoneTalked" extends="CEntityEvent" />
-	<class name="CSoundComponent" extends="CEntityComponent" />
+	
+	<class name="CSoundComponent" extends="CEntityComponent">
+		<member name="sndptSoundPoint">Hash</member>
+	</class>
+	
 	<class name="CSoundEvent" extends="CEntityEvent" />
 	<class name="CSoundLineComponent" extends="CBasicShapeComponent" />
 	<class name="CSoundManager" extends="CSingletonEntity" />
@@ -1459,7 +2261,11 @@
 	<class name="CTravelStartOperation" extends="CGameOperation" />
 	<class name="CTravelStopOperation" extends="CGameOperation" />
 	<class name="CTriggerChangeCountEvent" extends="CEntityEvent" />
-	<class name="CTriggerComponent" extends="CEntityComponent" />
+	
+	<class name="CTriggerComponent" extends="CEntityComponent">
+		<member name="static">Bool</member>
+	</class>
+	
 	<class name="CTriggerEnableEvent" extends="CEntityEvent" />
 	<class name="CTriggerEvent" extends="CEntityEvent" />
 	<class name="CTriggerSimpleEvent" extends="CEntityEvent" />
@@ -1541,7 +2347,16 @@
 	<class name="ISpawnPointService" extends="IGameModeService" />
 	<class name="ITeamManager" extends="IGameModeService" />
 	<class name="SDecalDescription" extends="CNomadDbObjectNamed" />
-	<class name="SInventoryViewPawnImpl" extends="CNomadObject" />
+	<class name="SInventoryViewPawnImpl" extends="CNomadObject">
+		<member hash="8C965C28">String</member>
+		<member name="packInventoryPack">Hash</member>
+		<member name="archGPSVehicleArchetype">BinHex</member>
+		<member name="bUnlimitedAmmo">Bool</member>
+		<member name="bAutoReload">Bool</member>
+		<member name="bAutoDraw">Bool</member>
+		<member hash="130CDED8">String</member>
+		<member name="sInitialWeaponCategory">Hash</member>
+	</class>
 	<class name="SMixingPreset" extends="CNomadObject" />
 	<class name="SPhysMaterial" extends="CNomadDbObjectNamed" />
 	<class name="SSettings" extends="CNomadDbObjectNamed" />

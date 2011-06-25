@@ -43,7 +43,7 @@ namespace Gibbed.Dunia.ConvertBinary
         public static void Main(string[] args)
         {
             var mode = Mode.Unknown;
-            bool multiExport = false;
+            bool multiExport = true;
             bool showHelp = false;
 
             var options = new OptionSet()
@@ -114,7 +114,7 @@ namespace Gibbed.Dunia.ConvertBinary
             Console.WriteLine("Loading project...");
 
             var manager = ProjectData.Manager.Load();
-            var classes = new Dictionary<uint, ClassDefinition>();
+            IDefinitionProvider defs = null;
 
             if (manager.ActiveProject == null)
             {
@@ -123,7 +123,7 @@ namespace Gibbed.Dunia.ConvertBinary
             }
             else
             {
-                classes = LoadClasses(Path.Combine(manager.ActiveProject.ListsPath, "binary_classes.xml"));
+                defs = Definitions.Load(Path.Combine(manager.ActiveProject.ListsPath, "binary_classes.xml"));
             }
 
             if (mode == Mode.ToFCB)
@@ -223,15 +223,14 @@ namespace Gibbed.Dunia.ConvertBinary
                         {
                             writer.WriteStartElement("object");
 
-                            if (classes.ContainsKey(root.TypeHash) == true &&
-                                classes[root.TypeHash].Name != null)
+                            var def = defs.GetClassDefinition(root.TypeHash);
+
+                            if (def.Name != null)
                             {
-                                writer.WriteAttributeString("type", classes[root.TypeHash].Name);
+                                writer.WriteAttributeString("type", def.Name);
                             }
-                            else
-                            {
-                                writer.WriteAttributeString("hash", root.TypeHash.ToString("X8"));
-                            }
+
+                            writer.WriteAttributeString("hash", root.TypeHash.ToString("X8"));
 
                             int counter = 0;
                             int padLength = root.Children.Count.ToString().Length;
@@ -254,7 +253,7 @@ namespace Gibbed.Dunia.ConvertBinary
                                 using (var childWriter = XmlWriter.Create(childPath, settings))
                                 {
                                     childWriter.WriteStartDocument();
-                                    WriteNode(childWriter, child, classes);
+                                    WriteNode(childWriter, child, defs);
                                     childWriter.WriteEndDocument();
                                 }
 
@@ -274,7 +273,7 @@ namespace Gibbed.Dunia.ConvertBinary
                     using (var writer = XmlWriter.Create(outputPath, settings))
                     {
                         writer.WriteStartDocument();
-                        WriteNode(writer, bf.Root, classes);
+                        WriteNode(writer, bf.Root, defs);
                         writer.WriteEndDocument();
                     }
                 }
@@ -316,7 +315,7 @@ namespace Gibbed.Dunia.ConvertBinary
             string className;
             uint classHash;
 
-            LoadTypeAndHash(node, out className, out classHash);
+            Definitions.LoadTypeAndHash(node, out className, out classHash);
 
             var parent = new BinaryResourceFile.Object();
             parent.TypeHash = classHash;
@@ -327,7 +326,7 @@ namespace Gibbed.Dunia.ConvertBinary
                 string valueName;
                 uint valueHash;
 
-                LoadNameAndHash(values.Current, out valueName, out valueHash);
+                Definitions.LoadNameAndHash(values.Current, out valueName, out valueHash);
 
                 ValueType valueType;
                 string _valueType;
@@ -434,54 +433,32 @@ namespace Gibbed.Dunia.ConvertBinary
             return parent;
         }
 
-        private static MemberDefinition GetMember(
-            Dictionary<uint, ClassDefinition> classes, uint type, uint member)
+        private static void WriteNode(
+            XmlWriter writer,
+            BinaryResourceFile.Object node,
+            IDefinitionProvider provider)
         {
-            while (true)
-            {
-                if (classes.ContainsKey(type) == false)
-                {
-                    return null;
-                }
+            var def = provider.GetClassDefinition(node.TypeHash);
 
-                var parent = classes[type];
-
-                if (parent.Members.ContainsKey(member) == true)
-                {
-                    return parent.Members[member];
-                }
-
-                if (parent.Parent == null)
-                {
-                    return null;
-                }
-
-                type = parent.Parent.HashCRC32();
-            }
-        }
-
-        private static void WriteNode(XmlWriter writer, BinaryResourceFile.Object parent, Dictionary<uint, ClassDefinition> classes)
-        {
             writer.WriteStartElement("object");
 
-            if (classes.ContainsKey(parent.TypeHash) == true &&
-                classes[parent.TypeHash].Name != null)
+            if (def.Name != null)
             {
-                writer.WriteAttributeString("type", classes[parent.TypeHash].Name);
+                writer.WriteAttributeString("type", def.Name);
             }
             else
             {
-                writer.WriteAttributeString("hash", parent.TypeHash.ToString("X8"));
+                writer.WriteAttributeString("hash", node.TypeHash.ToString("X8"));
             }
 
-            if (parent.Values != null &&
-                parent.Values.Count > 0)
+            if (node.Values != null &&
+                node.Values.Count > 0)
             {
-                foreach (var kv in parent.Values)
+                foreach (var kv in node.Values)
                 {
                     writer.WriteStartElement("value");
 
-                    var member = GetMember(classes, parent.TypeHash, kv.Key);
+                    var member = def.GetMemberDefinition(kv.Key);
 
                     if (member != null && member.Name != null)
                     {
@@ -615,105 +592,16 @@ namespace Gibbed.Dunia.ConvertBinary
                 }
             }
 
-            if (parent.Children != null &&
-                parent.Children.Count > 0)
+            if (node.Children != null &&
+                node.Children.Count > 0)
             {
-                foreach (var child in parent.Children)
+                foreach (var child in node.Children)
                 {
-                    WriteNode(writer, child, classes);
+                    WriteNode(writer, child, def);
                 }
             }
 
             writer.WriteEndElement();
-        }
-
-        private static void LoadNameAndHash(
-            XPathNavigator node, out string name, out uint hash)
-        {
-            var _name = node.GetAttribute("name", "");
-            var _hash = node.GetAttribute("hash", "");
-
-            if (string.IsNullOrWhiteSpace(_name) == true &&
-                string.IsNullOrWhiteSpace(_hash) == true)
-            {
-                throw new FormatException();
-            }
-
-            name = string.IsNullOrWhiteSpace(_name) == false ? _name : null;
-            hash = name != null ? name.HashCRC32() : uint.Parse(_hash, NumberStyles.AllowHexSpecifier);
-        }
-
-        private static void LoadTypeAndHash(
-                    XPathNavigator node, out string type, out uint hash)
-        {
-            var _type = node.GetAttribute("type", "");
-            var _hash = node.GetAttribute("hash", "");
-
-            if (string.IsNullOrWhiteSpace(_type) == true &&
-                string.IsNullOrWhiteSpace(_hash) == true)
-            {
-                throw new FormatException();
-            }
-
-            type = string.IsNullOrWhiteSpace(_type) == false ? _type : null;
-            hash = type != null ? type.HashCRC32() : uint.Parse(_hash, NumberStyles.AllowHexSpecifier);
-        }
-
-        private static Dictionary<uint, ClassDefinition> LoadClasses(string path)
-        {
-            var defs = new Dictionary<uint, ClassDefinition>();
-
-            if (File.Exists(path) == false)
-            {
-                return defs;
-            }
-
-            using (var input = File.OpenRead(path))
-            {
-                var doc = new XPathDocument(input);
-                var nav = doc.CreateNavigator();
-
-                var classes = nav.Select("/classes/class");
-                while (classes.MoveNext() == true)
-                {
-                    var classDef = new ClassDefinition();
-
-                    string className;
-                    uint classHash;
-
-                    LoadNameAndHash(classes.Current, out className, out classHash);
-                    classDef.Name = className;
-
-                    var classParent = classes.Current.GetAttribute("extends", "");
-                    classDef.Parent = string.IsNullOrWhiteSpace(classParent) == true ?
-                        null : classParent;
-
-                    var members = classes.Current.Select("member");
-                    while (members.MoveNext() == true)
-                    {
-                        string memberName;
-                        uint memberHash;
-
-                        LoadNameAndHash(members.Current, out memberName, out memberHash);
-
-                        var type = members.Current.Value;
-                        if (Enum.IsDefined(typeof(ValueType), type) == false)
-                        {
-                            throw new FormatException();
-                        }
-
-                        classDef.Members.Add(memberHash, new MemberDefinition()
-                            {
-                                Name = memberName,
-                                Type = (ValueType)Enum.Parse(typeof(ValueType), type),
-                            });
-                    }
-
-                    defs.Add(classHash, classDef);
-                }
-            }
-
-            return defs;
         }
     }
 }
