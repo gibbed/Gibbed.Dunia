@@ -30,7 +30,7 @@ using CompressionScheme = Gibbed.Dunia.FileFormats.Big.CompressionScheme;
 
 namespace Gibbed.Dunia.Unpack
 {
-    internal class Program
+    public class Program
     {
         private static string GetExecutableName()
         {
@@ -43,6 +43,7 @@ namespace Gibbed.Dunia.Unpack
             bool extractUnknowns = true;
             bool noArt = true;
             bool overwriteFiles = false;
+            bool verbose = false;
 
             var options = new OptionSet()
             {
@@ -60,6 +61,11 @@ namespace Gibbed.Dunia.Unpack
                     "nu|no-unknowns",
                     "don't extract unknown files",
                     v => extractUnknowns = v == null
+                },
+                {
+                    "v|verbose",
+                    "be verbose",
+                    v => verbose = v != null
                 },
                 {
                     "h|help",
@@ -233,8 +239,11 @@ namespace Gibbed.Dunia.Unpack
                         continue;
                     }
 
-                    Console.WriteLine("[{0}/{1}] {2}",
-                        current, total, name);
+                    if (verbose == true)
+                    {
+                        Console.WriteLine("[{0}/{1}] {2}",
+                            current, total, name);
+                    }
 
                     using (var output = File.Create(entryPath))
                     {
