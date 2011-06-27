@@ -4,11 +4,11 @@ Observed vertex buffer formats:
 
 138 <0000000010001010>: 16 bytes
 
-		Unknown
-		
+    Unknown
+    
 3018 <0000101111001010>: 32 bytes
 
-		Unknown
+    Unknown
 
 3034 <0000101111011010>: 40 bytes
     
