@@ -517,18 +517,59 @@ tool to generate a (hopefully) friendly looking XML dump.
 	<class name="CBuildingInfoComponent" extends="CEntityComponent" />
 	<class name="CBulletTracerManager" extends="CSingletonEntity" />
 	<class name="CBurnableRegion" extends="CBasicShapeEntity" />
-	<class name="CCameraBoneComponent" extends="CCameraComponent" />
-	<class name="CCameraComponent" extends="CEntityComponent" />
+	
+	<class name="CCameraBoneComponent" extends="CCameraComponent">
+		<member hash="920A6E7C">String</member>
+		<member name="Bone">Hash</member>
+		<member name="Cinematic">Bool</member>
+	</class>
+	
+	<class name="CCameraComponent" extends="CEntityComponent">
+		<member name="fCameraBlendTime">Float</member>
+		<member name="fNearDistance">Float</member>
+		<member name="fFarDistance">Float</member>
+		<member name="fFOV">Float</member>
+		
+		<!-- FocusEntityID -->
+		<!-- Active -->
+	</class>
+	
 	<class name="CCameraEditorComponent" extends="CCameraComponent" />
-	<class name="CCameraFreeComponent" extends="CCameraNetworkComponent" />
+	
+	<class name="CCameraFreeComponent" extends="CCameraNetworkComponent">
+		<member name="fSpeed">Float</member>
+	</class>
+	
 	<class name="CCameraGameComponent" extends="CCameraNetworkComponent" />
 	<class name="CCameraGhostComponent" extends="CCameraFreeComponent" />
 	<class name="CCameraNetworkComponent" extends="CCameraComponent" />
-	<class name="CCameraPawnComponent" extends="CCameraGameComponent" />
+	
+	<class name="CCameraPawnComponent" extends="CCameraGameComponent">
+		<member hash="920A6E7C">String</member>
+		<member name="Bone">Hash</member>
+		<member name="DebugOffset">Vector3</member>
+		
+		<!--
+		NoiseFOVEnabled
+		NoiseFOVTimeCount
+		NoiseFOVTarget
+		NoiseFOVCurrent
+		-->
+	</class>
+	
 	<class name="CCameraShakeAndPadRumbleComponent" extends="CEntityComponent" />
 	<class name="CCameraShakeAndPadRumbleEvent" extends="CEntityEvent" />
-	<class name="CCameraSpectatorComponent" extends="CCameraNetworkComponent" />
-	<class name="CCameraThirdComponent" extends="CCameraNetworkComponent" />
+	
+	<class name="CCameraSpectatorComponent" extends="CCameraNetworkComponent">
+		<member name="fSpeed">Float</member>
+		<member name="fFastSpeed">Float</member>
+		<member name="fMaxHeight">Float</member>
+	</class>
+	
+	<class name="CCameraThirdComponent" extends="CCameraNetworkComponent">
+		<member name="fDistance">Float</member>
+	</class>
+	
 	<class name="CCampaignGameFile" extends="CGameFile" />
 	<class name="CCampaignGameFileHeader" extends="CGameFileHeader" />
 	<class name="CCanBeStabbed" extends="CEntityEvent" />
@@ -2336,7 +2377,15 @@ tool to generate a (hopefully) friendly looking XML dump.
 	<class name="CWeaponUsedEvent" extends="CEntityEvent" />
 	<class name="CWorldSector" extends="CResource" />
 	<class name="CXmlResource" extends="CResource" />
-	<class name="CZoneInfoComponent" extends="CEntityComponent" />
+	
+	<class name="CZoneInfoComponent" extends="CEntityComponent">
+		<member name="fSamplingRadius">Float</member>
+		<member name="uiGridSubdivisions">UInt32</member>
+		<member name="fDensityAdjustmentSpeed">Float</member>
+		<member name="fWeightScale">Float</member>
+		<member name="fWeightDistributionPower">Float</member>
+	</class>
+	
 	<class name="CZoneLogicManager" extends="CSingletonEntity" />
 	<class name="CZoneLogicRegion" extends="CBasicRegionEntity" />
 	<class name="CZoneSectorResource" extends="CResource" />
