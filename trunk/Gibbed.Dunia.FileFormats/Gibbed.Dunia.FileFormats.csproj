@@ -86,13 +86,13 @@
     <Compile Include="Geometry\CLUS.cs" />
     <Compile Include="Geometry\IBlockFactory.cs" />
     <Compile Include="Geometry\IKDA.cs" />
-    <Compile Include="Geometry\LOD.cs" />
-    <Compile Include="Geometry\LODS.cs" />
-    <Compile Include="Geometry\Node.cs" />
+    <Compile Include="Geometry\LODInfo.cs" />
+    <Compile Include="Geometry\LODs.cs" />
+    <Compile Include="Geometry\Nodes.cs" />
     <Compile Include="Geometry\O2BM.cs" />
     <Compile Include="Geometry\PCMP.cs" />
     <Compile Include="Geometry\Float2.cs" />
-    <Compile Include="Geometry\RMTL.cs" />
+    <Compile Include="Geometry\MaterialReference.cs" />
     <Compile Include="Geometry\Root.cs" />
     <Compile Include="Geometry\SKID.cs" />
     <Compile Include="Geometry\SKND.cs" />

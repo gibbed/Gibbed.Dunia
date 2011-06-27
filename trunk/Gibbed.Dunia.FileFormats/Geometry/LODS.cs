@@ -27,52 +27,105 @@ using Gibbed.Helpers;
 
 namespace Gibbed.Dunia.FileFormats.Geometry
 {
-    public class LODS : IBlock
+    public class LODs : IBlock
     {
         public BlockType Type
         {
-            get { return BlockType.LODS; }
+            get { return BlockType.LODs; }
         }
+
+        public List<LevelOfDetail> Items = new List<LevelOfDetail>();
 
         public void Deserialize(IBlock parent, Stream input)
         {
-            var count1 = input.ReadValueS32();
-            for (int i = 0; i < count1; i++)
+            var count = input.ReadValueS32();
+            this.Items.Clear();
+            for (int i = 0; i < count; i++)
             {
-                var unk0 = input.ReadValueF32();
-                var count2 = input.ReadValueS32();
-                for (int j = 0; j < count2; j++)
-                {
-                    var unk1 = input.ReadValueU32();
-                    var unk2 = input.ReadValueU32();
-                    var unk3 = input.ReadValueU32();
-                    var unk4 = input.ReadValueU32();
-                }
-
-                var count3 = input.ReadValueS32();
-                for (int j = 0; j < count3; j++)
-                {
-                    var unk5 = new byte[28];
-                    input.Read(unk5, 0, unk5.Length);
-                }
-
-                var unk6 = input.ReadValueU32();
-                // data is aligned to 16 bytes, ugh
-                input.Seek(input.Position.Align(16), SeekOrigin.Begin);
-                var unk7 = new byte[unk6];
-                input.Read(unk7, 0, unk7.Length);
-
-                var unk8 = input.ReadValueU32();
-                // data is aligned to 16 bytes, ugh
-                input.Seek(input.Position.Align(16), SeekOrigin.Begin);
-                var unk9 = new byte[unk8 * 2];
-                input.Read(unk9, 0, unk9.Length);
+                var lod = new LevelOfDetail();
+                lod.Deserialize(input);
+                this.Items.Add(lod);
             }
         }
 
         public void Serialize(IBlock parent, Stream output)
         {
             throw new NotImplementedException();
+        }
+
+        public class LevelOfDetail
+        {
+            public float Unknown0;
+            public List<Buffer> Buffers = new List<Buffer>();
+            public List<Primitive> Primitives = new List<Primitive>();
+            public byte[] VertexData;
+            public short[] Indices;
+
+            public void Deserialize(Stream input)
+            {
+                this.Unknown0 = input.ReadValueF32();
+                
+                var dataInfoCount = input.ReadValueS32();
+                this.Buffers.Clear();
+                for (int j = 0; j < dataInfoCount; j++)
+                {
+                    var dataInfo = new Buffer();
+                    dataInfo.Format = input.ReadValueU32();
+                    dataInfo.Size = input.ReadValueU32();
+                    dataInfo.Count = input.ReadValueU32();
+                    dataInfo.Offset = input.ReadValueU32();
+                    this.Buffers.Add(dataInfo);
+                }
+
+                var primitiveCount = input.ReadValueS32();
+                this.Primitives.Clear();
+                for (int j = 0; j < primitiveCount; j++)
+                {
+                    var primitive = new Primitive();
+                    primitive.BufferIndex = input.ReadValueS32();
+                    primitive.SkeletonIndex = input.ReadValueS32();
+                    primitive.MaterialIndex = input.ReadValueS32();
+                    primitive.IndicesStartIndex = input.ReadValueS32();
+                    primitive.Unknown4 = input.ReadValueU32();
+                    primitive.Unknown5 = input.ReadValueU32();
+                    primitive.Unknown6 = input.ReadValueU32();
+                    this.Primitives.Add(primitive);
+                }
+
+                var vertexDataSize = input.ReadValueU32();
+                // data is aligned to 16 bytes, ugh
+                input.Seek(input.Position.Align(16), SeekOrigin.Begin);
+                this.VertexData = new byte[vertexDataSize];
+                input.Read(this.VertexData, 0, this.VertexData.Length);
+
+                var indexCount = input.ReadValueU32();
+                // data is aligned to 16 bytes, ugh
+                input.Seek(input.Position.Align(16), SeekOrigin.Begin);
+                this.Indices = new short[indexCount];
+                for (int i = 0; i < indexCount; i++)
+                {
+                    this.Indices[i] = input.ReadValueS16();
+                }
+            }
+        }
+
+        public class Buffer
+        {
+            public uint Format;
+            public uint Size;
+            public uint Count;
+            public uint Offset;
+        }
+
+        public class Primitive
+        {
+            public int BufferIndex;
+            public int SkeletonIndex;
+            public int MaterialIndex;
+            public int IndicesStartIndex;
+            public uint Unknown4;
+            public uint Unknown5;
+            public uint Unknown6;
         }
 
         public IBlock CreateBlock(BlockType type)

@@ -27,45 +27,34 @@ using Gibbed.Helpers;
 
 namespace Gibbed.Dunia.FileFormats.Geometry
 {
-    public class Node : IBlock
+    public class MaterialReference : IBlock
     {
-        public List<UnknownData0> Unknown0
-            = new List<UnknownData0>();
-
         public BlockType Type
         {
-            get { return BlockType.Node; }
+            get { return BlockType.MaterialReference; }
         }
+
+        public uint Unknown00;
+        public List<string> Paths = new List<string>();
 
         public void Deserialize(IBlock parent, Stream input)
         {
             var count = input.ReadValueU32();
 
-            this.Unknown0.Clear();
+            this.Unknown00 = input.ReadValueU32();
+
+            this.Paths.Clear();
             for (uint i = 0; i < count; i++)
             {
-                var unknown = new UnknownData0();
-
-                unknown.Unknown0 = new byte[68];
-                input.Read(unknown.Unknown0, 0, unknown.Unknown0.Length);
-
                 var length = input.ReadValueU32();
-                unknown.Unknown1 = input.ReadString(length);
+                this.Paths.Add(input.ReadString(length));
                 input.Seek(1, SeekOrigin.Current); // skip null
-
-                this.Unknown0.Add(unknown);
             }
         }
 
         public void Serialize(IBlock parent, Stream output)
         {
             throw new NotImplementedException();
-        }
-
-        public class UnknownData0
-        {
-            public byte[] Unknown0;
-            public string Unknown1;
         }
 
         public IBlock CreateBlock(BlockType type)

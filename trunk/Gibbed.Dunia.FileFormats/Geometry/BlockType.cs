@@ -25,19 +25,19 @@ namespace Gibbed.Dunia.FileFormats.Geometry
     public enum BlockType : uint
     {
         Root = 0x00000000,
-        RMTL = 0x524D544C,
-        Node = 0x4E4F4445,
+        MaterialReference = 0x524D544C, // RMTL
+        Nodes = 0x4E4F4445,
         O2BM = 0x4F32424D,
         SKID = 0x534B4944,
         SKND = 0x534B4E44,
         CLUS = 0x434C5553,
-        LODS = 0x04C4F4453,
-        BoundingBox = 0x42424F58,
+        LODs = 0x04C4F4453, // LODS
+        BoundingBox = 0x42424F58, // BBOX
         BSPH = 0x42535048,
-        LOD = 0x004C4F44,
+        LODInfo = 0x004C4F44, // LOD\0
         PCMP = 0x50434D50,
         UCMP = 0x55434D50,
         IKDA = 0x494B4441,
-        MaterialDescriptor = 0x444D544C,
+        MaterialDescriptor = 0x444D544C, // DMTL
     }
 }
