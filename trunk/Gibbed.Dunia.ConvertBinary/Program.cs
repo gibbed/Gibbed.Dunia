@@ -389,7 +389,7 @@ namespace Gibbed.Dunia.ConvertBinary
 
                     case ValueType.Hash:
                     {
-                        valueData = BitConverter.GetBytes(uint.Parse(values.Current.Value, NumberStyles.AllowHexSpecifier));
+                        valueData = BitConverter.GetBytes(uint.Parse(values.Current.Value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture));
                         break;
                     }
 
@@ -409,36 +409,36 @@ namespace Gibbed.Dunia.ConvertBinary
 
                     case ValueType.UInt32:
                     {
-                        valueData = BitConverter.GetBytes(uint.Parse(values.Current.Value));
+                        valueData = BitConverter.GetBytes(uint.Parse(values.Current.Value, CultureInfo.InvariantCulture));
                         break;
                     }
 
                     case ValueType.UInt64:
                     {
-                        valueData = BitConverter.GetBytes(ulong.Parse(values.Current.Value));
+                        valueData = BitConverter.GetBytes(ulong.Parse(values.Current.Value, CultureInfo.InvariantCulture));
                         break;
                     }
 
                     case ValueType.Float:
                     {
-                        valueData = BitConverter.GetBytes(float.Parse(values.Current.Value));
+                        valueData = BitConverter.GetBytes(float.Parse(values.Current.Value, CultureInfo.InvariantCulture));
                         break;
                     }
 
                     case ValueType.Vector2:
                     {
                         valueData = new byte[8];
-                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("x").Value)), 0, valueData, 0, 4);
-                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("y").Value)), 0, valueData, 4, 4);
+                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("x").Value, CultureInfo.InvariantCulture)), 0, valueData, 0, 4);
+                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("y").Value, CultureInfo.InvariantCulture)), 0, valueData, 4, 4);
                         break;
                     }
 
                     case ValueType.Vector3:
                     {
                         valueData = new byte[12];
-                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("x").Value)), 0, valueData, 0, 4);
-                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("y").Value)), 0, valueData, 4, 4);
-                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("z").Value)), 0, valueData, 8, 4);
+                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("x").Value, CultureInfo.InvariantCulture)), 0, valueData, 0, 4);
+                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("y").Value, CultureInfo.InvariantCulture)), 0, valueData, 4, 4);
+                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("z").Value, CultureInfo.InvariantCulture)), 0, valueData, 8, 4);
                         break;
                     }
 
@@ -446,11 +446,7 @@ namespace Gibbed.Dunia.ConvertBinary
                     {
                         var rez = new XmlResourceFile();
 
-                        var nav = values.Current.CreateNavigator();
-                        if (nav.MoveToFirstChild() == false)
-                        {
-                            throw new FormatException();
-                        }
+                        var nav = values.Current.SelectSingleNode("rml");
 
                         rez.Root = ConvertXml.Program.ReadNode(nav);
 
@@ -544,7 +540,7 @@ namespace Gibbed.Dunia.ConvertBinary
                                     throw new FormatException();
                                 }
 
-                                writer.WriteValue(BitConverter.ToUInt32(kv.Value, 0).ToString("X8"));
+                                writer.WriteString(BitConverter.ToUInt32(kv.Value, 0).ToString("X8", CultureInfo.InvariantCulture));
                                 break;
                             }
 
@@ -559,7 +555,7 @@ namespace Gibbed.Dunia.ConvertBinary
                                     throw new FormatException();
                                 }
 
-                                writer.WriteValue(Encoding.UTF8.GetString(kv.Value, 0, kv.Value.Length - 1));
+                                writer.WriteString(Encoding.UTF8.GetString(kv.Value, 0, kv.Value.Length - 1));
                                 break;
                             }
 
@@ -570,7 +566,7 @@ namespace Gibbed.Dunia.ConvertBinary
                                     throw new FormatException();
                                 }
 
-                                writer.WriteValue(kv.Value[0] != 0 ? true : false);
+                                writer.WriteString((kv.Value[0] != 0 ? true : false).ToString());
                                 break;
                             }
 
@@ -581,7 +577,7 @@ namespace Gibbed.Dunia.ConvertBinary
                                     throw new FormatException();
                                 }
 
-                                writer.WriteValue(BitConverter.ToSingle(kv.Value, 0));
+                                writer.WriteString(BitConverter.ToSingle(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
                                 break;
                             }
 
@@ -592,7 +588,7 @@ namespace Gibbed.Dunia.ConvertBinary
                                     throw new FormatException();
                                 }
 
-                                writer.WriteValue(BitConverter.ToUInt32(kv.Value, 0).ToString());
+                                writer.WriteString(BitConverter.ToUInt32(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
                                 break;
                             }
 
@@ -603,7 +599,7 @@ namespace Gibbed.Dunia.ConvertBinary
                                     throw new FormatException();
                                 }
 
-                                writer.WriteValue(BitConverter.ToUInt64(kv.Value, 0).ToString());
+                                writer.WriteString(BitConverter.ToUInt64(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
                                 break;
                             }
 
@@ -614,8 +610,8 @@ namespace Gibbed.Dunia.ConvertBinary
                                     throw new FormatException();
                                 }
 
-                                writer.WriteElementString("x", BitConverter.ToSingle(kv.Value, 0).ToString());
-                                writer.WriteElementString("y", BitConverter.ToSingle(kv.Value, 4).ToString());
+                                writer.WriteElementString("x", BitConverter.ToSingle(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
+                                writer.WriteElementString("y", BitConverter.ToSingle(kv.Value, 4).ToString(CultureInfo.InvariantCulture));
                                 break;
                             }
 
@@ -626,9 +622,9 @@ namespace Gibbed.Dunia.ConvertBinary
                                     throw new FormatException();
                                 }
 
-                                writer.WriteElementString("x", BitConverter.ToSingle(kv.Value, 0).ToString());
-                                writer.WriteElementString("y", BitConverter.ToSingle(kv.Value, 4).ToString());
-                                writer.WriteElementString("z", BitConverter.ToSingle(kv.Value, 8).ToString());
+                                writer.WriteElementString("x", BitConverter.ToSingle(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
+                                writer.WriteElementString("y", BitConverter.ToSingle(kv.Value, 4).ToString(CultureInfo.InvariantCulture));
+                                writer.WriteElementString("z", BitConverter.ToSingle(kv.Value, 8).ToString(CultureInfo.InvariantCulture));
                                 break;
                             }
 

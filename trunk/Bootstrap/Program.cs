@@ -69,7 +69,8 @@ namespace Bootstrap
             }
 
             var manager = ProjectData.Manager.Load();
-            if (manager.ActiveProject == null)
+            if (manager.ActiveProject == null ||
+                string.IsNullOrWhiteSpace(manager.ActiveProject.InstallPath) == true)
             {
                 Console.WriteLine("Could not detect Far Cry 2 install directory. Bootstrap failed.");
                 return;
