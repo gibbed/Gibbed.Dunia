@@ -27,14 +27,15 @@ using Gibbed.Helpers;
 
 namespace Gibbed.Dunia.FileFormats.Geometry
 {
-    public class O2BM : IBlock
+    public class Nodes : IBlock
     {
+        public List<Node> Items
+            = new List<Node>();
+
         public BlockType Type
         {
-            get { return BlockType.O2BM; }
+            get { return BlockType.Nodes; }
         }
-
-        public List<UnknownData0> Items = new List<UnknownData0>();
 
         public void Deserialize(IBlock parent, Stream input)
         {
@@ -43,24 +44,31 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             this.Items.Clear();
             for (uint i = 0; i < count; i++)
             {
-                var item = new UnknownData0();
-                item.Unknown00 = input.ReadValueF32();
-                item.Unknown04 = input.ReadValueF32();
-                item.Unknown08 = input.ReadValueF32();
-                item.Unknown0C = input.ReadValueF32();
-                item.Unknown10 = input.ReadValueF32();
-                item.Unknown14 = input.ReadValueF32();
-                item.Unknown18 = input.ReadValueF32();
-                item.Unknown1C = input.ReadValueF32();
-                item.Unknown20 = input.ReadValueF32();
-                item.Unknown24 = input.ReadValueF32();
-                item.Unknown28 = input.ReadValueF32();
-                item.Unknown2C = input.ReadValueF32();
-                item.Unknown30 = input.ReadValueF32();
-                item.Unknown34 = input.ReadValueF32();
-                item.Unknown38 = input.ReadValueF32();
-                item.Unknown3C = input.ReadValueF32();
-                this.Items.Add(item);
+                var node = new Node();
+
+                node.NameHash = input.ReadValueU32();
+                node.NextSiblingIndex = input.ReadValueS32();
+                node.FirstChildIndex = input.ReadValueS32();
+                node.PreviousSiblingIndex = input.ReadValueS32();
+                node.Unknown10 = input.ReadValueF32();
+                node.Unknown14 = input.ReadValueF32();
+                node.Unknown18 = input.ReadValueF32();
+                node.Unknown1C = input.ReadValueF32();
+                node.Unknown20 = input.ReadValueF32();
+                node.Unknown24 = input.ReadValueF32();
+                node.Unknown28 = input.ReadValueF32();
+                node.Unknown2C = input.ReadValueF32();
+                node.Unknown30 = input.ReadValueF32();
+                node.Unknown34 = input.ReadValueF32();
+                node.O2BMIndex = input.ReadValueS32();
+                node.Unknown3C = input.ReadValueF32();
+                node.Unknown40 = input.ReadValueF32();
+
+                var length = input.ReadValueU32();
+                node.Name = input.ReadString(length);
+                input.Seek(1, SeekOrigin.Current); // skip null
+
+                this.Items.Add(node);
             }
         }
 
@@ -69,12 +77,12 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             throw new NotImplementedException();
         }
 
-        public class UnknownData0
+        public class Node
         {
-            public float Unknown00;
-            public float Unknown04;
-            public float Unknown08;
-            public float Unknown0C;
+            public uint NameHash;
+            public int NextSiblingIndex;
+            public int FirstChildIndex;
+            public int PreviousSiblingIndex;
             public float Unknown10;
             public float Unknown14;
             public float Unknown18;
@@ -85,13 +93,20 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             public float Unknown2C;
             public float Unknown30;
             public float Unknown34;
-            public float Unknown38;
+            public int O2BMIndex;
             public float Unknown3C;
+            public float Unknown40;
+            public string Name;
+
+            public override string ToString()
+            {
+                return this.Name ?? base.ToString();
+            }
         }
 
         public IBlock CreateBlock(BlockType type)
         {
-            return null;
+            throw new NotSupportedException();
         }
 
         public void AddChild(IBlock child)

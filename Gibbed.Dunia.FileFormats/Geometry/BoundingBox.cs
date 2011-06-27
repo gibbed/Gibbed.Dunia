@@ -34,23 +34,23 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             get { return BlockType.BoundingBox; }
         }
 
-        public float X1;
-        public float Y1;
-        public float Z1;
+        public float MinX;
+        public float MinY;
+        public float MinZ;
 
-        public float X2;
-        public float Y2;
-        public float Z2;
+        public float MaxX;
+        public float MaxY;
+        public float MaxZ;
 
         public void Deserialize(IBlock parent, Stream input)
         {
-            this.X1 = input.ReadValueF32();
-            this.Y1 = input.ReadValueF32();
-            this.Z1 = input.ReadValueF32();
+            this.MinX = input.ReadValueF32();
+            this.MinY = input.ReadValueF32();
+            this.MinZ = input.ReadValueF32();
 
-            this.X2 = input.ReadValueF32();
-            this.Y2 = input.ReadValueF32();
-            this.Z2 = input.ReadValueF32();
+            this.MaxX = input.ReadValueF32();
+            this.MaxY = input.ReadValueF32();
+            this.MaxZ = input.ReadValueF32();
         }
 
         public void Serialize(IBlock parent, Stream output)

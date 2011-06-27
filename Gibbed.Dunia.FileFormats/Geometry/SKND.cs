@@ -48,11 +48,22 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             {
                 var unknown = new UnknownData0();
 
-                unknown.Unknown0 = new byte[52];
-                input.Read(unknown.Unknown0, 0, unknown.Unknown0.Length);
+                unknown.Unknown00 = input.ReadValueF32();
+                unknown.Unknown04 = input.ReadValueF32();
+                unknown.Unknown08 = input.ReadValueF32();
+                unknown.Unknown0C = input.ReadValueF32();
+                unknown.Unknown10 = input.ReadValueF32();
+                unknown.Unknown14 = input.ReadValueF32();
+                unknown.Unknown18 = input.ReadValueF32();
+                unknown.Unknown1C = input.ReadValueF32();
+                unknown.Unknown20 = input.ReadValueF32();
+                unknown.Unknown24 = input.ReadValueF32();
+                unknown.Unknown28 = input.ReadValueF32();
+                unknown.Unknown2C = input.ReadValueU32();
+                unknown.Unknown30 = input.ReadValueU32();
 
                 var length = input.ReadValueU32();
-                unknown.Unknown1 = input.ReadString(length);
+                unknown.Name = input.ReadString(length);
 
                 input.Seek(1, SeekOrigin.Current); // skip null
 
@@ -67,8 +78,20 @@ namespace Gibbed.Dunia.FileFormats.Geometry
 
         public class UnknownData0
         {
-            public byte[] Unknown0;
-            public string Unknown1;
+            public float Unknown00;
+            public float Unknown04;
+            public float Unknown08;
+            public float Unknown0C;
+            public float Unknown10;
+            public float Unknown14;
+            public float Unknown18;
+            public float Unknown1C;
+            public float Unknown20;
+            public float Unknown24;
+            public float Unknown28;
+            public uint Unknown2C;
+            public uint Unknown30;
+            public string Name;
         }
 
         public IBlock CreateBlock(BlockType type)

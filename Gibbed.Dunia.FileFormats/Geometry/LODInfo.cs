@@ -27,19 +27,19 @@ using Gibbed.Helpers;
 
 namespace Gibbed.Dunia.FileFormats.Geometry
 {
-    public class LOD : IBlock
+    public class LODInfo : IBlock
     {
         public BlockType Type
         {
-            get { return BlockType.LOD; }
+            get { return BlockType.LODInfo; }
         }
 
-        public uint Unknown0;
+        public uint Count;
         public uint Unknown1;
 
         public void Deserialize(IBlock parent, Stream input)
         {
-            this.Unknown0 = input.ReadValueU32();
+            this.Count = input.ReadValueU32();
             this.Unknown1 = input.ReadValueU32();
         }
 
