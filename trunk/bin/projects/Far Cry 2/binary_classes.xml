@@ -371,6 +371,18 @@ tool to generate a (hopefully) friendly looking XML dump.
 		<member name="sndtpPickAmmoSoundType">UInt32</member>
 	</class>
 	
+	<!-- Why isn't this part of CCurve...? :argh: -->
+	<class name="curveCurve">
+		<member name="hidNumKnots">UInt32</member>
+		<class name="Knots">
+			<class name="Knot">
+				<member name="Value">Vector4</member>
+				<member name="Info">Vector4</member>
+				<member name="Type">UInt32</member>
+			</class>
+		</class>
+	</class>
+	
 	<!-- Native classes -->
 	
 	<class name="CAABBPartitionManager" extends="CSingletonEntity" />
