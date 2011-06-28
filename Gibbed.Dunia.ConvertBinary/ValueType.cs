@@ -28,10 +28,13 @@ namespace Gibbed.Dunia.ConvertBinary
         String,
         Bool,
         Float,
+        Int32,
         UInt32,
+        Int64,
         UInt64,
         Vector2,
         Vector3,
+        Vector4,
         Hash,
         Rml,
     }

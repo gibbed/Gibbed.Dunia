@@ -407,9 +407,21 @@ namespace Gibbed.Dunia.ConvertBinary
                         break;
                     }
 
+                    case ValueType.Int32:
+                    {
+                        valueData = BitConverter.GetBytes(int.Parse(values.Current.Value, CultureInfo.InvariantCulture));
+                        break;
+                    }
+
                     case ValueType.UInt32:
                     {
                         valueData = BitConverter.GetBytes(uint.Parse(values.Current.Value, CultureInfo.InvariantCulture));
+                        break;
+                    }
+
+                    case ValueType.Int64:
+                    {
+                        valueData = BitConverter.GetBytes(long.Parse(values.Current.Value, CultureInfo.InvariantCulture));
                         break;
                     }
 
@@ -439,6 +451,16 @@ namespace Gibbed.Dunia.ConvertBinary
                         Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("x").Value, CultureInfo.InvariantCulture)), 0, valueData, 0, 4);
                         Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("y").Value, CultureInfo.InvariantCulture)), 0, valueData, 4, 4);
                         Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("z").Value, CultureInfo.InvariantCulture)), 0, valueData, 8, 4);
+                        break;
+                    }
+
+                    case ValueType.Vector4:
+                    {
+                        valueData = new byte[16];
+                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("x").Value, CultureInfo.InvariantCulture)), 0, valueData, 0, 4);
+                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("y").Value, CultureInfo.InvariantCulture)), 0, valueData, 4, 4);
+                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("z").Value, CultureInfo.InvariantCulture)), 0, valueData, 8, 4);
+                        Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("w").Value, CultureInfo.InvariantCulture)), 0, valueData, 12, 4);
                         break;
                     }
 
@@ -581,6 +603,17 @@ namespace Gibbed.Dunia.ConvertBinary
                                 break;
                             }
 
+                            case ValueType.Int32:
+                            {
+                                if (kv.Value.Length != 4)
+                                {
+                                    throw new FormatException();
+                                }
+
+                                writer.WriteString(BitConverter.ToInt32(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
+                                break;
+                            }
+
                             case ValueType.UInt32:
                             {
                                 if (kv.Value.Length != 4)
@@ -589,6 +622,17 @@ namespace Gibbed.Dunia.ConvertBinary
                                 }
 
                                 writer.WriteString(BitConverter.ToUInt32(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
+                                break;
+                            }
+
+                            case ValueType.Int64:
+                            {
+                                if (kv.Value.Length != 8)
+                                {
+                                    throw new FormatException();
+                                }
+
+                                writer.WriteString(BitConverter.ToInt64(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
                                 break;
                             }
 
@@ -625,6 +669,20 @@ namespace Gibbed.Dunia.ConvertBinary
                                 writer.WriteElementString("x", BitConverter.ToSingle(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
                                 writer.WriteElementString("y", BitConverter.ToSingle(kv.Value, 4).ToString(CultureInfo.InvariantCulture));
                                 writer.WriteElementString("z", BitConverter.ToSingle(kv.Value, 8).ToString(CultureInfo.InvariantCulture));
+                                break;
+                            }
+
+                            case ValueType.Vector4:
+                            {
+                                if (kv.Value.Length != 4 * 4)
+                                {
+                                    throw new FormatException();
+                                }
+
+                                writer.WriteElementString("x", BitConverter.ToSingle(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
+                                writer.WriteElementString("y", BitConverter.ToSingle(kv.Value, 4).ToString(CultureInfo.InvariantCulture));
+                                writer.WriteElementString("z", BitConverter.ToSingle(kv.Value, 8).ToString(CultureInfo.InvariantCulture));
+                                writer.WriteElementString("w", BitConverter.ToSingle(kv.Value, 12).ToString(CultureInfo.InvariantCulture));
                                 break;
                             }
 

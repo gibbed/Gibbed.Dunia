@@ -55,7 +55,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
 
         public class LevelOfDetail
         {
-            public float Unknown0;
+            public float Unknown0; // seems to be a distance value for determining which LOD to use
             public List<Buffer> Buffers = new List<Buffer>();
             public List<Primitive> Primitives = new List<Primitive>();
             public byte[] VertexData;

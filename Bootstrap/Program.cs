@@ -97,6 +97,14 @@ namespace Bootstrap
                 }
             }
 
+            if (FileExistsInBig(
+                Path.Combine(basePath, @"patch.fat"),
+                @"generated\entitylibrarypatchoverride.fcb") == false)
+            {
+                Console.WriteLine(@"Your patch.fat doesn't seem to have generated\entitylibrarypatchoverride.fcb in it! Bootstraip failed.");
+                return;
+            }
+
             var mymodPath = Path.Combine(outputPath, "mymod");
             Directory.CreateDirectory(mymodPath);
 
@@ -123,7 +131,7 @@ namespace Bootstrap
 
             Console.WriteLine(@"Unpacking worlds.fat\world1\generated\entitylibrary_full.fcb...");
             
-            if (UnpackFile(
+            if (UnpackFileFromBig(
                 Path.Combine(basePath, @"worlds\worlds.fat"),
                 @"worlds\world1\generated\entitylibrary_full.fcb",
                 Path.Combine(librariesPath, "world1.fcb")) == false)
@@ -134,7 +142,7 @@ namespace Bootstrap
 
             Console.WriteLine(@"Unpacking worlds.fat\world2\generated\entitylibrary_full.fcb...");
 
-            if (UnpackFile(
+            if (UnpackFileFromBig(
                 Path.Combine(basePath, @"worlds\worlds.fat"),
                 @"worlds\world2\generated\entitylibrary_full.fcb",
                 Path.Combine(librariesPath, "world2.fcb")) == false)
@@ -199,7 +207,29 @@ namespace Bootstrap
             Console.WriteLine("All done! Be sure to read the README!");
         }
 
-        private static bool UnpackFile(string fatPath, string fileName, string outputPath)
+        private static bool FileExistsInBig(string fatPath, string fileName)
+        {
+            if (File.Exists(fatPath) == false)
+            {
+                return false;
+            }
+
+            var big = new BigFile();
+            using (var input = File.OpenRead(fatPath))
+            {
+                big.Deserialize(input);
+            }
+
+            var entries = big.Entries.Where(e => e.NameHash == fileName.HashFileNameCRC32());
+            if (entries.Count() == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool UnpackFileFromBig(string fatPath, string fileName, string outputPath)
         {
             var datPath = Path.ChangeExtension(fatPath, ".dat");
 

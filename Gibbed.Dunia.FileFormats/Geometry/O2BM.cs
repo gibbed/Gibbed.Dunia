@@ -34,7 +34,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             get { return BlockType.O2BM; }
         }
 
-        public List<UnknownData0> Items = new List<UnknownData0>();
+        public List<Matrix> Items = new List<Matrix>();
 
         public void Deserialize(IBlock parent, Stream input)
         {
@@ -43,23 +43,23 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             this.Items.Clear();
             for (uint i = 0; i < count; i++)
             {
-                var item = new UnknownData0();
-                item.Unknown00 = input.ReadValueF32();
-                item.Unknown04 = input.ReadValueF32();
-                item.Unknown08 = input.ReadValueF32();
-                item.Unknown0C = input.ReadValueF32();
-                item.Unknown10 = input.ReadValueF32();
-                item.Unknown14 = input.ReadValueF32();
-                item.Unknown18 = input.ReadValueF32();
-                item.Unknown1C = input.ReadValueF32();
-                item.Unknown20 = input.ReadValueF32();
-                item.Unknown24 = input.ReadValueF32();
-                item.Unknown28 = input.ReadValueF32();
-                item.Unknown2C = input.ReadValueF32();
-                item.Unknown30 = input.ReadValueF32();
-                item.Unknown34 = input.ReadValueF32();
-                item.Unknown38 = input.ReadValueF32();
-                item.Unknown3C = input.ReadValueF32();
+                var item = new Matrix();
+                item.M11 = input.ReadValueF32();
+                item.M12 = input.ReadValueF32();
+                item.M13 = input.ReadValueF32();
+                item.M14 = input.ReadValueF32();
+                item.M21 = input.ReadValueF32();
+                item.M22 = input.ReadValueF32();
+                item.M23 = input.ReadValueF32();
+                item.M24 = input.ReadValueF32();
+                item.M31 = input.ReadValueF32();
+                item.M32 = input.ReadValueF32();
+                item.M33 = input.ReadValueF32();
+                item.M34 = input.ReadValueF32();
+                item.M41 = input.ReadValueF32();
+                item.M42 = input.ReadValueF32();
+                item.M43 = input.ReadValueF32();
+                item.M44 = input.ReadValueF32();
                 this.Items.Add(item);
             }
         }
@@ -69,24 +69,24 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             throw new NotImplementedException();
         }
 
-        public class UnknownData0
+        public struct Matrix
         {
-            public float Unknown00;
-            public float Unknown04;
-            public float Unknown08;
-            public float Unknown0C;
-            public float Unknown10;
-            public float Unknown14;
-            public float Unknown18;
-            public float Unknown1C;
-            public float Unknown20;
-            public float Unknown24;
-            public float Unknown28;
-            public float Unknown2C;
-            public float Unknown30;
-            public float Unknown34;
-            public float Unknown38;
-            public float Unknown3C;
+            public float M11;
+            public float M12;
+            public float M13;
+            public float M14;
+            public float M21;
+            public float M22;
+            public float M23;
+            public float M24;
+            public float M31;
+            public float M32;
+            public float M33;
+            public float M34;
+            public float M41;
+            public float M42;
+            public float M43;
+            public float M44;
         }
 
         public IBlock CreateBlock(BlockType type)
