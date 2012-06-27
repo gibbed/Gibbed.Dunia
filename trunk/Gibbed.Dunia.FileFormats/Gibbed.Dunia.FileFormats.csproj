@@ -69,6 +69,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AIWorkspaceResourceFile.cs" />
     <Compile Include="BigFile.cs" />
     <Compile Include="Big\CompressionScheme.cs" />
     <Compile Include="Big\Entry.cs" />

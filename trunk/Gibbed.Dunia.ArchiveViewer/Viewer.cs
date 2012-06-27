@@ -292,8 +292,6 @@ namespace Gibbed.Dunia.ArchiveViewer
 
         private static string DetectExtension(Stream input, Big.Entry entry)
         {
-            string extension;
-
             var guess = new byte[64];
             int read = 0;
 

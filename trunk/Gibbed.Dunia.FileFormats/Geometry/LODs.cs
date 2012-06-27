@@ -65,9 +65,9 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             {
                 this.Unknown0 = input.ReadValueF32();
                 
-                var dataInfoCount = input.ReadValueS32();
+                var bufferCount = input.ReadValueS32();
                 this.Buffers.Clear();
-                for (int j = 0; j < dataInfoCount; j++)
+                for (int j = 0; j < bufferCount; j++)
                 {
                     var dataInfo = new Buffer();
                     dataInfo.Format = input.ReadValueU32();
