@@ -30,7 +30,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Gibbed.FarCry2.MapUnpack")]
 [assembly: AssemblyDescription("http://gib.me/")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Gibbed")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Gibbed.FarCry2.MapUnpack")]
 [assembly: AssemblyCopyright("Copyright © Gibbed 2012")]
 [assembly: AssemblyTrademark("")]
