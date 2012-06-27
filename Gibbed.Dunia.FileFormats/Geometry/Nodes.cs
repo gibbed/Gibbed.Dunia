@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -23,7 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats.Geometry
 {
@@ -37,34 +37,34 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             get { return BlockType.Nodes; }
         }
 
-        public void Deserialize(IBlock parent, Stream input)
+        public void Deserialize(IBlock parent, Stream input, Endian endian)
         {
-            var count = input.ReadValueU32();
+            var count = input.ReadValueU32(endian);
 
             this.Items.Clear();
             for (uint i = 0; i < count; i++)
             {
                 var node = new Node();
 
-                node.NameHash = input.ReadValueU32();
-                node.NextSiblingIndex = input.ReadValueS32();
-                node.FirstChildIndex = input.ReadValueS32();
-                node.PreviousSiblingIndex = input.ReadValueS32();
-                node.Unknown10 = input.ReadValueF32();
-                node.Unknown14 = input.ReadValueF32();
-                node.Unknown18 = input.ReadValueF32();
-                node.Unknown1C = input.ReadValueF32();
-                node.Unknown20 = input.ReadValueF32();
-                node.Unknown24 = input.ReadValueF32();
-                node.Unknown28 = input.ReadValueF32();
-                node.Unknown2C = input.ReadValueF32();
-                node.Unknown30 = input.ReadValueF32();
-                node.Unknown34 = input.ReadValueF32();
-                node.O2BMIndex = input.ReadValueS32();
-                node.Unknown3C = input.ReadValueF32();
-                node.Unknown40 = input.ReadValueF32();
+                node.NameHash = input.ReadValueU32(endian);
+                node.NextSiblingIndex = input.ReadValueS32(endian);
+                node.FirstChildIndex = input.ReadValueS32(endian);
+                node.PreviousSiblingIndex = input.ReadValueS32(endian);
+                node.Unknown10 = input.ReadValueF32(endian);
+                node.Unknown14 = input.ReadValueF32(endian);
+                node.Unknown18 = input.ReadValueF32(endian);
+                node.Unknown1C = input.ReadValueF32(endian);
+                node.Unknown20 = input.ReadValueF32(endian);
+                node.Unknown24 = input.ReadValueF32(endian);
+                node.Unknown28 = input.ReadValueF32(endian);
+                node.Unknown2C = input.ReadValueF32(endian);
+                node.Unknown30 = input.ReadValueF32(endian);
+                node.Unknown34 = input.ReadValueF32(endian);
+                node.O2BMIndex = input.ReadValueS32(endian);
+                node.Unknown3C = input.ReadValueF32(endian);
+                node.Unknown40 = input.ReadValueF32(endian);
 
-                var length = input.ReadValueU32();
+                var length = input.ReadValueU32(endian);
                 node.Name = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
@@ -72,7 +72,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             }
         }
 
-        public void Serialize(IBlock parent, Stream output)
+        public void Serialize(IBlock parent, Stream output, Endian endian)
         {
             throw new NotImplementedException();
         }

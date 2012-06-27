@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -25,92 +25,71 @@ using System.Runtime.InteropServices;
 
 namespace Gibbed.Dunia.FileFormats
 {
+    // ReSharper disable InconsistentNaming
     public static class LZO1x
+        // ReSharper restore InconsistentNaming
     {
-        private static bool Is64Bit = DetectIs64Bit();
+        private static readonly bool _Is64Bit = DetectIs64Bit();
+
         private static bool DetectIs64Bit()
         {
             return Marshal.SizeOf(IntPtr.Zero) == 8;
         }
 
-        private sealed class Native32
+        private static class Native32
         {
-            [DllImport("lzo1x_32.dll",
-                EntryPoint = "#67",
-                CallingConvention = CallingConvention.StdCall)]
-            internal static extern int Compress(
-                byte[] inbuf,
-                uint inlen,
-                byte[] outbuf,
-                ref uint outlen,
-                byte[] workbuf);
+            [DllImport("lzo1x_32.dll", EntryPoint = "#67", CallingConvention = CallingConvention.StdCall)]
+            internal static extern int NativeCompress(byte[] inbuf,
+                                                      uint inlen,
+                                                      byte[] outbuf,
+                                                      ref uint outlen,
+                                                      byte[] workbuf);
 
-            [DllImport("lzo1x_32.dll",
-                EntryPoint = "#68",
-                CallingConvention = CallingConvention.StdCall)]
-            internal static extern int Decompress(
-                byte[] inbuf,
-                uint inlen,
-                byte[] outbuf,
-                ref uint outlen);
+            [DllImport("lzo1x_32.dll", EntryPoint = "#68", CallingConvention = CallingConvention.StdCall)]
+            internal static extern int NativeDecompress(byte[] inbuf, uint inlen, byte[] outbuf, ref uint outlen);
         }
 
-        private sealed class Native64
+        private static class Native64
         {
-            [DllImport("lzo1x_64.dll",
-                EntryPoint = "#67",
-                CallingConvention = CallingConvention.StdCall)]
-            internal static extern int Compress(
-                byte[] inbuf,
-                uint inlen,
-                byte[] outbuf,
-                ref uint outlen,
-                byte[] workbuf);
+            [DllImport("lzo1x_64.dll", EntryPoint = "#67", CallingConvention = CallingConvention.StdCall)]
+            internal static extern int NativeCompress(byte[] inbuf,
+                                                      uint inlen,
+                                                      byte[] outbuf,
+                                                      ref uint outlen,
+                                                      byte[] workbuf);
 
-            [DllImport("lzo1x_64.dll",
-                EntryPoint = "#68",
-                CallingConvention = CallingConvention.StdCall)]
-            internal static extern int Decompress(
-                byte[] inbuf,
-                uint inlen,
-                byte[] outbuf,
-                ref uint outlen);
+            [DllImport("lzo1x_64.dll", EntryPoint = "#68", CallingConvention = CallingConvention.StdCall)]
+            internal static extern int NativeDecompress(byte[] inbuf, uint inlen, byte[] outbuf, ref uint outlen);
         }
 
+        // ReSharper disable InconsistentNaming
         private const int lzo_sizeof_dict_t = 2;
-        private const int LZO1X_MEM_COMPRESS = LZO1X_1_MEM_COMPRESS;
         private const int LZO1X_1_MEM_COMPRESS = (16384 * lzo_sizeof_dict_t);
-        private const int LZO1X_MEM_DECOMPRESS = 0;
+        // ReSharper restore InconsistentNaming
 
         private static byte[] CompressWork = new byte[LZO1X_1_MEM_COMPRESS];
 
-        public static int Compress(
-            byte[] inbuf, uint inlen, byte[] outbuf, ref uint outlen)
+        public static int Compress(byte[] inbuf, uint inlen, byte[] outbuf, ref uint outlen)
         {
             lock (CompressWork)
             {
-                if (Is64Bit == true)
+                if (_Is64Bit == true)
                 {
-                    return Native64.Compress(inbuf, inlen, outbuf, ref outlen, CompressWork);
+                    return Native64.NativeCompress(inbuf, inlen, outbuf, ref outlen, CompressWork);
                 }
-                else
-                {
-                    return Native32.Compress(inbuf, inlen, outbuf, ref outlen, CompressWork);
-                }
+
+                return Native32.NativeCompress(inbuf, inlen, outbuf, ref outlen, CompressWork);
             }
         }
 
-        public static int Decompress(
-            byte[] inbuf, uint inlen, byte[] outbuf, ref uint outlen)
+        public static int Decompress(byte[] inbuf, uint inlen, byte[] outbuf, ref uint outlen)
         {
-            if (Is64Bit == true)
+            if (_Is64Bit == true)
             {
-                return Native64.Decompress(inbuf, inlen, outbuf, ref outlen);
+                return Native64.NativeDecompress(inbuf, inlen, outbuf, ref outlen);
             }
-            else
-            {
-                return Native32.Decompress(inbuf, inlen, outbuf, ref outlen);
-            }
+
+            return Native32.NativeDecompress(inbuf, inlen, outbuf, ref outlen);
         }
     }
 }

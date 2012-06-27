@@ -31,7 +31,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -105,12 +106,6 @@
     <Compile Include="XmlResourceFile.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Gibbed.Helpers\Gibbed.Helpers.csproj">
-      <Project>{5162A9FB-4DE1-4BBF-B7A2-5E8116AB0D26}</Project>
-      <Name>Gibbed.Helpers</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -134,6 +129,12 @@
     <Content Include="lzo1x_64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Gibbed.IO\Gibbed.IO.csproj">
+      <Project>{047857BA-DAA3-4CA7-AFB8-A1B082B28C6A}</Project>
+      <Name>Gibbed.IO</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

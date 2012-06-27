@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -22,7 +22,7 @@
 
 using System;
 using System.IO;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats.Big
 {
@@ -45,11 +45,11 @@ namespace Gibbed.Dunia.FileFormats.Big
         // compressed size = 30 bits
         // offset = 34 bits
 
-        public void Deserialize(Stream input)
+        public void Deserialize(Stream input, Endian endian)
         {
-            var a = input.ReadValueU32();
-            var b = input.ReadValueU32();
-            var c = input.ReadValueU64();
+            var a = input.ReadValueU32(endian);
+            var b = input.ReadValueU32(endian);
+            var c = input.ReadValueU64(endian);
 
             this.NameHash = a;
             this.UncompressedSize = (uint)((b & 0xFFFFFFFCu) >> 2);
@@ -57,14 +57,14 @@ namespace Gibbed.Dunia.FileFormats.Big
             this.Offset = (long)((c & 0xFFFFFFFFC0000000ul) >> 30);
             this.CompressedSize = (uint)((c & 0x000000003FFFFFFFul) >> 0);
 
-            if (this.CompressionScheme == Big.CompressionScheme.None)
+            if (this.CompressionScheme == CompressionScheme.None)
             {
                 if (this.UncompressedSize != 0)
                 {
                     throw new FormatException();
                 }
             }
-            else if (this.CompressionScheme == Big.CompressionScheme.LZO1x)
+            else if (this.CompressionScheme == CompressionScheme.LZO1x)
             {
                 if (this.CompressedSize == 0 &&
                     this.UncompressedSize > 0)
@@ -78,7 +78,7 @@ namespace Gibbed.Dunia.FileFormats.Big
             }
         }
 
-        public void Serialize(Stream output)
+        public void Serialize(Stream output, Endian endian)
         {
             uint a = this.NameHash;
             uint b = 0;
@@ -88,9 +88,9 @@ namespace Gibbed.Dunia.FileFormats.Big
             c |= ((ulong)(this.Offset << 30) & 0xFFFFFFFFC0000000ul);
             c |= (ulong)((this.CompressedSize << 0) & 0x000000003FFFFFFFul);
 
-            output.WriteValueU32(a);
-            output.WriteValueU32(b);
-            output.WriteValueU64(c);
+            output.WriteValueU32(a, endian);
+            output.WriteValueU32(b, endian);
+            output.WriteValueU64(c, endian);
         }
 
         public override string ToString()

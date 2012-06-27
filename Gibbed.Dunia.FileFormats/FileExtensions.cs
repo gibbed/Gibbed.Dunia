@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -33,8 +33,7 @@ namespace Gibbed.Dunia.FileFormats
                 return "null";
             }
 
-            if (
-                read >= 5 &&
+            if (read >= 5 &&
                 guess[0] == 'M' &&
                 guess[1] == 'A' &&
                 guess[2] == 'G' &&
@@ -43,8 +42,8 @@ namespace Gibbed.Dunia.FileFormats
             {
                 return "mgb";
             }
-            else if (
-                read >= 4 &&
+
+            if (read >= 4 &&
                 guess[0] == 'T' &&
                 guess[1] == 'B' &&
                 guess[2] == 'X' &&
@@ -52,8 +51,8 @@ namespace Gibbed.Dunia.FileFormats
             {
                 return "xbt";
             }
-            else if (
-                read >= 4 &&
+
+            if (read >= 4 &&
                 guess[0] == 'H' &&
                 guess[1] == 'S' &&
                 guess[2] == 'E' &&
@@ -61,8 +60,8 @@ namespace Gibbed.Dunia.FileFormats
             {
                 return "xbg";
             }
-            else if (
-                read >= 4 &&
+
+            if (read >= 4 &&
                 guess[0] == 1 &&
                 guess[1] == 'K' &&
                 guess[2] == 'P' &&
@@ -70,8 +69,8 @@ namespace Gibbed.Dunia.FileFormats
             {
                 return "spk";
             }
-            else if (
-                read >= 4 &&
+
+            if (read >= 4 &&
                 guess[0] == 'n' &&
                 guess[1] == 'b' &&
                 guess[2] == 'C' &&
@@ -79,8 +78,8 @@ namespace Gibbed.Dunia.FileFormats
             {
                 return "fcb";
             }
-            else if (
-                read >= 4 &&
+
+            if (read >= 4 &&
                 guess[0] == 0x89 &&
                 guess[1] == 'P' &&
                 guess[2] == 'N' &&
@@ -88,16 +87,16 @@ namespace Gibbed.Dunia.FileFormats
             {
                 return "png";
             }
-            else if (
-                read >= 3 &&
+
+            if (read >= 3 &&
                 guess[0] == 0 &&
                 guess[1] == 0 &&
                 guess[2] == 0xFF)
             {
                 return "maybe.rml";
             }
-            else if (
-                read >= 8 &&
+
+            if (read >= 8 &&
                 guess[4] == 0x68 &&
                 guess[5] == 0x4D &&
                 guess[6] == 0x76 &&
@@ -105,8 +104,8 @@ namespace Gibbed.Dunia.FileFormats
             {
                 return "hMvN";
             }
-            else if (
-                read >= 20 &&
+
+            if (read >= 20 &&
                 guess[16] == 0x57 &&
                 guess[17] == 0xE0 &&
                 guess[18] == 0xE0 &&
@@ -116,23 +115,28 @@ namespace Gibbed.Dunia.FileFormats
             }
 
             string text = Encoding.ASCII.GetString(guess, 0, read);
+            
             if (read >= 6 && text.StartsWith("<root>") == true)
             {
                 return "root.xml";
             }
-            else if (read >= 9 && text.StartsWith("<package>") == true)
+
+            if (read >= 9 && text.StartsWith("<package>") == true)
             {
                 return "mgb.desc";
             }
-            else if (read >= 6 && text.StartsWith("<root>") == true)
+
+            if (read >= 6 && text.StartsWith("<root>") == true)
             {
                 return "root.xml";
             }
-            else if (read >= 12 && text.StartsWith("<NewPartLib>") == true)
+
+            if (read >= 12 && text.StartsWith("<NewPartLib>") == true)
             {
                 return "NewPartLib.xml";
             }
-            else if (read >= 11 && text.StartsWith("<MovieData>") == true)
+
+            if (read >= 11 && text.StartsWith("<MovieData>") == true)
             {
                 return "MovieData.xml";
             }

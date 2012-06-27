@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -23,8 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats.Geometry
 {
@@ -38,9 +37,9 @@ namespace Gibbed.Dunia.FileFormats.Geometry
         public List<UnknownData0> Unknown0 = new List<UnknownData0>();
         public List<CLUS> Unknown1 = new List<CLUS>();
 
-        public void Deserialize(IBlock parent, Stream input)
+        public void Deserialize(IBlock parent, Stream input, Endian endian)
         {
-            var count = input.ReadValueU32();
+            var count = input.ReadValueU32(endian);
 
             this.Unknown0.Clear();
             this.Unknown1.Clear();
@@ -48,21 +47,21 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             {
                 var unknown = new UnknownData0();
 
-                unknown.Unknown00 = input.ReadValueF32();
-                unknown.Unknown04 = input.ReadValueF32();
-                unknown.Unknown08 = input.ReadValueF32();
-                unknown.Unknown0C = input.ReadValueF32();
-                unknown.Unknown10 = input.ReadValueF32();
-                unknown.Unknown14 = input.ReadValueF32();
-                unknown.Unknown18 = input.ReadValueF32();
-                unknown.Unknown1C = input.ReadValueF32();
-                unknown.Unknown20 = input.ReadValueF32();
-                unknown.Unknown24 = input.ReadValueF32();
-                unknown.Unknown28 = input.ReadValueF32();
-                unknown.Unknown2C = input.ReadValueU32();
-                unknown.Unknown30 = input.ReadValueU32();
+                unknown.Unknown00 = input.ReadValueF32(endian);
+                unknown.Unknown04 = input.ReadValueF32(endian);
+                unknown.Unknown08 = input.ReadValueF32(endian);
+                unknown.Unknown0C = input.ReadValueF32(endian);
+                unknown.Unknown10 = input.ReadValueF32(endian);
+                unknown.Unknown14 = input.ReadValueF32(endian);
+                unknown.Unknown18 = input.ReadValueF32(endian);
+                unknown.Unknown1C = input.ReadValueF32(endian);
+                unknown.Unknown20 = input.ReadValueF32(endian);
+                unknown.Unknown24 = input.ReadValueF32(endian);
+                unknown.Unknown28 = input.ReadValueF32(endian);
+                unknown.Unknown2C = input.ReadValueU32(endian);
+                unknown.Unknown30 = input.ReadValueU32(endian);
 
-                var length = input.ReadValueU32();
+                var length = input.ReadValueU32(endian);
                 unknown.Name = input.ReadString(length);
 
                 input.Seek(1, SeekOrigin.Current); // skip null
@@ -71,7 +70,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             }
         }
 
-        public void Serialize(IBlock parent, Stream output)
+        public void Serialize(IBlock parent, Stream output, Endian endian)
         {
             throw new NotImplementedException();
         }
@@ -111,7 +110,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
 
         public IEnumerable<IBlock> GetChildren()
         {
-            return this.Unknown1.Cast<IBlock>();
+            return this.Unknown1;
         }
     }
 }

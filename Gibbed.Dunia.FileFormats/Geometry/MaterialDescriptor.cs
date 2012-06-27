@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -23,7 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats.Geometry
 {
@@ -53,32 +53,32 @@ namespace Gibbed.Dunia.FileFormats.Geometry
         public Dictionary<string, bool> BoolProperties
             = new Dictionary<string, bool>();
 
-        public void Deserialize(IBlock parent, Stream input)
+        public void Deserialize(IBlock parent, Stream input, Endian endian)
         {
             uint length;
             int count;
 
-            length = input.ReadValueU32();
+            length = input.ReadValueU32(endian);
             this.Name = input.ReadString(length);
             input.Seek(1, SeekOrigin.Current); // skip null
 
-            length = input.ReadValueU32();
+            length = input.ReadValueU32(endian);
             this.Unknown1 = input.ReadString(length);
             input.Seek(1, SeekOrigin.Current); // skip null
 
-            length = input.ReadValueU32();
+            length = input.ReadValueU32(endian);
             this.Unknown2 = input.ReadString(length);
             input.Seek(1, SeekOrigin.Current); // skip null
 
             this.TextureProperties.Clear();
-            count = input.ReadValueS32();
+            count = input.ReadValueS32(endian);
             for (int i = 0; i < count; i++)
             {
-                length = input.ReadValueU32();
+                length = input.ReadValueU32(endian);
                 var value = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
-                length = input.ReadValueU32();
+                length = input.ReadValueU32(endian);
                 var key = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
@@ -86,80 +86,80 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             }
 
             this.Float1Properties.Clear();
-            count = input.ReadValueS32();
+            count = input.ReadValueS32(endian);
             for (int i = 0; i < count; i++)
             {
-                length = input.ReadValueU32();
+                length = input.ReadValueU32(endian);
                 var key = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
-                this.Float1Properties[key] = input.ReadValueF32();
+                this.Float1Properties[key] = input.ReadValueF32(endian);
             }
 
             this.Float2Properties.Clear();
-            count = input.ReadValueS32();
+            count = input.ReadValueS32(endian);
             for (int i = 0; i < count; i++)
             {
-                length = input.ReadValueU32();
+                length = input.ReadValueU32(endian);
                 var key = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
                 var value = new Float2();
-                value.X = input.ReadValueF32();
-                value.Y = input.ReadValueF32();
+                value.X = input.ReadValueF32(endian);
+                value.Y = input.ReadValueF32(endian);
 
                 this.Float2Properties[key] = value;
             }
 
             this.Float3Properties.Clear();
-            count = input.ReadValueS32();
+            count = input.ReadValueS32(endian);
             for (int i = 0; i < count; i++)
             {
-                length = input.ReadValueU32();
+                length = input.ReadValueU32(endian);
                 var key = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
                 var value = new Float3();
-                value.X = input.ReadValueF32();
-                value.Y = input.ReadValueF32();
-                value.Z = input.ReadValueF32();
+                value.X = input.ReadValueF32(endian);
+                value.Y = input.ReadValueF32(endian);
+                value.Z = input.ReadValueF32(endian);
 
                 this.Float3Properties[key] = value;
             }
 
             this.Float4Properties.Clear();
-            count = input.ReadValueS32();
+            count = input.ReadValueS32(endian);
             for (int i = 0; i < count; i++)
             {
-                length = input.ReadValueU32();
+                length = input.ReadValueU32(endian);
                 var key = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
                 var value = new Float4();
-                value.X = input.ReadValueF32();
-                value.Y = input.ReadValueF32();
-                value.Z = input.ReadValueF32();
-                value.W = input.ReadValueF32();
+                value.X = input.ReadValueF32(endian);
+                value.Y = input.ReadValueF32(endian);
+                value.Z = input.ReadValueF32(endian);
+                value.W = input.ReadValueF32(endian);
 
                 this.Float4Properties[key] = value;
             }
 
             this.IntProperties.Clear();
-            count = input.ReadValueS32();
+            count = input.ReadValueS32(endian);
             for (int i = 0; i < count; i++)
             {
-                length = input.ReadValueU32();
+                length = input.ReadValueU32(endian);
                 var key = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
-                this.IntProperties[key] = input.ReadValueS32();
+                this.IntProperties[key] = input.ReadValueS32(endian);
             }
 
             this.BoolProperties.Clear();
-            count = input.ReadValueS32();
+            count = input.ReadValueS32(endian);
             for (int i = 0; i < count; i++)
             {
-                length = input.ReadValueU32();
+                length = input.ReadValueU32(endian);
                 var key = input.ReadString(length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
@@ -167,7 +167,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             }
         }
 
-        public void Serialize(IBlock parent, Stream output)
+        public void Serialize(IBlock parent, Stream output, Endian endian)
         {
             throw new NotImplementedException();
         }

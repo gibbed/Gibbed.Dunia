@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -23,7 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats
 {
@@ -34,33 +34,38 @@ namespace Gibbed.Dunia.FileFormats
 
         public void Deserialize(Stream input)
         {
-            if (input.ReadValueU32() != 0x4643626E) // FCbn
+            var magic = input.ReadValueU32(Endian.Little);
+            if (magic != 0x4643626E) // FCbn
+            {
+                throw new FormatException();
+            }
+            var endian = Endian.Little;
+
+            var version = input.ReadValueU16(endian);
+            if (version != 2)
             {
                 throw new FormatException();
             }
 
-            if (input.ReadValueU16() != 2)
-            {
-                throw new FormatException();
-            }
-
-            this.Flags = input.ReadValueU16();
+            this.Flags = input.ReadValueU16(endian);
             if (this.Flags != 0)
             {
                 throw new FormatException();
             }
 
-            var totalObjectCount = input.ReadValueU32();
-            var totalValueCount = input.ReadValueU32();
+            var totalObjectCount = input.ReadValueU32(endian);
+            var totalValueCount = input.ReadValueU32(endian);
 
             var pointers = new List<Object>();
             /*this.Root = new Object();
-            this.Root.Deserialize(input, pointers);*/
-            this.Root = Object.Deserialize(input, pointers);
+            this.Root.Deserialize(input, pointers, endian);*/
+            this.Root = Object.Deserialize(input, pointers, endian);
         }
 
         public void Serialize(Stream output)
         {
+            var endian = Endian.Little;
+
             using (var data = new MemoryStream())
             {
                 uint totalObjectCount = 0, totalValueCount = 0;
@@ -68,14 +73,16 @@ namespace Gibbed.Dunia.FileFormats
                 this.Root.Serialize(
                     data,
                     ref totalObjectCount,
-                    ref totalValueCount);
+                    ref totalValueCount,
+                    endian);
+                data.Flush();
                 data.Position = 0;
 
-                output.WriteValueU32(0x4643626E);
-                output.WriteValueU16(2);
-                output.WriteValueU16(0);
-                output.WriteValueU32(totalObjectCount);
-                output.WriteValueU32(totalValueCount);
+                output.WriteValueU32(0x4643626E, endian);
+                output.WriteValueU16(2, endian);
+                output.WriteValueU16(0, endian);
+                output.WriteValueU32(totalObjectCount, endian);
+                output.WriteValueU32(totalValueCount, endian);
                 output.WriteFromStream(data, data.Length);
             }
         }
@@ -89,12 +96,12 @@ namespace Gibbed.Dunia.FileFormats
             public List<Object> Children
                 = new List<Object>();
 
-            public static Object Deserialize(Stream input, List<Object> pointers)
+            public static Object Deserialize(Stream input, List<Object> pointers, Endian endian)
             {
                 long position = input.Position;
 
                 bool isOffset;
-                var childCount = input.ReadCount(out isOffset);
+                var childCount = input.ReadCount(out isOffset, endian);
 
                 if (isOffset == true)
                 {
@@ -105,12 +112,12 @@ namespace Gibbed.Dunia.FileFormats
                 child.Position = position;
                 pointers.Add(child);
 
-                child.Deserialize(input, childCount, pointers);
+                child.Deserialize(input, childCount, pointers, endian);
                 return child;
             }
 
             private void Deserialize(
-                Stream input, uint childCount, List<Object> pointers)
+                Stream input, uint childCount, List<Object> pointers, Endian endian)
             {
                 long position;
                 bool isOffset;
@@ -135,9 +142,9 @@ namespace Gibbed.Dunia.FileFormats
                 pointers.Add(this);
                 */
 
-                this.TypeHash = input.ReadValueU32();
+                this.TypeHash = input.ReadValueU32(endian);
 
-                var valueCount = input.ReadCount(out isOffset);
+                var valueCount = input.ReadCount(out isOffset, endian);
                 if (isOffset == true)
                 {
                     throw new NotImplementedException();
@@ -145,18 +152,18 @@ namespace Gibbed.Dunia.FileFormats
 
                 for (var i = 0; i < valueCount; i++)
                 {
-                    var nameHash = input.ReadValueU32();
+                    var nameHash = input.ReadValueU32(endian);
                     byte[] value;
 
                     uint size;
                     position = input.Position;
-                    
-                    size = input.ReadCount(out isOffset);
+
+                    size = input.ReadCount(out isOffset, endian);
                     if (isOffset == true)
                     {
                         input.Seek(position - size, SeekOrigin.Begin);
 
-                        size = input.ReadCount(out isOffset);
+                        size = input.ReadCount(out isOffset, endian);
                         if (isOffset == true)
                         {
                             throw new FormatException();
@@ -166,7 +173,7 @@ namespace Gibbed.Dunia.FileFormats
                         input.Read(value, 0, value.Length);
 
                         input.Seek(position, SeekOrigin.Begin);
-                        input.ReadCount(out isOffset);
+                        input.ReadCount(out isOffset, endian);
                     }
                     else
                     {
@@ -179,7 +186,7 @@ namespace Gibbed.Dunia.FileFormats
 
                 for (var i = 0; i < childCount; i++)
                 {
-                    this.Children.Add(Object.Deserialize(input, pointers));
+                    this.Children.Add(Deserialize(input, pointers, endian));
                     /*var child = new Object();
                     child.Deserialize(input, pointers);
                     this.Children.Add(child);*/
@@ -189,20 +196,21 @@ namespace Gibbed.Dunia.FileFormats
             public void Serialize(
                 Stream output,
                 ref uint totalObjectCount,
-                ref uint totalValueCount)
+                ref uint totalValueCount,
+                Endian endian)
             {
                 totalObjectCount += (uint)this.Children.Count;
                 totalValueCount += (uint)this.Values.Count;
 
-                output.WriteCount(this.Children.Count, false);
-                
-                output.WriteValueU32(this.TypeHash);
+                output.WriteCount(this.Children.Count, false, endian);
 
-                output.WriteCount(this.Values.Count, false);
+                output.WriteValueU32(this.TypeHash, endian);
+
+                output.WriteCount(this.Values.Count, false, endian);
                 foreach (var kv in this.Values)
                 {
-                    output.WriteValueU32(kv.Key);
-                    output.WriteCount(kv.Value.Length, false);
+                    output.WriteValueU32(kv.Key, endian);
+                    output.WriteCount(kv.Value.Length, false, endian);
                     output.Write(kv.Value, 0, kv.Value.Length);
                 }
 
@@ -211,7 +219,8 @@ namespace Gibbed.Dunia.FileFormats
                     child.Serialize(
                         output,
                         ref totalObjectCount,
-                        ref totalValueCount);
+                        ref totalValueCount,
+                        endian);
                 }
             }
         }

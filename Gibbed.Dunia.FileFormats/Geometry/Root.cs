@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -23,36 +23,36 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats.Geometry
 {
     public class Root : IBlock
     {
-        public MaterialReference MaterialReference = null;
-        public Nodes Nodes = null;
-        public O2BM O2BM = null;
-        public SKID SKID = null;
-        public SKND SKND = null;
-        public LODs LODs = null;
-        public BoundingBox BoundingBox = null;
-        public BSPH BSPH = null;
-        public LODInfo LOD = null;
-        public PCMP PCMP = null;
-        public UCMP UCMP = null;
-        public IKDA IKDA = null;
-        public List<MaterialDescriptor> MaterialDescriptors =
-            new List<MaterialDescriptor>();
+        public MaterialReference MaterialReference;
+        public Nodes Nodes;
+        public O2BM O2BM;
+        public SKID SKID;
+        public SKND SKND;
+        public LODs LODs;
+        public BoundingBox BoundingBox;
+        public BSPH BSPH;
+        public LODInfo LOD;
+        public PCMP PCMP;
+        public UCMP UCMP;
+        public IKDA IKDA;
+        public List<MaterialDescriptor> MaterialDescriptors = new List<MaterialDescriptor>();
 
         public BlockType Type
         {
             get { return BlockType.Root; }
         }
 
-        public void Deserialize(IBlock parent, Stream input)
+        public void Deserialize(IBlock parent, Stream input, Endian endian)
         {
         }
 
-        public void Serialize(IBlock parent, Stream output)
+        public void Serialize(IBlock parent, Stream output, Endian endian)
         {
         }
 
@@ -60,25 +60,77 @@ namespace Gibbed.Dunia.FileFormats.Geometry
         {
             switch (type)
             {
-                case BlockType.MaterialReference: return new MaterialReference();
-                case BlockType.Nodes: return new Nodes();
-                case BlockType.O2BM: return new O2BM();
-                case BlockType.SKID: return new SKID();
-                case BlockType.SKND: return new SKND();
-                case BlockType.LODs: return new LODs();
-                case BlockType.BoundingBox: return new BoundingBox();
-                case BlockType.BSPH: return new BSPH();
-                case BlockType.LODInfo: return new LODInfo();
-                case BlockType.PCMP: return new PCMP();
-                case BlockType.UCMP: return new UCMP();
-                case BlockType.IKDA: return new IKDA();
-                case BlockType.MaterialDescriptor: return new MaterialDescriptor();
+                case BlockType.MaterialReference:
+                {
+                    return new MaterialReference();
+                }
+
+                case BlockType.Nodes:
+                {
+                    return new Nodes();
+                }
+
+                case BlockType.O2BM:
+                {
+                    return new O2BM();
+                }
+
+                case BlockType.SKID:
+                {
+                    return new SKID();
+                }
+
+                case BlockType.SKND:
+                {
+                    return new SKND();
+                }
+
+                case BlockType.LODs:
+                {
+                    return new LODs();
+                }
+
+                case BlockType.BoundingBox:
+                {
+                    return new BoundingBox();
+                }
+
+                case BlockType.BSPH:
+                {
+                    return new BSPH();
+                }
+
+                case BlockType.LODInfo:
+                {
+                    return new LODInfo();
+                }
+
+                case BlockType.PCMP:
+                {
+                    return new PCMP();
+                }
+
+                case BlockType.UCMP:
+                {
+                    return new UCMP();
+                }
+
+                case BlockType.IKDA:
+                {
+                    return new IKDA();
+                }
+
+                case BlockType.MaterialDescriptor:
+                {
+                    return new MaterialDescriptor();
+                }
             }
 
             throw new NotSupportedException();
         }
 
         private static void SetChild<TType>(IBlock child, ref TType value)
+            where TType : class, IBlock
         {
             if (child is TType)
             {
@@ -105,9 +157,11 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             SetChild(child, ref this.PCMP);
             SetChild(child, ref this.UCMP);
             SetChild(child, ref this.IKDA);
-            if (child is MaterialDescriptor)
+
+            var materialDescriptor = child as MaterialDescriptor;
+            if (materialDescriptor != null)
             {
-                this.MaterialDescriptors.Add((MaterialDescriptor)child);
+                this.MaterialDescriptors.Add(materialDescriptor);
             }
         }
 

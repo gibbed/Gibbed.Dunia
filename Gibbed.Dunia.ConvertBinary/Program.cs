@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -355,20 +355,20 @@ namespace Gibbed.Dunia.ConvertBinary
 
                 Definitions.LoadNameAndHash(values.Current, out valueName, out valueHash);
 
-                ValueType valueType;
+                MemberType valueType;
                 string _valueType;
                 _valueType = values.Current.GetAttribute("type", "");
                 if (string.IsNullOrWhiteSpace(_valueType) == true ||
-                    Enum.IsDefined(typeof(ValueType), _valueType) == false)
+                    Enum.IsDefined(typeof(MemberType), _valueType) == false)
                 {
                     throw new FormatException();
                 }
-                valueType = (ValueType)Enum.Parse(typeof(ValueType), _valueType);
+                valueType = (MemberType)Enum.Parse(typeof(MemberType), _valueType);
 
                 byte[] valueData;
                 switch (valueType)
                 {
-                    case ValueType.BinHex:
+                    case MemberType.BinHex:
                     {
                         using (var reader = new XmlTextReader(new StringReader(values.Current.OuterXml)))
                         {
@@ -387,57 +387,63 @@ namespace Gibbed.Dunia.ConvertBinary
                         break;
                     }
 
-                    case ValueType.Hash:
+                    case MemberType.Hash:
                     {
                         valueData = BitConverter.GetBytes(uint.Parse(values.Current.Value, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture));
                         break;
                     }
 
-                    case ValueType.String:
+                    case MemberType.String:
                     {
                         valueData = Encoding.UTF8.GetBytes(values.Current.Value);
                         Array.Resize(ref valueData, valueData.Length + 1);
                         break;
                     }
 
-                    case ValueType.Bool:
+                    case MemberType.Enum:
+                    {
+                        valueData = BitConverter.GetBytes(uint.Parse(values.Current.Value, CultureInfo.InvariantCulture));
+                        break;
+                    }
+
+                    case MemberType.Bool:
                     {
                         valueData = new byte[1];
                         valueData[0] = (byte)(bool.Parse(values.Current.Value) == true ? 1 : 0);
                         break;
                     }
 
-                    case ValueType.Int32:
+                    case MemberType.Int32:
                     {
                         valueData = BitConverter.GetBytes(int.Parse(values.Current.Value, CultureInfo.InvariantCulture));
                         break;
                     }
 
-                    case ValueType.UInt32:
+                    case MemberType.UInt32:
                     {
                         valueData = BitConverter.GetBytes(uint.Parse(values.Current.Value, CultureInfo.InvariantCulture));
                         break;
                     }
 
-                    case ValueType.Int64:
+                    case MemberType.Int64:
                     {
                         valueData = BitConverter.GetBytes(long.Parse(values.Current.Value, CultureInfo.InvariantCulture));
                         break;
                     }
 
-                    case ValueType.UInt64:
+                    case MemberType.UInt64:
                     {
                         valueData = BitConverter.GetBytes(ulong.Parse(values.Current.Value, CultureInfo.InvariantCulture));
                         break;
                     }
 
-                    case ValueType.Float:
+                    case MemberType.Float:
                     {
                         valueData = BitConverter.GetBytes(float.Parse(values.Current.Value, CultureInfo.InvariantCulture));
                         break;
                     }
 
-                    case ValueType.Vector2:
+                    case MemberType.Vector2:
                     {
                         valueData = new byte[8];
                         Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("x").Value, CultureInfo.InvariantCulture)), 0, valueData, 0, 4);
@@ -445,7 +451,7 @@ namespace Gibbed.Dunia.ConvertBinary
                         break;
                     }
 
-                    case ValueType.Vector3:
+                    case MemberType.Vector3:
                     {
                         valueData = new byte[12];
                         Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("x").Value, CultureInfo.InvariantCulture)), 0, valueData, 0, 4);
@@ -454,7 +460,7 @@ namespace Gibbed.Dunia.ConvertBinary
                         break;
                     }
 
-                    case ValueType.Vector4:
+                    case MemberType.Vector4:
                     {
                         valueData = new byte[16];
                         Array.Copy(BitConverter.GetBytes(float.Parse(values.Current.SelectSingleNode("x").Value, CultureInfo.InvariantCulture)), 0, valueData, 0, 4);
@@ -464,7 +470,7 @@ namespace Gibbed.Dunia.ConvertBinary
                         break;
                     }
 
-                    case ValueType.Rml:
+                    case MemberType.Rml:
                     {
                         var rez = new XmlResourceFile();
 
@@ -540,7 +546,7 @@ namespace Gibbed.Dunia.ConvertBinary
 
                     if (member == null)
                     {
-                        writer.WriteAttributeString("type", ValueType.BinHex.ToString());
+                        writer.WriteAttributeString("type", MemberType.BinHex.ToString());
                         writer.WriteBinHex(kv.Value, 0, kv.Value.Length);
                     }
                     else
@@ -549,13 +555,13 @@ namespace Gibbed.Dunia.ConvertBinary
 
                         switch (member.Type)
                         {
-                            case ValueType.BinHex:
+                            case MemberType.BinHex:
                             {
                                 writer.WriteBinHex(kv.Value, 0, kv.Value.Length);
                                 break;
                             }
 
-                            case ValueType.Hash:
+                            case MemberType.Hash:
                             {
                                 if (kv.Value.Length != 4)
                                 {
@@ -566,7 +572,7 @@ namespace Gibbed.Dunia.ConvertBinary
                                 break;
                             }
 
-                            case ValueType.String:
+                            case MemberType.String:
                             {
                                 if (kv.Value.Length < 1)
                                 {
@@ -581,40 +587,7 @@ namespace Gibbed.Dunia.ConvertBinary
                                 break;
                             }
 
-                            case ValueType.Bool:
-                            {
-                                if (kv.Value.Length != 1)
-                                {
-                                    throw new FormatException();
-                                }
-
-                                writer.WriteString((kv.Value[0] != 0 ? true : false).ToString());
-                                break;
-                            }
-
-                            case ValueType.Float:
-                            {
-                                if (kv.Value.Length != 4)
-                                {
-                                    throw new FormatException();
-                                }
-
-                                writer.WriteString(BitConverter.ToSingle(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
-                                break;
-                            }
-
-                            case ValueType.Int32:
-                            {
-                                if (kv.Value.Length != 4)
-                                {
-                                    throw new FormatException();
-                                }
-
-                                writer.WriteString(BitConverter.ToInt32(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
-                                break;
-                            }
-
-                            case ValueType.UInt32:
+                            case MemberType.Enum:
                             {
                                 if (kv.Value.Length != 4)
                                 {
@@ -625,7 +598,51 @@ namespace Gibbed.Dunia.ConvertBinary
                                 break;
                             }
 
-                            case ValueType.Int64:
+                            case MemberType.Bool:
+                            {
+                                if (kv.Value.Length != 1)
+                                {
+                                    throw new FormatException();
+                                }
+
+                                writer.WriteString((kv.Value[0] != 0 ? true : false).ToString());
+                                break;
+                            }
+
+                            case MemberType.Float:
+                            {
+                                if (kv.Value.Length != 4)
+                                {
+                                    throw new FormatException();
+                                }
+
+                                writer.WriteString(BitConverter.ToSingle(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
+                                break;
+                            }
+
+                            case MemberType.Int32:
+                            {
+                                if (kv.Value.Length != 4)
+                                {
+                                    throw new FormatException();
+                                }
+
+                                writer.WriteString(BitConverter.ToInt32(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
+                                break;
+                            }
+
+                            case MemberType.UInt32:
+                            {
+                                if (kv.Value.Length != 4)
+                                {
+                                    throw new FormatException();
+                                }
+
+                                writer.WriteString(BitConverter.ToUInt32(kv.Value, 0).ToString(CultureInfo.InvariantCulture));
+                                break;
+                            }
+
+                            case MemberType.Int64:
                             {
                                 if (kv.Value.Length != 8)
                                 {
@@ -636,7 +653,7 @@ namespace Gibbed.Dunia.ConvertBinary
                                 break;
                             }
 
-                            case ValueType.UInt64:
+                            case MemberType.UInt64:
                             {
                                 if (kv.Value.Length != 8)
                                 {
@@ -647,7 +664,7 @@ namespace Gibbed.Dunia.ConvertBinary
                                 break;
                             }
 
-                            case ValueType.Vector2:
+                            case MemberType.Vector2:
                             {
                                 if (kv.Value.Length != 4 * 2)
                                 {
@@ -659,7 +676,7 @@ namespace Gibbed.Dunia.ConvertBinary
                                 break;
                             }
 
-                            case ValueType.Vector3:
+                            case MemberType.Vector3:
                             {
                                 if (kv.Value.Length != 4 * 3)
                                 {
@@ -672,7 +689,7 @@ namespace Gibbed.Dunia.ConvertBinary
                                 break;
                             }
 
-                            case ValueType.Vector4:
+                            case MemberType.Vector4:
                             {
                                 if (kv.Value.Length != 4 * 4)
                                 {
@@ -686,7 +703,49 @@ namespace Gibbed.Dunia.ConvertBinary
                                 break;
                             }
 
-                            case ValueType.Rml:
+                            case MemberType.UInt32Array:
+                            {
+                                if (kv.Value.Length < 4)
+                                {
+                                    throw new FormatException();
+                                }
+
+                                var count = BitConverter.ToInt32(kv.Value, 0);
+                                if (kv.Value.Length != 4 + (count * 4))
+                                {
+                                    throw new FormatException();
+                                }
+
+                                for (int i = 0, offset = 4; i < count; i++, offset += 4)
+                                {
+                                    writer.WriteElementString("item", BitConverter.ToUInt32(kv.Value, offset).ToString(CultureInfo.InvariantCulture));
+                                }
+
+                                break;
+                            }
+
+                            case MemberType.HashArray:
+                            {
+                                if (kv.Value.Length < 4)
+                                {
+                                    throw new FormatException();
+                                }
+
+                                var count = BitConverter.ToInt32(kv.Value, 0);
+                                if (kv.Value.Length != 4 + (count * 4))
+                                {
+                                    throw new FormatException();
+                                }
+
+                                for (int i = 0, offset = 4; i < count; i++, offset += 4)
+                                {
+                                    writer.WriteElementString("item", BitConverter.ToUInt32(kv.Value, offset).ToString("X8"));
+                                }
+
+                                break;
+                            }
+
+                            case MemberType.Rml:
                             {
                                 var rez = new XmlResourceFile();
                                 using (var input = new MemoryStream(kv.Value))

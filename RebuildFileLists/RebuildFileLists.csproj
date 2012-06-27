@@ -52,10 +52,6 @@
       <Project>{988AD1C4-1D56-4836-BE15-6D7044C3BAC5}</Project>
       <Name>Gibbed.Dunia.FileFormats</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gibbed.Helpers\Gibbed.Helpers.csproj">
-      <Project>{5162A9FB-4DE1-4BBF-B7A2-5E8116AB0D26}</Project>
-      <Name>Gibbed.Helpers</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Gibbed.ProjectData\Gibbed.ProjectData.csproj">
       <Project>{F27A289E-3376-4653-89F3-D19C1ECABF33}</Project>
       <Name>Gibbed.ProjectData</Name>

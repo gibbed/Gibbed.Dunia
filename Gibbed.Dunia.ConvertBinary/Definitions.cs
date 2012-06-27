@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -31,6 +31,8 @@ namespace Gibbed.Dunia.ConvertBinary
 {
     internal class Definitions : IDefinitionProvider
     {
+        //private static Dictionary<MemberType, 
+
         public static void LoadNameAndHash(
                             XPathNavigator node, out string name, out uint hash)
         {
@@ -182,7 +184,7 @@ namespace Gibbed.Dunia.ConvertBinary
                     LoadNameAndHash(members.Current, out memberName, out memberHash);
 
                     var type = members.Current.Value;
-                    if (Enum.IsDefined(typeof(ValueType), type) == false)
+                    if (Enum.IsDefined(typeof(MemberType), type) == false)
                     {
                         throw new FormatException();
                     }
@@ -190,7 +192,7 @@ namespace Gibbed.Dunia.ConvertBinary
                     classDef.Members.Add(memberHash, new MemberDefinition()
                     {
                         Name = memberName,
-                        Type = (ValueType)Enum.Parse(typeof(ValueType), type),
+                        Type = (MemberType)Enum.Parse(typeof(MemberType), type),
                     });
                 }
 
@@ -273,7 +275,17 @@ namespace Gibbed.Dunia.ConvertBinary
         private class MemberDefinition : IMemberDefinition
         {
             public string Name { get; set; }
-            public ValueType Type { get; set; }
+            public MemberType Type { get; set; }
+
+            public string Deserialize(byte[] value)
+            {
+                throw new NotImplementedException();
+            }
+
+            public byte[] Serialize(string value)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

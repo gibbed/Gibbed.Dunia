@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -23,7 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats.Geometry
 {
@@ -36,9 +36,9 @@ namespace Gibbed.Dunia.FileFormats.Geometry
         
         public List<byte[]> Unknown = new List<byte[]>();
 
-        public void Deserialize(IBlock parent, Stream input)
+        public void Deserialize(IBlock parent, Stream input, Endian endian)
         {
-            var count = input.ReadValueU32();
+            var count = input.ReadValueU32(endian);
 
             this.Unknown.Clear();
             for (uint i = 0; i < count; i++)
@@ -49,7 +49,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             }
         }
 
-        public void Serialize(IBlock parent, Stream output)
+        public void Serialize(IBlock parent, Stream output, Endian endian)
         {
             throw new NotImplementedException();
         }

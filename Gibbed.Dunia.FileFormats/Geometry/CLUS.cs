@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -23,7 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats.Geometry
 {
@@ -36,28 +36,28 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             get { return BlockType.CLUS; }
         }
 
-        public void Deserialize(IBlock parent, Stream input)
+        public void Deserialize(IBlock parent, Stream input, Endian endian)
         {
             var sknd = (SKND)parent;
 
             this.Unknown0.Clear();
             for (int i = 0; i < sknd.Unknown0.Count; i++)
             {
-                uint count = input.ReadValueU32();
+                uint count = input.ReadValueU32(endian);
                 List<UnknownData0> unknowns = new List<UnknownData0>();
                 for (int j = 0; j < count; j++)
                 {
                     var unknown = new UnknownData0();
                     unknown.Unknown0 = new byte[108];
                     input.Read(unknown.Unknown0, 0, unknown.Unknown0.Length);
-                    unknown.Unknown1 = input.ReadValueU16();
+                    unknown.Unknown1 = input.ReadValueU16(endian);
                     unknowns.Add(unknown);
                 }
                 this.Unknown0.Add(unknowns);
             }
         }
 
-        public void Serialize(IBlock parent, Stream output)
+        public void Serialize(IBlock parent, Stream output, Endian endian)
         {
             throw new NotImplementedException();
         }
