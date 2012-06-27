@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -24,9 +24,11 @@ namespace Gibbed.Dunia.FileFormats.Big
 {
     public enum CompressionScheme : byte
     {
+        // ReSharper disable InconsistentNaming
         None = 0,
         LZO1x = 1,
         Unknown2 = 2,
         Unknown3 = 3,
+        // ReSharper restore InconsistentNaming
     }
 }

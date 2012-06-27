@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using Gibbed.Helpers;
+using Gibbed.IO;
 using Gibbed.Dunia.FileFormats;
 
 namespace DumpBinaryStrings
@@ -12,17 +12,20 @@ namespace DumpBinaryStrings
     {
         public static List<string> Dump(Stream input)
         {
-            if (input.ReadValueU32() != 0x4643626E) // FCbn
+            var endian = Endian.Little;
+
+            var magic = input.ReadValueU32(endian);
+            if (magic != 0x4643626E) // FCbn
             {
                 throw new FormatException();
             }
 
-            if (input.ReadValueU16() != 2)
+            if (input.ReadValueU16(endian) != 2)
             {
                 throw new FormatException();
             }
 
-            var flags = input.ReadValueU16();
+            var flags = input.ReadValueU16(endian);
             if (flags != 0)
             {
                 throw new FormatException();
@@ -32,16 +35,16 @@ namespace DumpBinaryStrings
             input.Seek(4, SeekOrigin.Current);
 
             var values = new List<string>();
-            Object.Dump(input, values);
+            Object.Dump(input, values, endian);
             return values;
         }
 
         public class Object
         {
-            public static void Dump(Stream input, List<string> values)
+            public static void Dump(Stream input, List<string> values, Endian endian)
             {
                 bool isOffset;
-                var childCount = input.ReadCount(out isOffset);
+                var childCount = input.ReadCount(out isOffset, endian);
 
                 if (isOffset == true)
                 {
@@ -50,7 +53,7 @@ namespace DumpBinaryStrings
 
                 input.Seek(4, SeekOrigin.Current);
 
-                var valueCount = input.ReadCount(out isOffset);
+                var valueCount = input.ReadCount(out isOffset, endian);
                 if (isOffset == true)
                 {
                     throw new NotImplementedException();
@@ -64,12 +67,12 @@ namespace DumpBinaryStrings
                     uint size;
                     long position = input.Position;
 
-                    size = input.ReadCount(out isOffset);
+                    size = input.ReadCount(out isOffset, endian);
                     if (isOffset == true)
                     {
                         input.Seek(position - size, SeekOrigin.Begin);
 
-                        size = input.ReadCount(out isOffset);
+                        size = input.ReadCount(out isOffset, endian);
                         if (isOffset == true)
                         {
                             throw new FormatException();
@@ -79,7 +82,7 @@ namespace DumpBinaryStrings
                         input.Read(value, 0, value.Length);
 
                         input.Seek(position, SeekOrigin.Begin);
-                        input.ReadCount(out isOffset);
+                        input.ReadCount(out isOffset, endian);
                     }
                     else
                     {
@@ -102,7 +105,7 @@ namespace DumpBinaryStrings
 
                 for (var i = 0; i < childCount; i++)
                 {
-                    Object.Dump(input, values);
+                    Object.Dump(input, values, endian);
                 }
             }
         }

@@ -1,7 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
+ * 
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ * 
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ * 
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would
+ *    be appreciated but is not required.
+ * 
+ * 2. Altered source versions must be plainly marked as such, and must not
+ *    be misrepresented as being the original software.
+ * 
+ * 3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
 
 namespace Gibbed.Dunia.FileFormats
 {
@@ -12,7 +29,7 @@ namespace Gibbed.Dunia.FileFormats
             uint hash = 0xFFFFFFFF;
             for (int i = 0; i < value.Length; i++)
             {
-                hash = Table[(byte)hash ^ (byte)value[i]] ^ (hash >> 8);
+                hash = _Table[(byte)hash ^ (byte)value[i]] ^ (hash >> 8);
             }
             return ~hash;
         }
@@ -22,12 +39,12 @@ namespace Gibbed.Dunia.FileFormats
             uint hash = 0xFFFFFFFF;
             for (int i = offset; i < offset + length; i++)
             {
-                hash = Table[(byte)hash ^ buffer[i]] ^ (hash >> 8);
+                hash = _Table[(byte)hash ^ buffer[i]] ^ (hash >> 8);
             }
             return ~hash;
         }
 
-        private static uint[] Table =
+        private static readonly uint[] _Table =
         {
             0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA,
             0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,

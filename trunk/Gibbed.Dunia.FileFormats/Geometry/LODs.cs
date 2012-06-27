@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -23,7 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats.Geometry
 {
@@ -36,19 +36,19 @@ namespace Gibbed.Dunia.FileFormats.Geometry
 
         public List<LevelOfDetail> Items = new List<LevelOfDetail>();
 
-        public void Deserialize(IBlock parent, Stream input)
+        public void Deserialize(IBlock parent, Stream input, Endian endian)
         {
-            var count = input.ReadValueS32();
+            var count = input.ReadValueS32(endian);
             this.Items.Clear();
             for (int i = 0; i < count; i++)
             {
                 var lod = new LevelOfDetail();
-                lod.Deserialize(input);
+                lod.Deserialize(input, endian);
                 this.Items.Add(lod);
             }
         }
 
-        public void Serialize(IBlock parent, Stream output)
+        public void Serialize(IBlock parent, Stream output, Endian endian)
         {
             throw new NotImplementedException();
         }
@@ -61,50 +61,50 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             public byte[] VertexData;
             public short[] Indices;
 
-            public void Deserialize(Stream input)
+            public void Deserialize(Stream input, Endian endian)
             {
-                this.Unknown0 = input.ReadValueF32();
-                
-                var bufferCount = input.ReadValueS32();
+                this.Unknown0 = input.ReadValueF32(endian);
+
+                var bufferCount = input.ReadValueS32(endian);
                 this.Buffers.Clear();
                 for (int j = 0; j < bufferCount; j++)
                 {
                     var dataInfo = new Buffer();
-                    dataInfo.Format = input.ReadValueU32();
-                    dataInfo.Size = input.ReadValueU32();
-                    dataInfo.Count = input.ReadValueU32();
-                    dataInfo.Offset = input.ReadValueU32();
+                    dataInfo.Format = input.ReadValueU32(endian);
+                    dataInfo.Size = input.ReadValueU32(endian);
+                    dataInfo.Count = input.ReadValueU32(endian);
+                    dataInfo.Offset = input.ReadValueU32(endian);
                     this.Buffers.Add(dataInfo);
                 }
 
-                var primitiveCount = input.ReadValueS32();
+                var primitiveCount = input.ReadValueS32(endian);
                 this.Primitives.Clear();
                 for (int j = 0; j < primitiveCount; j++)
                 {
                     var primitive = new Primitive();
-                    primitive.BufferIndex = input.ReadValueS32();
-                    primitive.SkeletonIndex = input.ReadValueS32();
-                    primitive.MaterialIndex = input.ReadValueS32();
-                    primitive.IndicesStartIndex = input.ReadValueS32();
-                    primitive.Unknown4 = input.ReadValueU32();
-                    primitive.Unknown5 = input.ReadValueU32();
-                    primitive.Unknown6 = input.ReadValueU32();
+                    primitive.BufferIndex = input.ReadValueS32(endian);
+                    primitive.SkeletonIndex = input.ReadValueS32(endian);
+                    primitive.MaterialIndex = input.ReadValueS32(endian);
+                    primitive.IndicesStartIndex = input.ReadValueS32(endian);
+                    primitive.Unknown4 = input.ReadValueU32(endian);
+                    primitive.Unknown5 = input.ReadValueU32(endian);
+                    primitive.Unknown6 = input.ReadValueU32(endian);
                     this.Primitives.Add(primitive);
                 }
 
-                var vertexDataSize = input.ReadValueU32();
+                var vertexDataSize = input.ReadValueU32(endian);
                 // data is aligned to 16 bytes, ugh
                 input.Seek(input.Position.Align(16), SeekOrigin.Begin);
                 this.VertexData = new byte[vertexDataSize];
                 input.Read(this.VertexData, 0, this.VertexData.Length);
 
-                var indexCount = input.ReadValueU32();
+                var indexCount = input.ReadValueU32(endian);
                 // data is aligned to 16 bytes, ugh
                 input.Seek(input.Position.Align(16), SeekOrigin.Begin);
                 this.Indices = new short[indexCount];
                 for (int i = 0; i < indexCount; i++)
                 {
-                    this.Indices[i] = input.ReadValueS16();
+                    this.Indices[i] = input.ReadValueS16(endian);
                 }
             }
         }

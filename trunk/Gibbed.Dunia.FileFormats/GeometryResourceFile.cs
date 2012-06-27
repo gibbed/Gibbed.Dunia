@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -22,7 +22,7 @@
 
 using System;
 using System.IO;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats
 {
@@ -40,21 +40,22 @@ namespace Gibbed.Dunia.FileFormats
                 throw new FormatException();
             }
 
-            if (input.ReadValueU32() != 0x4D455348)
+            if (input.ReadValueU32(Endian.Little) != 0x4D455348)
             {
                 throw new FormatException();
             }
+            var endian = Endian.Little;
 
-            this.MajorVersion = input.ReadValueU16();
+            this.MajorVersion = input.ReadValueU16(endian);
             if (this.MajorVersion != 42)
             {
                 throw new FormatException();
             }
 
-            this.MinorVersion = input.ReadValueU16();
-            this.Unknown08 = input.ReadValueU32();
+            this.MinorVersion = input.ReadValueU16(endian);
+            this.Unknown08 = input.ReadValueU32(endian);
 
-            this.Root = (Geometry.Root)DeserializeBlock(null, this, input);
+            this.Root = (Geometry.Root)DeserializeBlock(null, this, input, endian);
         }
 
         public Geometry.IBlock CreateBlock(Geometry.BlockType type)
@@ -63,21 +64,21 @@ namespace Gibbed.Dunia.FileFormats
         }
 
         private static Geometry.IBlock DeserializeBlock(
-            Geometry.IBlock parent, Geometry.IBlockFactory factory, Stream input)
+            Geometry.IBlock parent, Geometry.IBlockFactory factory, Stream input, Endian endian)
         {
             var baseOffset = input.Position;
 
-            var type = (Geometry.BlockType)input.ReadValueU32();
+            var type = (Geometry.BlockType)input.ReadValueU32(endian);
             var block = factory.CreateBlock(type);
             if (block == null || block.Type != type)
             {
                 throw new FormatException();
             }
 
-            var unknown04 = input.ReadValueU32();
-            var size = input.ReadValueU32();
-            var dataSize = input.ReadValueU32();
-            var childCount = input.ReadValueU32();
+            var unknown04 = input.ReadValueU32(endian);
+            var size = input.ReadValueU32(endian);
+            var dataSize = input.ReadValueU32(endian);
+            var childCount = input.ReadValueU32(endian);
 
             if (dataSize > size)
             {
@@ -95,7 +96,7 @@ namespace Gibbed.Dunia.FileFormats
             }
 
             input.Seek(blockOffset, SeekOrigin.Begin);
-            block.Deserialize(parent, input);
+            block.Deserialize(parent, input, endian);
 
             if (input.Position != blockEnd)
             {
@@ -105,7 +106,7 @@ namespace Gibbed.Dunia.FileFormats
             input.Seek(childOffset, SeekOrigin.Begin);
             for (uint i = 0; i < childCount; i++)
             {
-                block.AddChild(DeserializeBlock(block, block, input));
+                block.AddChild(DeserializeBlock(block, block, input, endian));
             }
 
             if (input.Position != childEnd)

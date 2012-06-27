@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -23,7 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats.Geometry
 {
@@ -36,35 +36,35 @@ namespace Gibbed.Dunia.FileFormats.Geometry
 
         public List<Matrix> Items = new List<Matrix>();
 
-        public void Deserialize(IBlock parent, Stream input)
+        public void Deserialize(IBlock parent, Stream input, Endian endian)
         {
-            var count = input.ReadValueU32();
+            var count = input.ReadValueU32(endian);
 
             this.Items.Clear();
             for (uint i = 0; i < count; i++)
             {
                 var item = new Matrix();
-                item.M11 = input.ReadValueF32();
-                item.M12 = input.ReadValueF32();
-                item.M13 = input.ReadValueF32();
-                item.M14 = input.ReadValueF32();
-                item.M21 = input.ReadValueF32();
-                item.M22 = input.ReadValueF32();
-                item.M23 = input.ReadValueF32();
-                item.M24 = input.ReadValueF32();
-                item.M31 = input.ReadValueF32();
-                item.M32 = input.ReadValueF32();
-                item.M33 = input.ReadValueF32();
-                item.M34 = input.ReadValueF32();
-                item.M41 = input.ReadValueF32();
-                item.M42 = input.ReadValueF32();
-                item.M43 = input.ReadValueF32();
-                item.M44 = input.ReadValueF32();
+                item.M11 = input.ReadValueF32(endian);
+                item.M12 = input.ReadValueF32(endian);
+                item.M13 = input.ReadValueF32(endian);
+                item.M14 = input.ReadValueF32(endian);
+                item.M21 = input.ReadValueF32(endian);
+                item.M22 = input.ReadValueF32(endian);
+                item.M23 = input.ReadValueF32(endian);
+                item.M24 = input.ReadValueF32(endian);
+                item.M31 = input.ReadValueF32(endian);
+                item.M32 = input.ReadValueF32(endian);
+                item.M33 = input.ReadValueF32(endian);
+                item.M34 = input.ReadValueF32(endian);
+                item.M41 = input.ReadValueF32(endian);
+                item.M42 = input.ReadValueF32(endian);
+                item.M43 = input.ReadValueF32(endian);
+                item.M44 = input.ReadValueF32(endian);
                 this.Items.Add(item);
             }
         }
 
-        public void Serialize(IBlock parent, Stream output)
+        public void Serialize(IBlock parent, Stream output, Endian endian)
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -23,7 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats
 {
@@ -34,51 +34,54 @@ namespace Gibbed.Dunia.FileFormats
 
 		public void Deserialize(Stream input)
 		{
-			var magic = input.ReadValueU32();
+			var magic = input.ReadValueU32(Endian.Little);
 			if (magic != 0x46415432) // FAT2
 			{
 				throw new FormatException("not a big file");
 			}
+            var endian = Endian.Little;
 
-			var version = input.ReadValueU32();
+            var version = input.ReadValueU32(endian);
 			if (version != 5)
 			{
                 throw new FormatException("unsupported big file version");
 			}
 
-			input.ReadValueU32();
-			var indexCount = input.ReadValueU32();
+            input.ReadValueU32(endian);
+            var indexCount = input.ReadValueU32(endian);
 
             this.Entries.Clear();
 			for (int i = 0; i < indexCount; i++)
 			{
 				var index = new Big.Entry();
-				index.Deserialize(input);
+				index.Deserialize(input, endian);
 				this.Entries.Add(index);
 			}
 
 			// There's a dword at the end of the file past the index entries, all observed
 			// Far Cry 2 archives all have it as 0, I assume it's another table for something.
 
-			if (input.ReadValueU32() != 0)
+            if (input.ReadValueU32(endian) != 0)
 			{
 				throw new FormatException("unexpected value");
 			}
 		}
 
 		public void Serialize(Stream output)
-		{
-			output.WriteValueU32(0x46415432);
-			output.WriteValueU32(5);
-			output.WriteValueU32(0x0301);
-			output.WriteValueU32((uint)this.Entries.Count);
+        {
+            var endian = Endian.Little;
+
+            output.WriteValueU32(0x46415432, endian);
+            output.WriteValueU32(5, endian);
+            output.WriteValueU32(0x0301, endian);
+            output.WriteValueU32((uint)this.Entries.Count, endian);
 
 			foreach (var entry in this.Entries)
 			{
-				entry.Serialize(output);
+                entry.Serialize(output, endian);
 			}
 
-			output.WriteValueU32(0);
+            output.WriteValueU32(0, endian);
 		}
 	}
 }

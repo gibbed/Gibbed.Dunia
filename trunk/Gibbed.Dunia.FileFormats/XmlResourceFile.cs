@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats
 {
@@ -39,17 +39,18 @@ namespace Gibbed.Dunia.FileFormats
 			{
 				throw new FormatException("not an xml resource file");
 			}
+            var endian = Endian.Little;
 
 			this.Unknown1 = input.ReadValueU8();
-            var stringTableSize = input.ReadValuePackedU32();
-            var totalNodeCount = input.ReadValuePackedU32();
-            var totalAttributeCount = input.ReadValuePackedU32();
+            var stringTableSize = input.ReadValuePackedU32(endian);
+            var totalNodeCount = input.ReadValuePackedU32(endian);
+            var totalAttributeCount = input.ReadValuePackedU32(endian);
 
             uint actualNodeCount = 1, actualAttributeCount = 0;
 
 			this.Root = new Node();
 			this.Root.Deserialize(
-                input, ref actualNodeCount, ref actualAttributeCount);
+                input, ref actualNodeCount, ref actualAttributeCount, endian);
 
             if (actualNodeCount != totalNodeCount ||
                 actualAttributeCount != totalAttributeCount)
@@ -67,6 +68,8 @@ namespace Gibbed.Dunia.FileFormats
 
         public void Serialize(Stream output)
         {
+            var endian = Endian.Little;
+
             var stringTable = new StringTable();
             this.Root.WriteStringTable(stringTable);
             var stringTableData = stringTable.Serialize();
@@ -80,11 +83,12 @@ namespace Gibbed.Dunia.FileFormats
                 this.Root.Serialize(
                     data,
                     ref totalNodeCount,
-                    ref totalAttributeCount);
+                    ref totalAttributeCount,
+                    endian);
 
-                output.WriteValuePackedU32((uint)stringTableData.Length);
-                output.WriteValuePackedU32(totalNodeCount);
-                output.WriteValuePackedU32(totalAttributeCount);
+                output.WriteValuePackedU32((uint)stringTableData.Length, endian);
+                output.WriteValuePackedU32(totalNodeCount, endian);
+                output.WriteValuePackedU32(totalAttributeCount, endian);
 
                 data.Position = 0;
                 output.WriteFromStream(data, data.Length);
@@ -107,13 +111,14 @@ namespace Gibbed.Dunia.FileFormats
             public void Deserialize(
                 Stream input,
                 ref uint totalNodeCount,
-                ref uint totalAttributeCount)
+                ref uint totalAttributeCount,
+                Endian endian)
             {
-                this._NameIndex = input.ReadValuePackedU32();
-                this._ValueIndex = input.ReadValuePackedU32();
+                this._NameIndex = input.ReadValuePackedU32(endian);
+                this._ValueIndex = input.ReadValuePackedU32(endian);
 
-                var attributeCount = input.ReadValuePackedU32();
-                var childCount = input.ReadValuePackedU32();
+                var attributeCount = input.ReadValuePackedU32(endian);
+                var childCount = input.ReadValuePackedU32(endian);
 
                 totalNodeCount += childCount;
                 totalAttributeCount += attributeCount;
@@ -122,7 +127,7 @@ namespace Gibbed.Dunia.FileFormats
                 for (uint i = 0; i < attributeCount; i++)
                 {
                     var attribute = new Attribute();
-                    attribute.Deserialize(input);
+                    attribute.Deserialize(input, endian);
                     this.Attributes.Add(attribute);
                 }
 
@@ -133,7 +138,8 @@ namespace Gibbed.Dunia.FileFormats
                     child.Deserialize(
                         input,
                         ref totalNodeCount,
-                        ref totalAttributeCount);
+                        ref totalAttributeCount,
+                        endian);
                     this.Children.Add(child);
                 }
             }
@@ -141,20 +147,21 @@ namespace Gibbed.Dunia.FileFormats
             public void Serialize(
                 Stream output,
                 ref uint totalNodeCount,
-                ref uint totalAttributeCount)
+                ref uint totalAttributeCount,
+                Endian endian)
             {
-                output.WriteValuePackedU32(this._NameIndex);
-                output.WriteValuePackedU32(this._ValueIndex);
+                output.WriteValuePackedU32(this._NameIndex, endian);
+                output.WriteValuePackedU32(this._ValueIndex, endian);
 
                 totalAttributeCount += (uint)this.Attributes.Count;
                 totalNodeCount += (uint)this.Children.Count;
 
-                output.WriteValuePackedU32((uint)this.Attributes.Count);
-                output.WriteValuePackedU32((uint)this.Children.Count);
+                output.WriteValuePackedU32((uint)this.Attributes.Count, endian);
+                output.WriteValuePackedU32((uint)this.Children.Count, endian);
 
                 foreach (var attribute in this.Attributes)
                 {
-                    attribute.Serialize(output);
+                    attribute.Serialize(output, endian);
                 }
 
                 foreach (var child in this.Children)
@@ -162,7 +169,8 @@ namespace Gibbed.Dunia.FileFormats
                     child.Serialize(
                         output,
                         ref totalNodeCount,
-                        ref totalAttributeCount);
+                        ref totalAttributeCount,
+                        endian);
                 }
             }
 
@@ -208,24 +216,24 @@ namespace Gibbed.Dunia.FileFormats
             internal uint _NameIndex;
             internal uint _ValueIndex;
 
-            public void Deserialize(Stream input)
+            public void Deserialize(Stream input, Endian endian)
             {
-                this.Unknown = input.ReadValuePackedU32();
+                this.Unknown = input.ReadValuePackedU32(endian);
 
                 if (this.Unknown != 0)
                 {
                     throw new FormatException();
                 }
 
-                this._NameIndex = input.ReadValuePackedU32();
-                this._ValueIndex = input.ReadValuePackedU32();
+                this._NameIndex = input.ReadValuePackedU32(endian);
+                this._ValueIndex = input.ReadValuePackedU32(endian);
             }
 
-            public void Serialize(Stream output)
+            public void Serialize(Stream output, Endian endian)
             {
-                output.WriteValuePackedU32(this.Unknown);
-                output.WriteValuePackedU32(this._NameIndex);
-                output.WriteValuePackedU32(this._ValueIndex);
+                output.WriteValuePackedU32(this.Unknown, endian);
+                output.WriteValuePackedU32(this._NameIndex, endian);
+                output.WriteValuePackedU32(this._ValueIndex, endian);
             }
 
             internal void ReadStringTable(StringTable stringTable)
@@ -246,37 +254,37 @@ namespace Gibbed.Dunia.FileFormats
             private MemoryStream Data = new MemoryStream();
 
             // this is dumb :effort:
-            private Dictionary<uint, string> Offsets = new Dictionary<uint, string>();
-            private Dictionary<string, uint> Values = new Dictionary<string, uint>();
+            private readonly Dictionary<uint, string> _Offsets = new Dictionary<uint, string>();
+            private readonly Dictionary<string, uint> _Values = new Dictionary<string, uint>();
 
             public string Read(uint index)
             {
-                if (this.Offsets.ContainsKey(index) == false)
+                if (this._Offsets.ContainsKey(index) == false)
                 {
                     throw new KeyNotFoundException();
                 }
 
-                return this.Offsets[index];
+                return this._Offsets[index];
             }
 
             public uint Write(string value)
             {
-                if (this.Values.ContainsKey(value) == true)
+                if (this._Values.ContainsKey(value) == true)
                 {
-                    return this.Values[value];
+                    return this._Values[value];
                 }
 
                 var offset = (uint)this.Data.Position;
-                this.Offsets.Add(offset, value);
-                this.Values.Add(value, offset);
+                this._Offsets.Add(offset, value);
+                this._Values.Add(value, offset);
                 this.Data.WriteStringZ(value, Encoding.UTF8);
                 return offset;
             }
 
             public void Deserialize(byte[] buffer)
             {
-                this.Offsets.Clear();
-                this.Values.Clear();
+                this._Offsets.Clear();
+                this._Values.Clear();
 
                 this.Data = new MemoryStream(buffer);
 
@@ -284,8 +292,8 @@ namespace Gibbed.Dunia.FileFormats
                 {
                     var offset = (uint)this.Data.Position;
                     var value = this.Data.ReadStringZ(Encoding.UTF8);
-                    this.Offsets.Add(offset, value);
-                    this.Values.Add(value, offset);
+                    this._Offsets.Add(offset, value);
+                    this._Values.Add(value, offset);
                 }
             }
 

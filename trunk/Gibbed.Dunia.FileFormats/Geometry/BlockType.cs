@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -24,6 +24,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
 {
     public enum BlockType : uint
     {
+        // ReSharper disable InconsistentNaming
         Root = 0x00000000,
         MaterialReference = 0x524D544C, // RMTL
         Nodes = 0x4E4F4445,
@@ -39,5 +40,6 @@ namespace Gibbed.Dunia.FileFormats.Geometry
         UCMP = 0x55434D50,
         IKDA = 0x494B4441,
         MaterialDescriptor = 0x444D544C, // DMTL
+        // ReSharper restore InconsistentNaming
     }
 }

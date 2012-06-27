@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Linq;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats
 {
@@ -39,14 +39,15 @@ namespace Gibbed.Dunia.FileFormats
 
         public void Deserialize(Stream input)
         {
-            var version = input.ReadValueU32();
+            var version = input.ReadValueU32(Endian.Little);
             if (version < 1 || version > 4)
             {
                 throw new FormatException();
             }
+            var endian = Endian.Little;
 
-            var unknownLength = input.ReadValueU32();
-            var rmlLength = input.ReadValueU32();
+            var unknownLength = input.ReadValueU32(endian);
+            var rmlLength = input.ReadValueU32(endian);
 
             if (input.Position + unknownLength + rmlLength > input.Length)
             {
@@ -55,12 +56,12 @@ namespace Gibbed.Dunia.FileFormats
 
             using (var data = input.ReadToMemoryStream(unknownLength))
             {
-                var unk0count = data.ReadValueU32();
+                var unk0count = data.ReadValueU32(endian);
                 this.Unknown0.Clear();
                 for (uint i = 0; i < unk0count; i++)
                 {
-                    var id = data.ReadValueU32();
-                    var length = data.ReadValueU32();
+                    var id = data.ReadValueU32(endian);
+                    var length = data.ReadValueU32(endian);
                     var xml = new XmlResourceFile();
                     using (var data2 = data.ReadToMemoryStream(length))
                     {
@@ -73,7 +74,7 @@ namespace Gibbed.Dunia.FileFormats
                     });
                 }
 
-                var unk1length = data.ReadValueU32();
+                var unk1length = data.ReadValueU32(endian);
                 this.Unknown1 = new byte[unk1length];
                 if (data.Read(this.Unknown1, 0, this.Unknown1.Length) != this.Unknown1.Length)
                 {
@@ -81,23 +82,23 @@ namespace Gibbed.Dunia.FileFormats
                 }
 
                 this.VariableNameHashes.Clear();
-                var variableNameCount = data.ReadValueU32();
+                var variableNameCount = data.ReadValueU32(endian);
                 for (uint i = 0; i < variableNameCount; i++)
                 {
-                    this.VariableNameHashes.Add(data.ReadValueU32());
+                    this.VariableNameHashes.Add(data.ReadValueU32(endian));
                 }
 
                 this.Unknown3.Clear();
-                var unk3count = data.ReadValueU32();
+                var unk3count = data.ReadValueU32(endian);
                 for (uint i = 0; i < unk3count; i++)
                 {
                     var unknown3 = new UnknownData3();
-                    unknown3.NameHash = data.ReadValueU32();
-                    var unk1 = data.ReadValueU32();
+                    unknown3.NameHash = data.ReadValueU32(endian);
+                    var unk1 = data.ReadValueU32(endian);
                     unknown3.Name = data.ReadString(unk1, Encoding.UTF8);
-                    unknown3.IndexIntoUnknown0 = data.ReadValueU32();
-                    unknown3.IndexIntoUnknown1 = data.ReadValueU32();
-                    unknown3.Unknown4 = data.ReadValueU32();
+                    unknown3.IndexIntoUnknown0 = data.ReadValueU32(endian);
+                    unknown3.IndexIntoUnknown1 = data.ReadValueU32(endian);
+                    unknown3.Unknown4 = data.ReadValueU32(endian);
                     this.Unknown3.Add(unknown3);
                 }
             }

@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2011 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2012 Rick (rick 'at' gibbed 'dot' us)
  * 
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -22,13 +22,13 @@
 
 using System;
 using System.IO;
-using Gibbed.Helpers;
+using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats
 {
     public static class StreamHelpers
     {
-        public static uint ReadValuePackedU32(this Stream stream)
+        public static uint ReadValuePackedU32(this Stream stream, Endian endian)
         {
             var value = stream.ReadValueU8();
             if (value < 0xFE)
@@ -41,22 +41,22 @@ namespace Gibbed.Dunia.FileFormats
                 throw new FormatException();
             }
 
-            return stream.ReadValueU32();
+            return stream.ReadValueU32(endian);
         }
 
-        public static void WriteValuePackedU32(this Stream stream, uint value)
+        public static void WriteValuePackedU32(this Stream stream, uint value, Endian endian)
         {
             if (value >= 0xFE)
             {
-                stream.WriteValueU8((byte)(0xFF));
-                stream.WriteValueU32(value);
+                stream.WriteValueU8(0xFF);
+                stream.WriteValueU32(value, endian);
                 return;
             }
 
             stream.WriteValueU8((byte)(value & 0xFF));
         }
 
-        public static uint ReadCount(this Stream stream, out bool isOffset)
+        public static uint ReadCount(this Stream stream, out bool isOffset, Endian endian)
         {
             var value = stream.ReadValueU8();
             isOffset = false;
@@ -67,20 +67,20 @@ namespace Gibbed.Dunia.FileFormats
             }
 
             isOffset = value != 0xFF;
-            return stream.ReadValueU32();
+            return stream.ReadValueU32(endian);
         }
 
-        public static void WriteCount(this Stream stream, int value, bool isOffset)
+        public static void WriteCount(this Stream stream, int value, bool isOffset, Endian endian)
         {
-            stream.WriteCount((uint)value, isOffset);
+            stream.WriteCount((uint)value, isOffset, endian);
         }
 
-        public static void WriteCount(this Stream stream, uint value, bool isOffset)
+        public static void WriteCount(this Stream stream, uint value, bool isOffset, Endian endian)
         {
             if (isOffset == true || value >= 0xFE)
             {
                 stream.WriteValueU8((byte)(isOffset == true ? 0xFE : 0xFF));
-                stream.WriteValueU32(value);
+                stream.WriteValueU32(value, endian);
                 return;
             }
 

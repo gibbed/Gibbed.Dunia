@@ -51,10 +51,6 @@
       <Project>{988AD1C4-1D56-4836-BE15-6D7044C3BAC5}</Project>
       <Name>Gibbed.Dunia.FileFormats</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Gibbed.Helpers\Gibbed.Helpers.csproj">
-      <Project>{5162A9FB-4DE1-4BBF-B7A2-5E8116AB0D26}</Project>
-      <Name>Gibbed.Helpers</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NDesk.Options\NDesk.Options.csproj">
       <Project>{C98A6CD6-9422-4B35-8B7A-F520D75534D1}</Project>
       <Name>NDesk.Options</Name>
