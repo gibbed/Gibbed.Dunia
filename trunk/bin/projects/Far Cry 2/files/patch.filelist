@@ -1,4 +1,4 @@
-; 129/216 (59%)
+; 131/216 (60%)
 config\inputactionmapcommon.xml
 config\inputactionmapmulti.xml
 config\inputactionmapsingle.xml
@@ -15,6 +15,7 @@ graphics\vehicles\air\veh_glider\intel_d.xbt
 graphics\vehicles\air\veh_glider\intel_d_mip0.xbt
 graphics\vehicles\air\veh_glider\veh_glider_intel.xbg
 ingameeditor\object_inventory.xml
+languages\chinese\oasisstrings.rml
 languages\czech\oasisstrings.rml
 languages\english\oasisstrings.rml
 languages\french\oasisstrings.rml
@@ -126,5 +127,6 @@ ui\localized\pcwidescreen\spa\ui\mp_menus.mgb
 ui\localized\pcwidescreen\spa\ui\mp_menus.mgb.desc
 ui\localized\pcwidescreen\spa\ui\options.mgb
 ui\localized\pcwidescreen\spa\ui\options.mgb.desc
+ui\textures\common\hardcore.xbt
 worlds\tmpla\generated\entitylibrary.fcb
 worlds\tmpla\generated\tmpla_depload.dat
