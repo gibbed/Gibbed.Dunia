@@ -7,14 +7,6 @@
     <Copyright>Copyright © Gibbed 2019</Copyright>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="lzo1x_32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="lzo1x_64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Gibbed.IO\Gibbed.IO.csproj" />
   </ItemGroup>
 </Project>

@@ -20,4 +20,9 @@
     <ProjectReference Include="..\Gibbed.ProjectData\Gibbed.ProjectData.csproj" />
     <ProjectReference Include="..\NDesk.Options\NDesk.Options.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MiniLZO">
+      <HintPath>..\..\other\MiniLZO.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

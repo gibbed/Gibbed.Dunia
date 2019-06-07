@@ -172,14 +172,16 @@ namespace Gibbed.Dunia.Unpack
                                 }
 
                                 var uncompressedData = new byte[entry.UncompressedSize];
-                                uint uncompressedSize = entry.UncompressedSize;
+                                int uncompressedSize = (int)entry.UncompressedSize;
 
-                                var result = LZO1x.Decompress(
+                                var result = MiniLZO.LZO.DecompressSafe(
                                     compressedData,
-                                    entry.CompressedSize,
+                                    0,
+                                    (int)entry.CompressedSize,
                                     uncompressedData,
+                                    0,
                                     ref uncompressedSize);
-                                if (result != 0)
+                                if (result != MiniLZO.ErrorCode.Success)
                                 {
                                     throw new InvalidOperationException("decompression error: " + result.ToString());
                                 }
@@ -268,14 +270,16 @@ namespace Gibbed.Dunia.Unpack
                                 }
 
                                 var uncompressedData = new byte[entry.UncompressedSize];
-                                uint uncompressedSize = entry.UncompressedSize;
+                                int uncompressedSize = (int)entry.UncompressedSize;
 
-                                var result = LZO1x.Decompress(
+                                var result = MiniLZO.LZO.DecompressSafe(
                                     compressedData,
-                                    entry.CompressedSize,
+                                    0,
+                                    (int)entry.CompressedSize,
                                     uncompressedData,
+                                    0,
                                     ref uncompressedSize);
-                                if (result != 0)
+                                if (result != MiniLZO.ErrorCode.Success)
                                 {
                                     throw new InvalidOperationException("decompression error: " + result.ToString());
                                 }

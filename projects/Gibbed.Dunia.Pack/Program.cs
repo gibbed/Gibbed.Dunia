@@ -58,7 +58,7 @@ namespace Gibbed.Dunia.Pack
                 },
                 {
                     "h|help",
-                    "show this message and exit", 
+                    "show this message and exit",
                     v => showHelp = v != null
                 },
             };
@@ -198,19 +198,21 @@ namespace Gibbed.Dunia.Pack
                         else
                         {
                             var uncompressedData = new byte[input.Length];
-                            var uncompressedSize = (uint)uncompressedData.Length;
+                            var uncompressedSize = uncompressedData.Length;
                             input.Read(uncompressedData, 0, uncompressedData.Length);
 
                             var compressedData = new byte[
                                 uncompressedData.Length +
                                 (uncompressedData.Length / 16) + 64 + 3];
-                            var compressedSize = (uint)compressedData.Length;
+                            var compressedSize = compressedData.Length;
+                            var workBuffer = new MiniLZO.CompressWorkBuffer();
 
-                            var result = LZO1x.Compress(
-                                uncompressedData, uncompressedSize,
-                                compressedData, ref compressedSize);
+                            var result = MiniLZO.LZO.Compress(
+                                uncompressedData, 0, uncompressedSize,
+                                compressedData, 0, ref compressedSize,
+                                workBuffer);
 
-                            if (result != 0)
+                            if (result != MiniLZO.ErrorCode.Success)
                             {
                                 throw new InvalidOperationException("compression error " + result.ToString());
                             }
@@ -218,9 +220,9 @@ namespace Gibbed.Dunia.Pack
                             if (compressedSize < uncompressedSize)
                             {
                                 entry.CompressionScheme = Big.CompressionScheme.LZO1x;
-                                entry.UncompressedSize = uncompressedSize;
-                                entry.CompressedSize = compressedSize;
-                                output.Write(compressedData, 0, (int)compressedSize);
+                                entry.UncompressedSize = (uint)uncompressedSize;
+                                entry.CompressedSize = (uint)compressedSize;
+                                output.Write(compressedData, 0, compressedSize);
                             }
                             else
                             {
