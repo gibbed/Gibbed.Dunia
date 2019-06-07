@@ -54,7 +54,7 @@ namespace Gibbed.Dunia.FileFormats
                 throw new FormatException();
             }
 
-            using (var data = input.ReadToMemoryStream(unknownLength))
+            using (var data = input.ReadToMemoryStream((int)unknownLength))
             {
                 var unk0count = data.ReadValueU32(endian);
                 this.Unknown0.Clear();
@@ -63,7 +63,7 @@ namespace Gibbed.Dunia.FileFormats
                     var id = data.ReadValueU32(endian);
                     var length = data.ReadValueU32(endian);
                     var xml = new XmlResourceFile();
-                    using (var data2 = data.ReadToMemoryStream(length))
+                    using (var data2 = data.ReadToMemoryStream((int)length))
                     {
                         xml.Deserialize(data2);
                     }
@@ -95,7 +95,7 @@ namespace Gibbed.Dunia.FileFormats
                     var unknown3 = new UnknownData3();
                     unknown3.NameHash = data.ReadValueU32(endian);
                     var unk1 = data.ReadValueU32(endian);
-                    unknown3.Name = data.ReadString(unk1, Encoding.UTF8);
+                    unknown3.Name = data.ReadString((int)unk1, Encoding.UTF8);
                     unknown3.IndexIntoUnknown0 = data.ReadValueU32(endian);
                     unknown3.IndexIntoUnknown1 = data.ReadValueU32(endian);
                     unknown3.Unknown4 = data.ReadValueU32(endian);
@@ -104,7 +104,7 @@ namespace Gibbed.Dunia.FileFormats
             }
 
             this.XmlResource = new XmlResourceFile();
-            using (var data = input.ReadToMemoryStream(rmlLength))
+            using (var data = input.ReadToMemoryStream((int)rmlLength))
             {
                 this.XmlResource.Deserialize(data);
                 if (data.Position != data.Length)

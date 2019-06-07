@@ -65,7 +65,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
                 node.Unknown40 = input.ReadValueF32(endian);
 
                 var length = input.ReadValueU32(endian);
-                node.Name = input.ReadString(length);
+                node.Name = input.ReadString((int)length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
                 this.Items.Add(node);

@@ -52,10 +52,10 @@ namespace Gibbed.FarCry2.FileFormats.Map
             this.Unknown3 = input.ReadValueU32(endian);
             this.Unknown4 = input.ReadValueU32(endian);
             this.Unknown5 = input.ReadValueU64(endian);
-            this.Creator = input.ReadString(input.ReadValueU32(endian), Encoding.UTF8);
+            this.Creator = input.ReadString((int)input.ReadValueU32(endian), Encoding.UTF8);
             this.Unknown7 = input.ReadValueU64(endian);
-            this.Author = input.ReadString(input.ReadValueU32(endian), Encoding.UTF8);
-            this.Name = input.ReadString(input.ReadValueU32(endian), Encoding.UTF8);
+            this.Author = input.ReadString((int)input.ReadValueU32(endian), Encoding.UTF8);
+            this.Name = input.ReadString((int)input.ReadValueU32(endian), Encoding.UTF8);
             this.Unknown10 = input.ReadValueU64(endian);
 
             this.Unknown11 = new byte[36];

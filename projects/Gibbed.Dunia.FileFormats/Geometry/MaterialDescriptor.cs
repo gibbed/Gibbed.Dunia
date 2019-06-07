@@ -59,15 +59,15 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             int count;
 
             length = input.ReadValueU32(endian);
-            this.Name = input.ReadString(length);
+            this.Name = input.ReadString((int)length);
             input.Seek(1, SeekOrigin.Current); // skip null
 
             length = input.ReadValueU32(endian);
-            this.Unknown1 = input.ReadString(length);
+            this.Unknown1 = input.ReadString((int)length);
             input.Seek(1, SeekOrigin.Current); // skip null
 
             length = input.ReadValueU32(endian);
-            this.Unknown2 = input.ReadString(length);
+            this.Unknown2 = input.ReadString((int)length);
             input.Seek(1, SeekOrigin.Current); // skip null
 
             this.TextureProperties.Clear();
@@ -75,11 +75,11 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             for (int i = 0; i < count; i++)
             {
                 length = input.ReadValueU32(endian);
-                var value = input.ReadString(length);
+                var value = input.ReadString((int)length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
                 length = input.ReadValueU32(endian);
-                var key = input.ReadString(length);
+                var key = input.ReadString((int)length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
                 this.TextureProperties[key] = value;
@@ -90,7 +90,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             for (int i = 0; i < count; i++)
             {
                 length = input.ReadValueU32(endian);
-                var key = input.ReadString(length);
+                var key = input.ReadString((int)length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
                 this.Float1Properties[key] = input.ReadValueF32(endian);
@@ -101,7 +101,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             for (int i = 0; i < count; i++)
             {
                 length = input.ReadValueU32(endian);
-                var key = input.ReadString(length);
+                var key = input.ReadString((int)length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
                 var value = new Float2();
@@ -116,7 +116,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             for (int i = 0; i < count; i++)
             {
                 length = input.ReadValueU32(endian);
-                var key = input.ReadString(length);
+                var key = input.ReadString((int)length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
                 var value = new Float3();
@@ -132,7 +132,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             for (int i = 0; i < count; i++)
             {
                 length = input.ReadValueU32(endian);
-                var key = input.ReadString(length);
+                var key = input.ReadString((int)length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
                 var value = new Float4();
@@ -149,7 +149,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             for (int i = 0; i < count; i++)
             {
                 length = input.ReadValueU32(endian);
-                var key = input.ReadString(length);
+                var key = input.ReadString((int)length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
                 this.IntProperties[key] = input.ReadValueS32(endian);
@@ -160,7 +160,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             for (int i = 0; i < count; i++)
             {
                 length = input.ReadValueU32(endian);
-                var key = input.ReadString(length);
+                var key = input.ReadString((int)length);
                 input.Seek(1, SeekOrigin.Current); // skip null
 
                 this.BoolProperties[key] = input.ReadValueB8();

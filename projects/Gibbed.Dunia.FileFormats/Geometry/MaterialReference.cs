@@ -47,7 +47,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
             for (uint i = 0; i < count; i++)
             {
                 var length = input.ReadValueU32(endian);
-                this.Paths.Add(input.ReadString(length));
+                this.Paths.Add(input.ReadString((int)length));
                 input.Seek(1, SeekOrigin.Current); // skip null
             }
         }

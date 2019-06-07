@@ -36,7 +36,7 @@ namespace Gibbed.FarCry2.FileFormats.Map
 
         public void Deserialize(Stream input, Endian endian)
         {
-            this.Unknown1 = input.ReadString(input.ReadValueU32(endian), Encoding.UTF8);
+            this.Unknown1 = input.ReadString((int)input.ReadValueU32(endian), Encoding.UTF8);
             this.Unknown2 = new Snapshot();
             this.Unknown2.Deserialize(input, endian);
 
@@ -44,7 +44,7 @@ namespace Gibbed.FarCry2.FileFormats.Map
             for (uint i = 0; i < unknown3; i++)
             {
                 throw new NotSupportedException();
-                var unknown4 = input.ReadString(input.ReadValueU32(endian), Encoding.UTF8);
+                var unknown4 = input.ReadString((int)input.ReadValueU32(endian), Encoding.UTF8);
             }
         }
 

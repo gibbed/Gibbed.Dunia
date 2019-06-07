@@ -62,7 +62,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
                 unknown.Unknown30 = input.ReadValueU32(endian);
 
                 var length = input.ReadValueU32(endian);
-                unknown.Name = input.ReadString(length);
+                unknown.Name = input.ReadString((int)length);
 
                 input.Seek(1, SeekOrigin.Current); // skip null
 
