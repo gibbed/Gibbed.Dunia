@@ -14,3 +14,6 @@
 	path = projects/Gibbed.ProjectData
 	url = https://github.com/gibbed/Gibbed.ProjectData.git
 	branch = vs2017
+[submodule "bin/projects/Far Cry 2/files"]
+	path = bin/projects/Far Cry 2/files
+	url = https://github.com/gibbed/FarCry2-File-Lists.git
