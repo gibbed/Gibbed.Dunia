@@ -5,7 +5,7 @@
     <Company>Gibbed</Company>
     <Authors>Gibbed</Authors>
     <Description>http://gib.me/</Description>
-    <Copyright>Copyright © Gibbed 2019</Copyright>
+    <Copyright>Copyright © Gibbed 2021</Copyright>
     <Platforms>x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>

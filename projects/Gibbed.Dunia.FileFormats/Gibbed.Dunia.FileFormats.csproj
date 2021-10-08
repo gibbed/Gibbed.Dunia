@@ -4,7 +4,7 @@
     <Company>Gibbed</Company>
     <Authors>Gibbed</Authors>
     <Description>http://gib.me/</Description>
-    <Copyright>Copyright © Gibbed 2019</Copyright>
+    <Copyright>Copyright © Gibbed 2021</Copyright>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Gibbed.IO\Gibbed.IO.csproj" />
