@@ -122,7 +122,7 @@ namespace Gibbed.Dunia.Unpack
                 s => s.HashFileNameCRC32(),
                 s => s.ToLowerInvariant());
 
-            var big = new BigFile();
+            var big = new BigFileV2();
             using (var input = File.OpenRead(fatPath))
             {
                 big.Deserialize(input);

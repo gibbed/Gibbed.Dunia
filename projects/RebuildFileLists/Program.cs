@@ -151,7 +151,7 @@ namespace RebuildFileLists
 
                 outputPaths.Add(outputPath);
 
-                var big = new BigFile();
+                var big = new BigFileV2();
 
                 if (File.Exists(inputPath + ".bak") == true)
                 {

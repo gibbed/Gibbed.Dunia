@@ -168,7 +168,7 @@ namespace Gibbed.Dunia.Pack
                 }
             }
 
-            var big = new BigFile();
+            var big = new BigFileV2();
 
             using (var output = File.Create(datPath))
             {

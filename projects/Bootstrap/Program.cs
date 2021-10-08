@@ -214,7 +214,7 @@ namespace Bootstrap
                 return false;
             }
 
-            var big = new BigFile();
+            var big = new BigFileV2();
             using (var input = File.OpenRead(fatPath))
             {
                 big.Deserialize(input);
@@ -239,7 +239,7 @@ namespace Bootstrap
                 return false;
             }
 
-            var big = new BigFile();
+            var big = new BigFileV2();
             using (var input = File.OpenRead(fatPath))
             {
                 big.Deserialize(input);

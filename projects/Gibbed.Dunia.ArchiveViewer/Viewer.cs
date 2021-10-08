@@ -108,7 +108,7 @@ namespace Gibbed.Dunia.ArchiveViewer
             this.projectComboBox.SelectedItem = project;
         }
 
-        private BigFile Archive;
+        private BigFileV2 Archive;
         private void BuildFileTree()
         {
             this.fileList.Nodes.Clear();
@@ -201,10 +201,10 @@ namespace Gibbed.Dunia.ArchiveViewer
                 this.openDialog.InitialDirectory = null;
             }
 
-            BigFile archive;
+            BigFileV2 archive;
             using (var input = this.openDialog.OpenFile())
             {
-                archive = new BigFile();
+                archive = new BigFileV2();
                 archive.Deserialize(input);
             }
             this.Archive = archive;

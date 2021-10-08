@@ -261,7 +261,7 @@ namespace Gibbed.FarCry2.MapPack
                 paths[hash] = fullPath;
             }
 
-            var big = new BigFile();
+            var big = new BigFileV2();
 
             using (var output = new MemoryStream())
             {

@@ -163,7 +163,7 @@ namespace Gibbed.FarCry2.MapUnpack
                 output.Write(map.Snapshot.Data, 0, map.Snapshot.Data.Length);
             }
 
-            var big = new BigFile();
+            var big = new BigFileV2();
             using (var input = map.Archive.FAT.Unpack())
             {
                 big.Deserialize(input);
