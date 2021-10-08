@@ -6,10 +6,9 @@
     <Authors>Gibbed</Authors>
     <Description>http://gib.me/</Description>
     <Copyright>Copyright © Gibbed 2021</Copyright>
-    <Platforms>x86</Platforms>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\..\bin\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
