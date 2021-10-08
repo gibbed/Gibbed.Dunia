@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <GibbedIO_TargetFrameworksToBuild>net48</GibbedIO_TargetFrameworksToBuild>
+    <GibbedPortableExecutable_TargetFrameworksToBuild>net48</GibbedPortableExecutable_TargetFrameworksToBuild>
+    <GibbedSquish_TargetFrameworksToBuild>net48</GibbedSquish_TargetFrameworksToBuild>
+    <NDeskOptions_TargetFrameworksToBuild>net48</NDeskOptions_TargetFrameworksToBuild>
+    <Tommy_TargetFrameworksToBuild>net48</Tommy_TargetFrameworksToBuild>
+  </PropertyGroup>
+</Project>

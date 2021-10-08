@@ -1,19 +1,19 @@
 [submodule "projects/Gibbed.IO"]
 	path = projects/Gibbed.IO
 	url = https://github.com/gibbed/Gibbed.IO.git
-	branch = vs2017
+	branch = main
 [submodule "projects/NDesk.Options"]
 	path = projects/NDesk.Options
 	url = https://github.com/gibbed/NDesk.Options.git
-	branch = vs2017
+	branch = main
 [submodule "projects/Gibbed.Squish"]
 	path = projects/Gibbed.Squish
 	url = https://github.com/gibbed/Gibbed.Squish.git
-	branch = vs2017
+	branch = main
 [submodule "projects/Gibbed.ProjectData"]
 	path = projects/Gibbed.ProjectData
 	url = https://github.com/gibbed/Gibbed.ProjectData.git
-	branch = vs2017
+	branch = main
 [submodule "bin/projects/Far Cry 2/files"]
 	path = bin/projects/Far Cry 2/files
 	url = https://github.com/gibbed/FarCry2-File-Lists.git
