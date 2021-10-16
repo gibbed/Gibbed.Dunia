@@ -63,7 +63,7 @@ namespace Gibbed.Dunia.FileFormats
 
         public static bool VersionSupportsEncryption(int fileVersion)
         {
-            return fileVersion >= 10;
+            return fileVersion >= 11;
         }
 
         public void Serialize(Stream output)
