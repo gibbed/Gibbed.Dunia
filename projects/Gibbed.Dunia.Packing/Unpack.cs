@@ -68,6 +68,7 @@ namespace Gibbed.Dunia.Packing
                 { "nf|no-files", "don't extract files", v => options.ExtractFiles = v == null },
                 { "nu|no-unknowns", "don't extract unknown files", v => options.ExtractUnknowns = v == null },
                 { "ou|only-unknowns", "only extract unknown files", v => options.OnlyUnknowns = v != null },
+                { "f|filter=", "only extract files using pattern", v => options.Filter = !string.IsNullOrEmpty(v) ? new Regex(v) : null },
                 { "f|filter=", "only extract files using pattern", v => filterPattern = v },
                 { "if|invert-filter", "only extract files not using pattern", v => invertFilter = v != null },
                 { "d|difference=", "only extract files aren't in specified archive", v => differencePath = v },
