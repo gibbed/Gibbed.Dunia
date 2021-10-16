@@ -52,13 +52,12 @@ namespace Gibbed.Dunia.Packing
             {
                 ExtractUnknowns = true,
                 OnlyUnknowns = false,
+                Filter = null,
                 ExtractFiles = true,
                 OverwriteFiles = false,
+                DifferencePath = null,
                 Verbose = false,
             };
-            string filterPattern = null;
-            bool invertFilter = false;
-            string differencePath = null;
 
             var optionSet = new OptionSet()
             {
