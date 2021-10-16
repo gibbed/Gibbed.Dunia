@@ -17,3 +17,6 @@
 [submodule "bin/projects/Far Cry 2/files"]
 	path = bin/projects/Far Cry 2/files
 	url = https://github.com/gibbed/FarCry2-File-Lists.git
+[submodule "bin/projects/Far Cry 6/files"]
+	path = bin/projects/Far Cry 6/files
+	url = https://github.com/gibbed/FarCry6-File-Lists.git
