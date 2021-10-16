@@ -182,7 +182,7 @@ namespace Gibbed.Dunia.Packing
                 Console.WriteLine("Loading file lists...");
             }
 
-            var context = new ExtractionContext<TArchive, THash>(
+            var context = new UnpackContext<TArchive, THash>(
                 project,
                 archives,
                 outputPath: extras.Count > 1 ? extras[1] : Path.ChangeExtension(sourcePath, null) + "_unpack",
@@ -309,7 +309,7 @@ namespace Gibbed.Dunia.Packing
 
         private static void ExtractArchive(
             BoundArchive<TArchive, THash> archive,
-            ExtractionContext<TArchive, THash> context,
+            UnpackContext<TArchive, THash> context,
             UnpackOptions options)
         {
             THash[] hashDifference = null;

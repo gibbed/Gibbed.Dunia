@@ -29,7 +29,7 @@ using System.Threading;
 
 namespace Gibbed.Dunia.Packing
 {
-    internal sealed class ExtractionContext<TArchive, THash>
+    internal sealed class UnpackContext<TArchive, THash>
         where TArchive : Big.IArchive<THash>, new()
     {
         public List<(string archiveName, long totalCount, long extractedCount, long IgnoredCount, long ExcludedCount, long ExistingCount)> Tallies { get; private set; } = new();
@@ -42,7 +42,7 @@ namespace Gibbed.Dunia.Packing
         private ProjectData.HashList<THash> hashes;
         public ProjectData.HashList<THash> Hashes => hashes;
 
-        public ExtractionContext(
+        public UnpackContext(
             ProjectData.Project project,
             BoundArchive<TArchive, THash>[] archives,
             string outputPath,
