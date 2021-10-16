@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2021 Rick (rick 'at' gibbed 'dot' us)
+/* Copyright (c) 2021 Rick (rick 'at' gibbed 'dot' us)
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -48,13 +48,13 @@ namespace Gibbed.Dunia.Packing
             }
 
             bool showHelp = false;
-            bool verbose = false;
             var options = new UnpackOptions()
             {
                 ExtractUnknowns = true,
                 OnlyUnknowns = false,
                 ExtractFiles = true,
                 OverwriteFiles = false,
+                Verbose = false,
             };
             string filterPattern = null;
             bool invertFilter = false;
