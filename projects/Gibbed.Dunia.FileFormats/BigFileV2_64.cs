@@ -90,6 +90,10 @@ namespace Gibbed.Dunia.FileFormats
         {
             _KnownVersions = new ReadOnlyCollection<Version>(new Version[]
             {
+                // Far Cry 5
+                (10, Platform.Any, 0),
+                (10, Platform.Windows, 0),
+
                 // Far Cry 6
                 (11, Platform.Any, 0),
                 (11, Platform.Windows, 0),
@@ -98,6 +102,7 @@ namespace Gibbed.Dunia.FileFormats
             _EntrySerializers = new ReadOnlyDictionary<int, IEntrySerializer<ulong>>(
                 new Dictionary<int, IEntrySerializer<ulong>>()
                 {
+                    [10] = new EntrySerializerV10(),
                     [11] = new EntrySerializerV11(),
                 });
         }
