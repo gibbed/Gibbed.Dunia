@@ -29,7 +29,11 @@ x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
 bld/
-[Bb]in/
+[Bb]in/*.bin
+[Bb]in/*.config
+[Bb]in/*.dll
+[Bb]in/*.exe
+[Bb]in/*.xml
 [Oo]bj/
 [Ll]og/
 [Ll]ogs/
