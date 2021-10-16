@@ -385,5 +385,134 @@ namespace Gibbed.Dunia.Packing
             }
             return entryName;
         }
+
+        private static void ExtractArchive(
+            BoundArchive<TArchive, THash> archive,
+            ExtractionContext<TArchive, THash> context,
+            UnpackOptions options)
+        {
+            THash[] hashDifference = null;
+            if (string.IsNullOrEmpty(options.DifferencePath) == false)
+            {
+                TArchive fatDifference;
+                using (var input = File.OpenRead(options.DifferencePath))
+                {
+                    fatDifference = new TArchive();
+                    fatDifference.Deserialize(input);
+                }
+                hashDifference = archive.Fat.Entries
+                    .Select(e => e.NameHash)
+                    .Except(fatDifference.Entries.Select(e => e.NameHash))
+                    .ToArray();
+                //Console.WriteLine("{0} not in parent.", hashDifference.Length);
+            }
+
+            if (options.ExtractFiles == false)
+            {
+                return;
+            }
+
+            var entries = archive.Fat.Entries.OrderBy(e => e.Offset).ToArray();
+            if (entries.Length == 0)
+            {
+                return;
+            }
+
+            long extractedCount = 0;
+            long ignoredCount = 0;
+            long excludedCount = 0;
+            long existingCount = 0;
+
+            using (var input = File.OpenRead(archive.DatPath))
+            {
+                var padding = context.TotalEntryCount.ToString(CultureInfo.InvariantCulture).Length;
+                var duplicates = new Dictionary<THash, int>();
+                foreach (var entry in entries)
+                {
+                    context.IncrementProcessedEntryCount();
+
+                    if (hashDifference != null &&
+                        Array.IndexOf(hashDifference, entry.NameHash) < 0)
+                    {
+                        continue;
+                    }
+
+                    if (GetEntryName(
+                        input,
+                        archive.Fat,
+                        entry,
+                        context.Hashes,
+                        options,
+                        out var entryName) == false)
+                    {
+                        ignoredCount++;
+                        continue;
+                    }
+
+                    if (duplicates.TryGetValue(entry.NameHash, out var duplicateCount) == true)
+                    {
+                        duplicates[entry.NameHash] = duplicateCount++;
+                        var entryBaseName = Path.ChangeExtension(entryName, null);
+                        var entryExtension = Path.GetExtension(entryName);
+                        entryName = Path.Combine(
+                            "__DUPLICATE",
+                            string.Format(
+                                CultureInfo.InvariantCulture,
+                                "{0}__DUPLICATE_{1}{2}",
+                                entryBaseName,
+                                duplicateCount,
+                                entryExtension ?? ""));
+                    }
+                    else
+                    {
+                        duplicates[entry.NameHash] = 0;
+                    }
+
+                    if (options.Filter != null && options.Filter.IsMatch(entryName) == options.InvertFilter)
+                    {
+                        excludedCount++;
+                        continue;
+                    }
+
+                    var entryPath = Path.Combine(
+                        context.OutputPath,
+                        options.CreateSubDirectory ? Path.GetFileName(archive.FatPath) : "",
+                        entryName);
+
+                    if (options.OverwriteFiles == false && File.Exists(entryPath) == true)
+                    {
+                        existingCount++;
+                        continue;
+                    }
+
+                    if (options.Verbose == true)
+                    {
+                        Console.WriteLine(
+                            $"[{context.ProcessedEntryCount.ToString(CultureInfo.InvariantCulture).PadLeft(padding)}/{context.TotalEntryCount}] {entryName}");
+                    }
+
+                    input.Seek(entry.Offset, SeekOrigin.Begin);
+
+                    var entryParent = Path.GetDirectoryName(entryPath);
+                    if (string.IsNullOrEmpty(entryParent) == false)
+                    {
+                        Directory.CreateDirectory(entryParent);
+                    }
+
+                    using var output = File.Create(entryPath);
+                    EntryDecompression.Decompress(archive.Fat, entry, input, output);
+                    extractedCount++;
+                }
+            }
+
+            context.Tally(
+                archive.FatPath,
+                archive.Fat.Entries.Count,
+                extractedCount,
+                ignoredCount,
+                excludedCount,
+                existingCount);
+        }
+
     }
 }
