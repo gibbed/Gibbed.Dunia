@@ -103,31 +103,54 @@ namespace Gibbed.Dunia.Packing
                 return;
             }
 
-            string fatPath = extras[0];
-            string outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(fatPath, null) + "_unpack";
-            string datPath;
-
-            Regex filter = null;
-            if (string.IsNullOrEmpty(filterPattern) == false)
-            {
-                filter = new Regex(filterPattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            }
-
-            if (Path.GetExtension(fatPath) == ".dat")
-            {
-                datPath = fatPath;
-                fatPath = Path.ChangeExtension(fatPath, ".fat");
-            }
-            else
-            {
-                datPath = Path.ChangeExtension(fatPath, ".dat");
-            }
-
             var projectPath = Helpers.GetProjectPath(projectName);
             if (File.Exists(projectPath) == false)
             {
                 Console.WriteLine($"Project file '{projectPath}' is missing!");
                 return;
+            }
+
+            if (options.Verbose == true)
+            {
+                Console.WriteLine("Loading project...");
+            }
+
+            var project = ProjectData.Project.Load(projectPath);
+            if (project == null)
+            {
+                Console.WriteLine("Failed to load project!");
+                return;
+            }
+
+            string[] fatPaths;
+            string sourcePath = extras[0];
+
+            if (recursive == true && multiple == false)
+            {
+                Console.WriteLine("Warning: [recursive] has no effect when [multiple] is not set");
+            }
+
+            if (multiple)
+            {
+                if (!Directory.Exists(sourcePath))
+                {
+                    Console.WriteLine($"Input path \"{sourcePath}\" should be a directory path when [multiple] is set.");
+                    return;
+                }
+                fatPaths = Directory.GetFiles(sourcePath, "*.fat", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+            }
+            else
+            {
+                if (Path.GetExtension(sourcePath) == ".dat")
+                {
+                    sourcePath = Path.ChangeExtension(sourcePath, ".fat");
+                }
+                fatPaths = new string[] { sourcePath };
+            }
+
+            if (options.Verbose)
+            {
+                Console.WriteLine($"Loading {(fatPaths.Length == 1 ? "FAT" : $"{fatPaths.Length} FATs")}...");
             }
 
             if (verbose == true)
