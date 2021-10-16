@@ -1,7 +1,6 @@
 {
 	"name": "Far Cry 6",
-	"dependencies": [ "Shared" ],
-	"list_location": "Far Cry 6",
+	"list_location": ".",
 	"install_locations": [
 		{
 			"actions": [

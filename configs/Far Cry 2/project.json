@@ -1,7 +1,6 @@
 {
 	"name": "Far Cry 2",
-	"dependencies": [ "Shared" ],
-	"list_location": "Far Cry 2",
+	"list_location": ".",
 	"install_locations": [
 		{
 			"actions": [
