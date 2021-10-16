@@ -22,13 +22,15 @@
 
 namespace Gibbed.Dunia.FileFormats.Big
 {
-    public enum CompressionScheme : byte
+    public enum CompressionScheme
     {
-        // ReSharper disable InconsistentNaming
         None = 0,
-        LZO1x = 1,
-        Unknown2 = 2,
-        Unknown3 = 3,
-        // ReSharper restore InconsistentNaming
+        LZO1x,
+        Zlib,
+        XMemCompress, // Xbox 360
+        LZMA,
+        LZ4,
+        LZ4LW,
+        Oodle,
     }
 }

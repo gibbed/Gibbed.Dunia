@@ -20,6 +20,8 @@
  *    distribution.
  */
 
+using Gibbed.Dunia.FileFormats.Hashing;
+
 namespace Gibbed.Dunia.FileFormats
 {
     public static class StringHelpers
@@ -49,14 +51,12 @@ namespace Gibbed.Dunia.FileFormats
 
         public static uint HashCRC32(this string input)
         {
-            return CRC32.Hash(input);
+            return CRC32.Compute(input);
         }
 
         public static uint HashFileNameCRC32(this string input)
         {
             return input.ToLowerInvariant().HashCRC32();
         }
-
-        
     }
 }

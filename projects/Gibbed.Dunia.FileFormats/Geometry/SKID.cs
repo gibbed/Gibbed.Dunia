@@ -33,7 +33,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
         {
             get { return BlockType.SKID; }
         }
-        
+
         public List<byte[]> Unknown = new List<byte[]>();
 
         public void Deserialize(IBlock parent, Stream input, Endian endian)

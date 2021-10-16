@@ -261,8 +261,7 @@ namespace Gibbed.FarCry2.MapPack
                 paths[hash] = fullPath;
             }
 
-            var big = new BigFileV2();
-
+            var big = new BigFileV2_32();
             using (var output = new MemoryStream())
             {
                 foreach (var value in paths)
@@ -275,15 +274,15 @@ namespace Gibbed.FarCry2.MapPack
                         Console.WriteLine(path);
                     }
 
-                    var entry = new Big.Entry();
+                    var entry = new Big.Entry<uint>();
                     entry.NameHash = hash;
                     entry.Offset = output.Position;
 
                     using (var input = File.OpenRead(path))
                     {
-                        entry.CompressionScheme = Big.CompressionScheme.None;
+                        entry.CompressionScheme = 0;
                         entry.UncompressedSize = 0;
-                        entry.CompressedSize = (uint)input.Length;
+                        entry.CompressedSize = (int)input.Length;
                         output.WriteFromStream(input, input.Length);
                     }
 

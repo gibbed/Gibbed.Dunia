@@ -23,65 +23,250 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Gibbed.Dunia.FileFormats.Big;
 using Gibbed.IO;
+using Version = Gibbed.Dunia.FileFormats.Big.Version;
 
 namespace Gibbed.Dunia.FileFormats
 {
-	public class BigFileV2
+	public abstract class BigFileV2<T>
 	{
-		public uint Version;
-        public List<Big.Entry> Entries = new List<Big.Entry>();
+		public const uint Signature = 0x46415432; // 'FAT2'
+
+		#region Fields
+		private Endian _Endian;
+		private Version _Version;
+		private readonly List<Entry<T>> _Entries;
+		#endregion
+
+		public BigFileV2()
+		{
+			this._Endian = Endian.Little;
+			this._Entries = new List<Entry<T>>();
+		}
+
+		#region Properties
+		public Endian Endian
+		{
+			get { return this._Endian; }
+			set { this._Endian = value; }
+		}
+
+		public Version Version
+		{
+			get { return this._Version; }
+			set { this._Version = value; }
+		}
+
+		public List<Entry<T>> Entries => this._Entries;
+		#endregion
+
+		public static bool VersionSupportsEncryption(int fileVersion)
+		{
+			return fileVersion >= 10;
+		}
+
+		public void Serialize(Stream output)
+		{
+			throw new NotImplementedException();
+		}
 
 		public void Deserialize(Stream input)
 		{
 			var magic = input.ReadValueU32(Endian.Little);
-			if (magic != 0x46415432) // FAT2
+			if (magic != Signature && magic.Swap() != Signature)
 			{
-				throw new FormatException("not a big file");
+				throw new FormatException("bad magic");
 			}
-            var endian = Endian.Little;
+			var endian = magic == Signature ? Endian.Little : Endian.Big;
 
-            var version = input.ReadValueU32(endian);
-			if (version != 5)
+			var fileVersionAndEncryptionFlag = input.ReadValueU32(endian);
+			var fileVersion = (int)(fileVersionAndEncryptionFlag & ~0x80000000u);
+			var indexIsEncrypted = (fileVersionAndEncryptionFlag & 0x80000000u) != 0;
+
+			if (VersionSupportsEncryption(fileVersion) == false)
 			{
-                throw new FormatException("unsupported big file version");
-			}
-
-            input.ReadValueU32(endian);
-            var indexCount = input.ReadValueU32(endian);
-
-            this.Entries.Clear();
-			for (int i = 0; i < indexCount; i++)
-			{
-				var index = new Big.Entry();
-				index.Deserialize(input, endian);
-				this.Entries.Add(index);
+				throw new FormatException("encryption flag set when unsupported");
 			}
 
-			// There's a dword at the end of the file past the index entries, all observed
-			// Far Cry 2 archives all have it as 0, I assume it's another table for something.
-
-            if (input.ReadValueU32(endian) != 0)
+			if (fileVersion > 11)
 			{
-				throw new FormatException("unexpected value");
+				throw new FormatException("unsupported version");
 			}
-		}
 
-		public void Serialize(Stream output)
-        {
-            var endian = Endian.Little;
+			var flags = fileVersion >= 3 ? input.ReadValueU32(endian) : 0u;
+			var unknown0C = fileVersion >= 9 ? input.ReadValueU32(endian) : 0u;
+			var unknown10 = fileVersion >= 9 ? input.ReadValueU32(endian) : 0u;
 
-            output.WriteValueU32(0x46415432, endian);
-            output.WriteValueU32(5, endian);
-            output.WriteValueU32(0x0301, endian);
-            output.WriteValueU32((uint)this.Entries.Count, endian);
+			var platform = ToPlatform((byte)(flags >> 0));
+			var compressionVersion = (byte)(flags >> 8);
+
+			if ((flags & 0xFFFF0000u) != 0)
+			{
+				throw new FormatException("unknown flags");
+			}
+
+			var version = new Version(fileVersion, platform, compressionVersion);
+
+			if (this.IsKnownVersion(version) == false)
+			{
+				throw new FormatException("unknown version/platform/CV combination");
+			}
+
+			if (unknown0C != 0 || unknown10 != 0)
+			{
+				throw new NotImplementedException();
+			}
+
+			var entryCount = input.ReadValueS32(endian);
+			if (entryCount < 0)
+			{
+				throw new FormatException();
+			}
+
+			var entrySerializer = GetEntrySerializer(fileVersion);
+
+			Stream index;
+			if (indexIsEncrypted == true)
+			{
+				var indexSize = entrySerializer.Size * entryCount;
+				var indexBytes = input.ReadBytes(indexSize);
+				indexSize &= ~7;
+				var indexKey = Big.Crypto.GenerateXTEAKey((uint)indexSize);
+				Crypto.XTEA.Decrypt(indexBytes, 0, indexSize, indexKey);
+				File.WriteAllBytes("index.bin", indexBytes);
+				index = new MemoryStream(indexBytes, false);
+			}
+			else
+			{
+				index = input;
+			}
+
+			var entries = new List<Entry<T>>();
+			using (index != input ? index : null)
+			{
+				for (uint i = 0; i < entryCount; i++)
+				{
+					entrySerializer.Deserialize(index, endian, out var entry);
+					entries.Add(entry);
+				}
+			}
+
+			uint localizationCount = input.ReadValueU32(endian);
+			for (uint i = 0; i < localizationCount; i++)
+			{
+				var nameLength = input.ReadValueU32(endian);
+				if (nameLength > 32)
+				{
+					throw new FormatException("bad length for localization name");
+				}
+				var nameBytes = input.ReadBytes((int)nameLength);
+				var unknownValue = input.ReadValueU64(endian);
+				throw new NotImplementedException();
+			}
 
 			foreach (var entry in this.Entries)
 			{
-                entry.Serialize(output, endian);
+				SanityCheckEntry(entry, version);
 			}
 
-            output.WriteValueU32(0, endian);
+			this._Endian = endian;
+			this._Version = version;
+			this._Entries.Clear();
+			this._Entries.AddRange(entries);
 		}
+
+		protected abstract IEntrySerializer<T> GetEntrySerializer(int version);
+
+		internal static void SanityCheckEntry(Entry<T> entry, Version version)
+		{
+			var compressionScheme = ToCompressionScheme(version, entry.CompressionScheme);
+			switch (compressionScheme)
+			{
+				case CompressionScheme.None:
+				{
+					if (version.Platform != Platform.Xenon && entry.UncompressedSize != 0)
+					{
+						throw new FormatException("no compression with a non-zero uncompressed size");
+					}
+					break;
+				}
+				case CompressionScheme.LZO1x:
+				case CompressionScheme.Zlib:
+				{
+					if (entry.CompressedSize == 0 && entry.UncompressedSize > 0)
+					{
+						throw new FormatException("compression with zero compressed size and a non-zero uncompressed size");
+					}
+					break;
+				}
+				case CompressionScheme.XMemCompress:
+				{
+					if (version.Platform != Platform.Xenon)
+					{
+						throw new FormatException("XMemCompress on non-Xenon");
+					}
+					if (entry.CompressedSize == 0 && entry.UncompressedSize > 0)
+					{
+						throw new FormatException("compression with zero compressed size and a non-zero uncompressed size");
+					}
+					break;
+				}
+				default:
+				{
+					throw new FormatException("unsupported compression scheme");
+				}
+			}
+		}
+
+		public static Platform ToPlatform(byte id)
+		{
+			return id switch
+			{
+				0 => Platform.Any,
+				1 => Platform.Windows,
+				_ => throw new NotSupportedException("unknown platform"),
+			};
+		}
+
+		public static byte FromPlatform(Platform platform)
+		{
+			return platform switch
+			{
+				Platform.Any => 0,
+				Platform.Windows => 1,
+				_ => throw new NotSupportedException("unknown platform"),
+			};
+		}
+
+		private static CompressionScheme ToCompressionScheme(Version version, byte id)
+		{
+			return version.FileVersion switch
+			{
+				11 => CompressionSchemeV11.ToCompressionScheme(version, id),
+				_ => throw new NotSupportedException(),
+			};
+		}
+
+		public CompressionScheme ToCompressionScheme(byte id)
+		{
+			return ToCompressionScheme(this._Version, id);
+		}
+
+		private static byte FromCompressionScheme(Version version, CompressionScheme compressionScheme)
+		{
+			return version.FileVersion switch
+			{
+				11 => CompressionSchemeV11.FromCompressionScheme(version, compressionScheme),
+				_ => throw new NotSupportedException(),
+			};
+		}
+
+		public byte FromCompressionScheme(CompressionScheme compressionScheme)
+		{
+			throw new NotImplementedException();
+		}
+
+		protected abstract bool IsKnownVersion(Version version);
 	}
 }

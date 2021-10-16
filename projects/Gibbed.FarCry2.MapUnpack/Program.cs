@@ -23,12 +23,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Gibbed.Dunia.FileFormats;
-using Gibbed.FarCry2.FileFormats;
 using System.Xml;
+using Gibbed.Dunia.FileFormats;
+using Gibbed.Dunia.Packing;
+using Gibbed.FarCry2.FileFormats;
 using Gibbed.IO;
 using NDesk.Options;
-using CompressionScheme = Gibbed.Dunia.FileFormats.Big.CompressionScheme;
 
 namespace Gibbed.FarCry2.MapUnpack
 {
@@ -47,16 +47,8 @@ namespace Gibbed.FarCry2.MapUnpack
 
             var options = new OptionSet()
             {
-                {
-                    "v|verbose",
-                    "be verbose",
-                    v => verbose = v != null
-                },
-                {
-                    "h|help",
-                    "show this message and exit", 
-                    v => showHelp = v != null
-                },
+                { "v|verbose", "be verbose", v => verbose = v != null },
+                { "h|help", "show this message and exit",  v => showHelp = v != null },
             };
 
             List<string> extras;
@@ -163,7 +155,7 @@ namespace Gibbed.FarCry2.MapUnpack
                 output.Write(map.Snapshot.Data, 0, map.Snapshot.Data.Length);
             }
 
-            var big = new BigFileV2();
+            var big = new BigFileV2_32();
             using (var input = map.Archive.FAT.Unpack())
             {
                 big.Deserialize(input);
@@ -184,65 +176,8 @@ namespace Gibbed.FarCry2.MapUnpack
                     string name = hashes[entry.NameHash];
                     if (name == null)
                     {
-                        string extension;
-
-                        // detect type
-                        {
-                            var guess = new byte[64];
-                            int read = 0;
-
-                            if (entry.CompressionScheme == CompressionScheme.None)
-                            {
-                                if (entry.CompressedSize > 0)
-                                {
-                                    input.Seek(entry.Offset, SeekOrigin.Begin);
-                                    read = input.Read(guess, 0, (int)Math.Min(
-                                        entry.CompressedSize, guess.Length));
-                                }
-                            }
-                            else if (entry.CompressionScheme == CompressionScheme.LZO1x)
-                            {
-                                input.Seek(entry.Offset, SeekOrigin.Begin);
-
-                                var compressedData = new byte[entry.CompressedSize];
-                                if (input.Read(compressedData, 0, compressedData.Length) != compressedData.Length)
-                                {
-                                    throw new EndOfStreamException();
-                                }
-
-                                var uncompressedData = new byte[entry.UncompressedSize];
-                                int uncompressedSize = (int)entry.UncompressedSize;
-
-                                var result = MiniLZO.LZO.DecompressSafe(
-                                    compressedData,
-                                    0,
-                                    (int)entry.CompressedSize,
-                                    uncompressedData,
-                                    0,
-                                    ref uncompressedSize);
-                                if (result != MiniLZO.ErrorCode.Success)
-                                {
-                                    throw new InvalidOperationException("decompression error: " + result.ToString());
-                                }
-                                else if (uncompressedSize != entry.UncompressedSize)
-                                {
-                                    throw new InvalidOperationException("did not decompress correct amount of data");
-                                }
-
-                                Array.Copy(uncompressedData, 0, guess, 0, Math.Min(guess.Length, uncompressedData.Length));
-                                read = uncompressedData.Length;
-                            }
-                            else
-                            {
-                                throw new NotSupportedException();
-                            }
-
-                            extension = FileExtensions.Detect(guess, Math.Min(guess.Length, read));
-                        }
-
                         name = entry.NameHash.ToString("X8");
-                        name = Path.ChangeExtension(name, "." + extension);
-                        name = Path.Combine(extension, name);
+                        name = Path.ChangeExtension(name, ".unknown");
                         name = Path.Combine("__UNKNOWN", name);
                     }
                     else
@@ -271,52 +206,7 @@ namespace Gibbed.FarCry2.MapUnpack
 
                     using (var output = File.Create(entryPath))
                     {
-                        if (entry.CompressionScheme == CompressionScheme.None)
-                        {
-                            if (entry.CompressedSize > 0)
-                            {
-                                input.Seek(entry.Offset, SeekOrigin.Begin);
-                                output.WriteFromStream(input, entry.CompressedSize);
-                            }
-                        }
-                        else if (entry.CompressionScheme == CompressionScheme.LZO1x)
-                        {
-                            if (entry.UncompressedSize > 0)
-                            {
-                                input.Seek(entry.Offset, SeekOrigin.Begin);
-
-                                var compressedData = new byte[entry.CompressedSize];
-                                if (input.Read(compressedData, 0, compressedData.Length) != compressedData.Length)
-                                {
-                                    throw new EndOfStreamException();
-                                }
-
-                                var uncompressedData = new byte[entry.UncompressedSize];
-                                int uncompressedSize = (int)entry.UncompressedSize;
-
-                                var result = MiniLZO.LZO.DecompressSafe(
-                                    compressedData,
-                                    0,
-                                    (int)entry.CompressedSize,
-                                    uncompressedData,
-                                    0,
-                                    ref uncompressedSize);
-                                if (result != MiniLZO.ErrorCode.Success)
-                                {
-                                    throw new InvalidOperationException("decompression error: " + result.ToString());
-                                }
-                                else if (uncompressedSize != entry.UncompressedSize)
-                                {
-                                    throw new InvalidOperationException("did not decompress correct amount of data");
-                                }
-
-                                output.Write(uncompressedData, 0, uncompressedData.Length);
-                            }
-                        }
-                        else
-                        {
-                            throw new NotSupportedException();
-                        }
+                        EntryDecompression.Decompress(big, entry, input, output);
                     }
                 }
             }

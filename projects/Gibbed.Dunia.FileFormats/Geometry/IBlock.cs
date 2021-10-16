@@ -29,7 +29,7 @@ namespace Gibbed.Dunia.FileFormats.Geometry
     public interface IBlock : IBlockFactory
     {
         BlockType Type { get; }
-        
+
         void Deserialize(IBlock parent, Stream input, Endian endian);
         void Serialize(IBlock parent, Stream output, Endian endian);
 

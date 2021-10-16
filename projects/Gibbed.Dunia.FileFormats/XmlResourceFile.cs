@@ -28,28 +28,28 @@ using Gibbed.IO;
 
 namespace Gibbed.Dunia.FileFormats
 {
-	public class XmlResourceFile
-	{
+    public class XmlResourceFile
+    {
         public byte Unknown1;
-		public Node Root;
+        public Node Root;
 
-		public void Deserialize(Stream input)
-		{
-			if (input.ReadValueU8() != 0)
-			{
-				throw new FormatException("not an xml resource file");
-			}
+        public void Deserialize(Stream input)
+        {
+            if (input.ReadValueU8() != 0)
+            {
+                throw new FormatException("not an xml resource file");
+            }
             var endian = Endian.Little;
 
-			this.Unknown1 = input.ReadValueU8();
+            this.Unknown1 = input.ReadValueU8();
             var stringTableSize = input.ReadValuePackedU32(endian);
             var totalNodeCount = input.ReadValuePackedU32(endian);
             var totalAttributeCount = input.ReadValuePackedU32(endian);
 
             uint actualNodeCount = 1, actualAttributeCount = 0;
 
-			this.Root = new Node();
-			this.Root.Deserialize(
+            this.Root = new Node();
+            this.Root.Deserialize(
                 input, ref actualNodeCount, ref actualAttributeCount, endian);
 
             if (actualNodeCount != totalNodeCount ||
@@ -64,7 +64,7 @@ namespace Gibbed.Dunia.FileFormats
             stringTable.Deserialize(stringTableData);
 
             this.Root.ReadStringTable(stringTable);
-		}
+        }
 
         public void Serialize(Stream output)
         {
@@ -304,5 +304,5 @@ namespace Gibbed.Dunia.FileFormats
                 return buffer;
             }
         }
-	}
+    }
 }
