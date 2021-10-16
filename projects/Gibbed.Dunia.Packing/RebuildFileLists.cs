@@ -35,29 +35,6 @@ namespace Gibbed.Dunia.Packing
     public static class RebuildFileLists<TArchive, THash>
         where TArchive : Big.IArchive<THash>, new()
     {
-        private static string GetExecutableName()
-        {
-            return Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-        }
-
-        private static string GetListPath(string installPath, string inputPath)
-        {
-            installPath = installPath.ToLowerInvariant();
-            inputPath = inputPath.ToLowerInvariant();
-
-            if (inputPath.StartsWith(installPath) == false)
-            {
-                return null;
-            }
-
-            var baseName = inputPath.Substring(installPath.Length + 1);
-
-            string outputPath;
-            outputPath = Path.Combine("files", baseName);
-            outputPath = Path.ChangeExtension(outputPath, ".filelist");
-            return outputPath;
-        }
-
         public static void Main(string[] args, string projectName)
         {
             Main(args, projectName, null);
@@ -68,6 +45,11 @@ namespace Gibbed.Dunia.Packing
             string projectName,
             Big.TryGetHashOverride<THash> tryGetHashOverride)
         {
+            if (string.IsNullOrEmpty(projectName) == true)
+            {
+                throw new ArgumentNullException(nameof(projectName));
+            }
+
             bool showHelp = false;
 
             var options = new OptionSet()
@@ -83,31 +65,35 @@ namespace Gibbed.Dunia.Packing
             }
             catch (OptionException e)
             {
-                Console.Write("{0}: ", GetExecutableName());
+                Console.Write("{0}: ", Helpers.GetExecutableName());
                 Console.WriteLine(e.Message);
-                Console.WriteLine("Try `{0} --help' for more information.", GetExecutableName());
+                Console.WriteLine("Try `{0} --help' for more information.", Helpers.GetExecutableName());
                 return;
             }
 
             if (showHelp == true)
             {
-                Console.WriteLine("Usage: {0} [OPTIONS]+ [extra_install_path]+", GetExecutableName());
+                Console.WriteLine("Usage: {0} [OPTIONS]+ [extra_install_path]+", Helpers.GetExecutableName());
                 Console.WriteLine();
                 Console.WriteLine("Options:");
                 options.WriteOptionDescriptions(Console.Out);
                 return;
             }
 
-            Console.WriteLine("Loading project...");
-
-            var manager = Manager.Load(projectName);
-            if (manager.ActiveProject == null)
+            var projectPath = Helpers.GetProjectPath(projectName);
+            if (File.Exists(projectPath) == false)
             {
-                Console.WriteLine("Nothing to do: no active project loaded.");
+                Console.WriteLine($"Project file '{projectPath}' is missing!");
                 return;
             }
 
-            var project = manager.ActiveProject;
+            Console.WriteLine("Loading project...");
+            var project = Project.Load(projectPath);
+            if (project == null)
+            {
+                Console.WriteLine("Failed to load project!");
+                return;
+            }
 
             var listsPath = project.ListsPath;
             if (string.IsNullOrEmpty(listsPath) == true)
@@ -164,7 +150,7 @@ namespace Gibbed.Dunia.Packing
             }
 
             var breakdown = new Breakdown();
-            var tracking = new Tracking();
+            var tracking = new Tracking<THash>();
 
             var fats = new Dictionary<string, TArchive>();
             var fatHashes = new Dictionary<string, THash[]>();
@@ -192,7 +178,7 @@ namespace Gibbed.Dunia.Packing
             Console.WriteLine("Loading file lists...");
             THash wrappedComputeNameHash(string s) =>
                 fats.Values.First().ComputeNameHash(s, tryGetHashOverride);
-            manager.LoadListsFileNames(wrappedComputeNameHash, out previousHashes);
+            project.LoadListsFileNames(wrappedComputeNameHash, out previousHashes);
 
             Console.WriteLine("Processing names for archives...");
             foreach (var kv in fatPaths)
@@ -250,7 +236,7 @@ namespace Gibbed.Dunia.Packing
             THash[] hashes,
             THash[] parentHashes,
             HashList<THash> previousHashes,
-            Tracking tracking,
+            Tracking<THash> tracking,
             TArchive fat,
             string outputPath)
         {
@@ -358,31 +344,22 @@ namespace Gibbed.Dunia.Packing
             }
         }
 
-        internal class Tracking
+        private static string GetListPath(string installPath, string inputPath)
         {
-            public readonly List<THash> Hashes = new List<THash>();
-            public readonly List<string> Names = new List<string>();
-        }
+            installPath = installPath.ToLowerInvariant();
+            inputPath = inputPath.ToLowerInvariant();
 
-        internal class Breakdown
-        {
-            public long Known = 0;
-            public long Total = 0;
-
-            public int Percent
+            if (inputPath.StartsWith(installPath) == false)
             {
-                get
-                {
-                    return this.Total == 0
-                        ? 0
-                        : (int)Math.Floor(((float)this.Known / this.Total) * 100.0f);
-                }
+                return null;
             }
 
-            public override string ToString()
-            {
-                return $"{this.Known}/{this.Total} ({this.Percent}%)";
-            }
+            var baseName = inputPath.Substring(installPath.Length + 1);
+
+            string outputPath;
+            outputPath = Path.Combine("files", baseName);
+            outputPath = Path.ChangeExtension(outputPath, ".filelist");
+            return outputPath;
         }
     }
 }

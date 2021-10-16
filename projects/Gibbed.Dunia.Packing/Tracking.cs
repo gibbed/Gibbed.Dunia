@@ -20,23 +20,13 @@
  *    distribution.
  */
 
-using System;
+using System.Collections.Generic;
 
-namespace Gibbed.Dunia.FileFormats
+namespace Gibbed.Dunia.Packing
 {
-    public static class ProjectHelpers
+    internal class Tracking<THash>
     {
-        public static string Modifier(string s)
-        {
-            return s.Replace(@"/", @"\");
-        }
-
-        public static void LoadListsFileNames<T>(
-            this ProjectData.Project project,
-            Func<string, T> hasher,
-            out ProjectData.HashList<T> hashList)
-        {
-            hashList = project.LoadLists("*.filelist", hasher, Modifier);
-        }
+        public readonly List<THash> Hashes = new();
+        public readonly List<string> Names = new();
     }
 }

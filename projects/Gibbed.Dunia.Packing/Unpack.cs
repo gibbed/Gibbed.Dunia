@@ -35,11 +35,6 @@ namespace Gibbed.Dunia.Packing
     public static class Unpack<TArchive, THash>
         where TArchive : Big.IArchive<THash>, new()
     {
-        private static string GetExecutableName()
-        {
-            return Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-        }
-
         public static void Main(string[] args, string projectName)
         {
             Main(args, projectName, null);
@@ -47,6 +42,11 @@ namespace Gibbed.Dunia.Packing
 
         public static void Main(string[] args, string projectName, Big.TryGetHashOverride<THash> tryGetHashOverride)
         {
+            if (string.IsNullOrEmpty(projectName) == true)
+            {
+                throw new ArgumentNullException(nameof(projectName));
+            }
+
             bool showHelp = false;
             bool verbose = false;
             var options = new UnpackOptions()
@@ -81,15 +81,15 @@ namespace Gibbed.Dunia.Packing
             }
             catch (OptionException e)
             {
-                Console.Write("{0}: ", GetExecutableName());
+                Console.Write("{0}: ", Helpers.GetExecutableName());
                 Console.WriteLine(e.Message);
-                Console.WriteLine("Try `{0} --help' for more information.", GetExecutableName());
+                Console.WriteLine("Try `{0} --help' for more information.", Helpers.GetExecutableName());
                 return;
             }
 
             if (extras.Count < 1 || extras.Count > 2 || showHelp == true)
             {
-                Console.WriteLine("Usage: {0} [OPTIONS]+ input_fat [output_dir]", GetExecutableName());
+                Console.WriteLine("Usage: {0} [OPTIONS]+ input_fat [output_dir]", Helpers.GetExecutableName());
                 Console.WriteLine();
                 Console.WriteLine("Unpack files from a Big File (FAT/DAT pair).");
                 Console.WriteLine();
@@ -118,15 +118,23 @@ namespace Gibbed.Dunia.Packing
                 datPath = Path.ChangeExtension(fatPath, ".dat");
             }
 
+            var projectPath = Helpers.GetProjectPath(projectName);
+            if (File.Exists(projectPath) == false)
+            {
+                Console.WriteLine($"Project file '{projectPath}' is missing!");
+                return;
+            }
+
             if (verbose == true)
             {
                 Console.WriteLine("Loading project...");
             }
 
-            var manager = ProjectData.Manager.Load(projectName);
-            if (manager.ActiveProject == null)
+            var project = ProjectData.Project.Load(projectPath);
+            if (project == null)
             {
-                Console.WriteLine("Warning: no active project loaded.");
+                Console.WriteLine("Failed to load project!");
+                return;
             }
 
             if (verbose == true)
@@ -175,7 +183,7 @@ namespace Gibbed.Dunia.Packing
 
             THash wrappedComputeNameHash(string s) =>
                 fat.ComputeNameHash(s, tryGetHashOverride);
-            manager.LoadListsFileNames(wrappedComputeNameHash, out var hashes);
+            project.LoadListsFileNames(wrappedComputeNameHash, out var hashes);
 
             if (verbose == true)
             {

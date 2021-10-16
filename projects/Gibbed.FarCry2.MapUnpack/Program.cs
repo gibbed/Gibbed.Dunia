@@ -34,9 +34,23 @@ namespace Gibbed.FarCry2.MapUnpack
 {
     public class Program
     {
+        private static string GetExecutablePath()
+        {
+            using var process = System.Diagnostics.Process.GetCurrentProcess();
+            var path = Path.GetFullPath(process.MainModule.FileName);
+            return Path.GetFullPath(path);
+        }
+
         private static string GetExecutableName()
         {
-            return Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
+            return Path.GetFileName(GetExecutablePath());
+        }
+
+        private static string GetProjectPath(string projectName)
+        {
+            var executablePath = GetExecutablePath();
+            var binPath = Path.GetDirectoryName(executablePath);
+            return Path.Combine(binPath, "..", "configs", projectName, "project.json");
         }
 
         public static void Main(string[] args)
@@ -77,13 +91,22 @@ namespace Gibbed.FarCry2.MapUnpack
             string inputPath = extras[0];
             string outputPath = extras.Count > 1 ? extras[1] : Path.ChangeExtension(inputPath, null) + "_unpack";
 
-            var manager = ProjectData.Manager.Load();
-            if (manager.ActiveProject == null)
+            var projectPath = GetProjectPath("Far Cry 2");
+            if (File.Exists(projectPath) == false)
             {
-                Console.WriteLine("Warning: no active project loaded.");
+                Console.WriteLine($"Project file '{projectPath}' is missing!");
+                return;
             }
 
-            var hashes = manager.LoadLists(
+            Console.WriteLine("Loading project...");
+            var project = ProjectData.Project.Load(projectPath);
+            if (project == null)
+            {
+                Console.WriteLine("Failed to load project!");
+                return;
+            }
+
+            var hashes = project.LoadLists(
                 "*.filelist",
                 s => s.HashFileNameCRC32(),
                 s => s.ToLowerInvariant());

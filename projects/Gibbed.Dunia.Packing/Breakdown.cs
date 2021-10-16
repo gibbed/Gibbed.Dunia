@@ -22,21 +22,26 @@
 
 using System;
 
-namespace Gibbed.Dunia.FileFormats
+namespace Gibbed.Dunia.Packing
 {
-    public static class ProjectHelpers
+    internal class Breakdown
     {
-        public static string Modifier(string s)
+        public long Known = 0;
+        public long Total = 0;
+
+        public int Percent
         {
-            return s.Replace(@"/", @"\");
+            get
+            {
+                return this.Total == 0
+                    ? 0
+                    : (int)Math.Floor(((float)this.Known / this.Total) * 100.0f);
+            }
         }
 
-        public static void LoadListsFileNames<T>(
-            this ProjectData.Project project,
-            Func<string, T> hasher,
-            out ProjectData.HashList<T> hashList)
+        public override string ToString()
         {
-            hashList = project.LoadLists("*.filelist", hasher, Modifier);
+            return $"{this.Known}/{this.Total} ({this.Percent}%)";
         }
     }
 }

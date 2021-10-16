@@ -35,9 +35,23 @@ namespace Gibbed.Dunia.ConvertBinary
 {
     public class Program
     {
+        private static string GetExecutablePath()
+        {
+            using var process = System.Diagnostics.Process.GetCurrentProcess();
+            var path = Path.GetFullPath(process.MainModule.FileName);
+            return Path.GetFullPath(path);
+        }
+
         private static string GetExecutableName()
         {
-            return Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
+            return Path.GetFileName(GetExecutablePath());
+        }
+
+        private static string GetProjectPath(string projectName)
+        {
+            var executablePath = GetExecutablePath();
+            var binPath = Path.GetDirectoryName(executablePath);
+            return Path.Combine(binPath, "..", "configs", projectName, "project.json");
         }
 
         public static void Main(string[] args)
@@ -49,31 +63,11 @@ namespace Gibbed.Dunia.ConvertBinary
 
             var options = new OptionSet()
             {
-                {
-                    "fcb",
-                    "convert XML to FCB", 
-                    v => mode = v != null ? Mode.ToFCB : mode
-                },
-                {
-                    "xml",
-                    "convert FCB to XML", 
-                    v => mode = v != null ? Mode.ToXML : mode
-                },
-                {
-                    "m|multi-export",
-                    "when converting FCB to XML, export to many files when possible",
-                    v => multiExport = v != null
-                },
-                {
-                    "q|quiet",
-                    "be quiet",
-                    v => quiet = v != null
-                },
-                {
-                    "h|help",
-                    "show this message and exit", 
-                    v => showHelp = v != null
-                },
+                { "fcb", "convert XML to FCB",  v => mode = v != null ? Mode.ToFCB : mode },
+                { "xml", "convert FCB to XML",  v => mode = v != null ? Mode.ToXML : mode },
+                { "m|multi-export", "when converting FCB to XML, export to many files when possible", v => multiExport = v != null },
+                { "q|quiet", "be quiet", v => quiet = v != null },
+                { "h|help", "show this message and exit",  v => showHelp = v != null },
             };
 
             List<string> extras;
@@ -90,8 +84,7 @@ namespace Gibbed.Dunia.ConvertBinary
                 return;
             }
 
-            if (mode == Mode.Unknown &&
-                extras.Count >= 1)
+            if (mode == Mode.Unknown && extras.Count >= 1)
             {
                 var extension = Path.GetExtension(extras[0]);
                 
@@ -105,10 +98,7 @@ namespace Gibbed.Dunia.ConvertBinary
                 }
             }
 
-            if (showHelp == true ||
-                mode == Mode.Unknown ||
-                extras.Count < 1 ||
-                extras.Count > 2)
+            if (showHelp == true || mode == Mode.Unknown || extras.Count < 1 || extras.Count > 2)
             {
                 Console.WriteLine("Usage: {0} [OPTIONS]+ input [output]", GetExecutableName());
                 Console.WriteLine();
@@ -117,23 +107,23 @@ namespace Gibbed.Dunia.ConvertBinary
                 return;
             }
 
-            if (quiet == false)
+            var projectPath = GetProjectPath("Far Cry 2");
+            if (File.Exists(projectPath) == false)
             {
-                Console.WriteLine("Loading project...");
-            }
-
-            var manager = ProjectData.Manager.Load();
-            IDefinitionProvider defs = null;
-
-            if (manager.ActiveProject == null)
-            {
-                Console.WriteLine("Warning: no active project loaded.");
+                Console.WriteLine($"Project file '{projectPath}' is missing!");
                 return;
             }
-            else
+
+            Console.WriteLine("Loading project...");
+            var project = ProjectData.Project.Load(projectPath);
+            if (project == null)
             {
-                defs = Definitions.Load(Path.Combine(manager.ActiveProject.ListsPath, "binary_classes.xml"));
+                Console.WriteLine("Failed to load project!");
+                return;
             }
+
+            IDefinitionProvider defs = null;
+            defs = Definitions.Load(Path.Combine(project.ListsPath, "binary_classes.xml"));
 
             if (mode == Mode.ToFCB)
             {

@@ -20,23 +20,29 @@
  *    distribution.
  */
 
-using System;
+using System.IO;
 
-namespace Gibbed.Dunia.FileFormats
+namespace Gibbed.Dunia.Packing
 {
-    public static class ProjectHelpers
+    internal static class Helpers
     {
-        public static string Modifier(string s)
+        public static string GetExecutablePath()
         {
-            return s.Replace(@"/", @"\");
+            using var process = System.Diagnostics.Process.GetCurrentProcess();
+            var path = Path.GetFullPath(process.MainModule.FileName);
+            return Path.GetFullPath(path);
         }
 
-        public static void LoadListsFileNames<T>(
-            this ProjectData.Project project,
-            Func<string, T> hasher,
-            out ProjectData.HashList<T> hashList)
+        public static string GetExecutableName()
         {
-            hashList = project.LoadLists("*.filelist", hasher, Modifier);
+            return Path.GetFileName(GetExecutablePath());
+        }
+
+        public static string GetProjectPath(string projectName)
+        {
+            var executablePath = GetExecutablePath();
+            var binPath = Path.GetDirectoryName(executablePath);
+            return Path.Combine(binPath, "..", "configs", projectName, "project.json");
         }
     }
 }

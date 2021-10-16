@@ -32,9 +32,23 @@ namespace Gibbed.FarCry2.Bootstrap
 {
     internal class Program
     {
+        private static string GetExecutablePath()
+        {
+            using var process = System.Diagnostics.Process.GetCurrentProcess();
+            var path = Path.GetFullPath(process.MainModule.FileName);
+            return Path.GetFullPath(path);
+        }
+
         private static string GetExecutableName()
         {
-            return Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
+            return Path.GetFileName(GetExecutablePath());
+        }
+
+        private static string GetProjectPath(string projectName)
+        {
+            var executablePath = GetExecutablePath();
+            var binPath = Path.GetDirectoryName(executablePath);
+            return Path.Combine(binPath, "..", "configs", projectName, "project.json");
         }
 
         public static void Main(string[] args)
@@ -64,14 +78,20 @@ namespace Gibbed.FarCry2.Bootstrap
                 return;
             }
 
-            var manager = ProjectData.Manager.Load("Far Cry 2");
-            if (manager.ActiveProject == null ||
-                string.IsNullOrWhiteSpace(manager.ActiveProject.InstallPath) == true)
+            var projectPath = GetProjectPath("Far Cry 2");
+            if (File.Exists(projectPath) == false)
             {
-                Console.WriteLine("Could not detect Far Cry 2 install directory. Bootstrap failed.");
+                Console.WriteLine($"Project file '{projectPath}' is missing!");
                 return;
             }
-            var project = manager.ActiveProject;
+
+            Console.WriteLine("Loading project...");
+            var project = ProjectData.Project.Load(projectPath);
+            if (project == null)
+            {
+                Console.WriteLine("Failed to load project!");
+                return;
+            }
 
             var outputPath = Path.GetFullPath(extras[0]);
             var basePath = Path.GetFullPath(project.InstallPath);
