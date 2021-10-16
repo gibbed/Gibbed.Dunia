@@ -71,6 +71,9 @@ namespace Gibbed.Dunia.Packing
                 { "f|filter=", "only extract files using pattern", v => options.Filter = !string.IsNullOrEmpty(v) ? new Regex(v) : null },
                 { "if|invert-filter", "only extract files not using pattern", v => options.InvertFilter = v != null },
                 { "d|difference=", "only extract files aren't in specified archive", v => options.DifferencePath = v },
+                { "m|multiple", "extract all archives from [input_path]", v => multiple = v != null },
+                { "r|recursive", "extract all archives from [input_path] and its sub-directories", v => recursive = v != null },
+                { "sd|subdir", "create a sub-directory per archive", v => options.CreateSubDirectory = v != null },
                 { "v|verbose", "be verbose", v => options.Verbose = v != null },
                 { "h|help", "show this message and exit", v => showHelp = v != null },
             };
