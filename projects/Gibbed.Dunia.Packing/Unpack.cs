@@ -1,4 +1,4 @@
-/* Copyright (c) 2021 Rick (rick 'at' gibbed 'dot' us)
+﻿/* Copyright (c) 2021 Rick (rick 'at' gibbed 'dot' us)
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -26,6 +26,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using Gibbed.Dunia.FileFormats;
 using NDesk.Options;
 using Big = Gibbed.Dunia.FileFormats.Big;
@@ -153,147 +155,66 @@ namespace Gibbed.Dunia.Packing
                 Console.WriteLine($"Loading {(fatPaths.Length == 1 ? "FAT" : $"{fatPaths.Length} FATs")}...");
             }
 
-            if (verbose == true)
+            var archives = fatPaths.Select(fatPath =>
             {
-                Console.WriteLine("Loading project...");
-            }
-
-            var project = ProjectData.Project.Load(projectPath);
-            if (project == null)
-            {
-                Console.WriteLine("Failed to load project!");
-                return;
-            }
-
-            if (verbose == true)
-            {
-                Console.WriteLine("Reading FAT...");
-            }
-
-            TArchive fat;
-            using (var input = File.OpenRead(fatPath))
-            {
-                fat = new TArchive();
-                fat.Deserialize(input);
-            }
-
-            THash[] hashDifference = null;
-            if (string.IsNullOrEmpty(differencePath) == false)
-            {
-                TArchive fatDifference;
-                using (var input = File.OpenRead(differencePath))
+                var archive = new BoundArchive<TArchive, THash>(fatPath);
+                if (options.Verbose == true)
                 {
-                    fatDifference = new TArchive();
-                    fatDifference.Deserialize(input);
+                    Console.WriteLine(
+                        $"Loaded FAT {fatPath} containing {archive.Fat.Entries.Count} " +
+                        $"{(archive.Fat.Entries.Count == 1 ? "entry" : "entries")}");
                 }
-                hashDifference = fat.Entries
-                    .Select(e => e.NameHash)
-                    .Except(fatDifference.Entries.Select(e => e.NameHash))
-                    .ToArray();
-                //Console.WriteLine("{0} not in parent.", hashDifference.Length);
-            }
+                return archive;
 
-            if (options.ExtractFiles == false)
+            }).ToArray();
+
+            if (archives.Length == 0)
             {
+                if (options.Verbose)
+                {
+                    Console.WriteLine($"No archives found from \"{sourcePath}\" (recursive: {recursive})");
+                }
                 return;
             }
 
-            var entries = fat.Entries.OrderBy(e => e.Offset).ToArray();
-            if (entries.Length == 0)
-            {
-                return;
-            }
-
-            if (verbose == true)
+            if (options.Verbose == true)
             {
                 Console.WriteLine("Loading file lists...");
             }
 
-            THash wrappedComputeNameHash(string s) =>
-                fat.ComputeNameHash(s, tryGetHashOverride);
-            project.LoadListsFileNames(wrappedComputeNameHash, out var hashes);
+            var context = new ExtractionContext<TArchive, THash>(
+                project,
+                archives,
+                outputPath: extras.Count > 1 ? extras[1] : Path.ChangeExtension(sourcePath, null) + "_unpack",
+                tryGetHashOverride
+            );
 
-            if (verbose == true)
+            if (options.Verbose)
             {
-                Console.WriteLine("Unpacking files...");
+                Console.WriteLine(
+                    $"Beginning to extract {context.TotalEntryCount} " +
+                    $"{(context.TotalEntryCount == 1 ? "entry" : "entries")} from " +
+                    $"{archives.Length} {(archives.Length == 1 ? "archive" : "archives")}...");
             }
 
-            using (var input = File.OpenRead(datPath))
+            Parallel.ForEach(archives, archive => ExtractArchive(archive, context, options));
+
+            if (options.Verbose)
             {
-                long current = 0;
-                long total = entries.Length;
-                var padding = total.ToString(CultureInfo.InvariantCulture).Length;
-                var duplicates = new Dictionary<THash, int>();
-                foreach (var entry in entries)
+                Console.WriteLine(
+                    $"Finished extracting {context.TotalEntryCount} " +
+                    $"{(context.TotalEntryCount == 1 ? "entry" : "entries")} from " +
+                    $"{archives.Length} {(archives.Length == 1 ? "archive" : "archives")}:");
+
+                foreach (var (archiveName, totalCount, extractedCount, ignoredCount, excludedCount, existingCount) in context.Tallies)
                 {
-                    current++;
-
-                    if (hashDifference != null &&
-                        Array.IndexOf(hashDifference, entry.NameHash) < 0)
-                    {
-                        continue;
-                    }
-
-                    if (GetEntryName(
-                        input,
-                        fat,
-                        entry,
-                        hashes,
-                        options,
-                        out var entryName) == false)
-                    {
-                        continue;
-                    }
-
-                    if (duplicates.TryGetValue(entry.NameHash, out var duplicateCount) == true)
-                    {
-                        duplicates[entry.NameHash] = duplicateCount++;
-                        var entryBaseName = Path.ChangeExtension(entryName, null);
-                        var entryExtension = Path.GetExtension(entryName);
-                        entryName = Path.Combine(
-                            "__DUPLICATE",
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                "{0}__DUPLICATE_{1}{2}",
-                                entryBaseName,
-                                duplicateCount,
-                                entryExtension ?? ""));
-                    }
-                    else
-                    {
-                        duplicates[entry.NameHash] = 0;
-                    }
-
-                    if (filter != null && filter.IsMatch(entryName) == invertFilter)
-                    {
-                        continue;
-                    }
-
-                    var entryPath = Path.Combine(outputPath, entryName);
-                    if (options.OverwriteFiles == false && File.Exists(entryPath) == true)
-                    {
-                        continue;
-                    }
-
-                    if (verbose == true)
-                    {
-                        Console.WriteLine(
-                            "[{0}/{1}] {2}",
-                            current.ToString(CultureInfo.InvariantCulture).PadLeft(padding),
-                            total,
-                            entryName);
-                    }
-
-                    input.Seek(entry.Offset, SeekOrigin.Begin);
-
-                    var entryParent = Path.GetDirectoryName(entryPath);
-                    if (string.IsNullOrEmpty(entryParent) == false)
-                    {
-                        Directory.CreateDirectory(entryParent);
-                    }
-
-                    using var output = File.Create(entryPath);
-                    EntryDecompression.Decompress(fat, entry, input, output);
+                    Console.WriteLine(
+                        $"\t{archiveName}\n" +
+                        $"\t\t{totalCount} entries\n" +
+                        $"\t\t\t{extractedCount} extracted\n" +
+                        $"\t\t\t{ignoredCount} excluded\n" +
+                        $"\t\t\t{excludedCount} ignored by filters\n" +
+                        $"\t\t\t{existingCount} already extracted");
                 }
             }
         }
