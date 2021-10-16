@@ -12,20 +12,12 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\bin_fc2\</OutputPath>
+    <OutputPath>..\..\bin\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Gibbed.FarCry2.ConvertBinaryObject\Gibbed.FarCry2.ConvertBinaryObject.csproj" />
+    <ProjectReference Include="..\Gibbed.Dunia.ConvertXml\Gibbed.Dunia.ConvertXml.csproj" />
     <ProjectReference Include="..\Gibbed.Dunia.FileFormats\Gibbed.Dunia.FileFormats.csproj" />
-    <ProjectReference Include="..\Gibbed.Dunia.Packing\Gibbed.Dunia.Packing.csproj" />
-    <ProjectReference Include="..\Gibbed.FarCry2.Unpack\Gibbed.FarCry2.Unpack.csproj" />
-    <ProjectReference Include="..\Gibbed.IO\Gibbed.IO.csproj" />
     <ProjectReference Include="..\Gibbed.ProjectData\Gibbed.ProjectData.csproj" />
     <ProjectReference Include="..\NDesk.Options\NDesk.Options.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="MiniLZO">
-      <HintPath>..\..\other\MiniLZO.dll</HintPath>
-    </Reference>
   </ItemGroup>
 </Project>

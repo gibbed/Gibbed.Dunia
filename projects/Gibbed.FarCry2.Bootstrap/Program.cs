@@ -169,7 +169,7 @@ namespace Gibbed.FarCry2.Bootstrap
 
             Console.WriteLine("Converting entity libraries... (this'll take a moment)");
 
-            Dunia.ConvertBinary.Program.Main(new string[]
+            ConvertBinaryObject.Program.Main(new string[]
                 {
                     "-q",
                     "-m",
@@ -177,7 +177,7 @@ namespace Gibbed.FarCry2.Bootstrap
                     Path.Combine(librariesPath, "patch.xml"),
                 });
 
-            Dunia.ConvertBinary.Program.Main(new string[]
+            ConvertBinaryObject.Program.Main(new string[]
                 {
                     "-q",
                     "-m",
@@ -187,7 +187,7 @@ namespace Gibbed.FarCry2.Bootstrap
 
             Console.WriteLine("Still converting entity libraries...");
 
-            Dunia.ConvertBinary.Program.Main(new string[]
+            ConvertBinaryObject.Program.Main(new string[]
                 {
                     "-q",
                     "-m",
@@ -195,7 +195,7 @@ namespace Gibbed.FarCry2.Bootstrap
                     Path.Combine(librariesPath, "world1.xml"),
                 });
 
-            Dunia.ConvertBinary.Program.Main(new string[]
+            ConvertBinaryObject.Program.Main(new string[]
                 {
                     "-q",
                     "-m",
@@ -208,13 +208,13 @@ namespace Gibbed.FarCry2.Bootstrap
                 writer.WriteLine(@"@echo off");
                 writer.WriteLine();
                 writer.WriteLine("echo Converting patch.xml...");
-                writer.WriteLine(@"tools\Gibbed.Dunia.ConvertBinary.exe --fcb mymod\patch.xml mypatch\generated\entitylibrarypatchoverride.fcb");
+                writer.WriteLine(@"tools\Gibbed.FarCry2.ConvertBinaryObject.exe --fcb mymod\patch.xml mypatch\generated\entitylibrarypatchoverride.fcb");
                 writer.WriteLine();
                 writer.WriteLine(@"echo Creating patch.fat/dat...");
-                writer.WriteLine(@"tools\Gibbed.Dunia.Pack.exe -c patch.fat mypatch original\patch");
+                writer.WriteLine(@"tools\Gibbed.FarCry2.Pack.exe -c patch.fat mypatch original\patch");
                 writer.WriteLine();
                 writer.WriteLine(@"rem This one will directly overwrite the real one :)");
-                writer.WriteLine(@"rem tools\Gibbed.Dunia.Pack.exe -c ..\Data_Win32\patch.fat mypatch original\patch");
+                writer.WriteLine(@"rem tools\Gibbed.FarCry2.Pack.exe -c ..\Data_Win32\patch.fat mypatch original\patch");
                 writer.WriteLine();
                 writer.WriteLine(@"echo Done.");
                 writer.WriteLine(@"pause");
