@@ -1,18 +1,18 @@
 {
-	"name": "Far Cry 6",
-	"list_location": ".",
-	"install_locations": [
-		{
-			"actions": [
-				{ "type": "registryview", "view": "Registry64", "hive": "LocalMachine", "sub_key": "SOFTWARE\\Ubisoft\\Launcher\\Installs\\5266", "value": "InstallDir" },
-				{ "type": "combine", "value": "data_final" }
-			]
-		},
-		{
-			"actions": [
-				{ "type": "registryview", "view": "Registry32", "hive": "LocalMachine", "sub_key": "SOFTWARE\\Ubisoft\\Launcher\\Installs\\5266", "value": "InstallDir" },
-				{ "type": "combine", "value": "data_final" }
-			]
-		}
-	]
+  "name": "Far Cry 6",
+  "list_location": ".",
+  "install_locations": [
+    {
+      "actions": [
+        { "type": "registryview", "view": "Registry64", "hive": "LocalMachine", "sub_key": "SOFTWARE\\Ubisoft\\Launcher\\Installs\\5266", "value": "InstallDir" },
+        { "type": "combine", "value": "data_final" }
+      ]
+    },
+    {
+      "actions": [
+        { "type": "registryview", "view": "Registry32", "hive": "LocalMachine", "sub_key": "SOFTWARE\\Ubisoft\\Launcher\\Installs\\5266", "value": "InstallDir" },
+        { "type": "combine", "value": "data_final" }
+      ]
+    }
+  ]
 }
