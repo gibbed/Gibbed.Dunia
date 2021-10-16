@@ -47,6 +47,8 @@ namespace Gibbed.Dunia.Packing
                 throw new ArgumentNullException(nameof(projectName));
             }
 
+            bool multiple = false;
+            bool recursive = false;
             bool showHelp = false;
             var options = new UnpackOptions()
             {
@@ -57,6 +59,7 @@ namespace Gibbed.Dunia.Packing
                 OverwriteFiles = false,
                 DifferencePath = null,
                 Verbose = false,
+                CreateSubDirectory = false,
             };
 
             var optionSet = new OptionSet()
