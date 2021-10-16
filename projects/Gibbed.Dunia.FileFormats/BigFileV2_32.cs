@@ -29,82 +29,82 @@ using Version = Gibbed.Dunia.FileFormats.Big.Version;
 
 namespace Gibbed.Dunia.FileFormats
 {
-	public class BigFileV2_32 : BigFileV2<uint>, IArchive<uint>
-	{
-		public static uint ComputeNameHash(string s, TryGetHashOverride<uint> tryGetOverride)
-		{
-			if (s == null || s.Length == 0)
-			{
-				return 0xFFFFFFFFu;
-			}
+    public class BigFileV2_32 : BigFileV2<uint>, IArchive<uint>
+    {
+        public static uint ComputeNameHash(string s, TryGetHashOverride<uint> tryGetOverride)
+        {
+            if (s == null || s.Length == 0)
+            {
+                return 0xFFFFFFFFu;
+            }
 
-			var hash = Hashing.CRC32.Compute(s.ToLowerInvariant());
-			if (tryGetOverride != null && tryGetOverride(hash, out var hashOverride) == true)
-			{
-				return hashOverride;
-			}
-			return hash;
-		}
+            var hash = Hashing.CRC32.Compute(s.ToLowerInvariant());
+            if (tryGetOverride != null && tryGetOverride(hash, out var hashOverride) == true)
+            {
+                return hashOverride;
+            }
+            return hash;
+        }
 
-		public static bool TryParseNameHash(string s, out uint value)
-		{
-			return uint.TryParse(s, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out value);
-		}
+        public static bool TryParseNameHash(string s, out uint value)
+        {
+            return uint.TryParse(s, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out value);
+        }
 
-		public static string RenderNameHash(uint value)
-		{
-			return string.Format(CultureInfo.InvariantCulture, "{0:X8}", value);
-		}
+        public static string RenderNameHash(uint value)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{0:X8}", value);
+        }
 
-		uint IArchive<uint>.ComputeNameHash(string s, TryGetHashOverride<uint> tryGetOverride)
-		{
-			return ComputeNameHash(s, tryGetOverride);
-		}
+        uint IArchive<uint>.ComputeNameHash(string s, TryGetHashOverride<uint> tryGetOverride)
+        {
+            return ComputeNameHash(s, tryGetOverride);
+        }
 
-		bool IArchive<uint>.TryParseNameHash(string s, out uint value)
-		{
-			return TryParseNameHash(s, out value);
-		}
+        bool IArchive<uint>.TryParseNameHash(string s, out uint value)
+        {
+            return TryParseNameHash(s, out value);
+        }
 
-		string IArchive<uint>.RenderNameHash(uint value)
-		{
-			return RenderNameHash(value);
-		}
+        string IArchive<uint>.RenderNameHash(uint value)
+        {
+            return RenderNameHash(value);
+        }
 
-		protected override IEntrySerializer<uint> GetEntrySerializer(int version)
-		{
-			return _EntrySerializers.TryGetValue(version, out var entrySerializer) == true
-				? entrySerializer
-				: throw new InvalidOperationException("entry serializer is missing");
-		}
+        protected override IEntrySerializer<uint> GetEntrySerializer(int version)
+        {
+            return _EntrySerializers.TryGetValue(version, out var entrySerializer) == true
+              ? entrySerializer
+              : throw new InvalidOperationException("entry serializer is missing");
+        }
 
-		protected override bool IsKnownVersion(Version version)
-		{
-			return _KnownVersions.Contains(version) == true;
-		}
+        protected override bool IsKnownVersion(Version version)
+        {
+            return _KnownVersions.Contains(version) == true;
+        }
 
-		private static readonly ReadOnlyCollection<Version> _KnownVersions;
-		private static readonly ReadOnlyDictionary<int, IEntrySerializer<uint>> _EntrySerializers;
+        private static readonly ReadOnlyCollection<Version> _KnownVersions;
+        private static readonly ReadOnlyDictionary<int, IEntrySerializer<uint>> _EntrySerializers;
 
-		static BigFileV2_32()
-		{
-			_KnownVersions = new ReadOnlyCollection<Version>(new Version[]
-			{
+        static BigFileV2_32()
+        {
+            _KnownVersions = new ReadOnlyCollection<Version>(new Version[]
+            {
                 // Far Cry 2
                 (5, Platform.Any, 0),
-				(5, Platform.Windows, 3),
-				(5, Platform.PS3, 4),
+                (5, Platform.Windows, 3),
+                (5, Platform.PS3, 4),
 
-				// Far Cry 3
-				(9, Platform.Any, 3),
-				(9, Platform.Windows, 3),
-			});
+                // Far Cry 3
+                (9, Platform.Any, 3),
+                (9, Platform.Windows, 3),
+            });
 
-			_EntrySerializers = new ReadOnlyDictionary<int, IEntrySerializer<uint>>(
-				new Dictionary<int, IEntrySerializer<uint>>()
-				{
-					[5] = new EntrySerializerV05(),
-				});
-		}
-	}
+            _EntrySerializers = new ReadOnlyDictionary<int, IEntrySerializer<uint>>(
+              new Dictionary<int, IEntrySerializer<uint>>()
+              {
+                  [5] = new EntrySerializerV05(),
+              });
+        }
+    }
 }

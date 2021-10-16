@@ -29,77 +29,77 @@ using Version = Gibbed.Dunia.FileFormats.Big.Version;
 
 namespace Gibbed.Dunia.FileFormats
 {
-	public class BigFileV2_64 : BigFileV2<ulong>, IArchive<ulong>
-	{
-		public static ulong ComputeNameHash(string s, TryGetHashOverride<ulong> tryGetOverride)
-		{
-			if (s == null || s.Length == 0)
-			{
-				return 0xFFFFFFFFu;
-			}
+    public class BigFileV2_64 : BigFileV2<ulong>, IArchive<ulong>
+    {
+        public static ulong ComputeNameHash(string s, TryGetHashOverride<ulong> tryGetOverride)
+        {
+            if (s == null || s.Length == 0)
+            {
+                return 0xFFFFFFFFu;
+            }
 
-			var hash = Hashing.CRC64.Compute(s.ToLowerInvariant());
-			if (tryGetOverride != null && tryGetOverride(hash, out var hashOverride) == true)
-			{
-				return hashOverride;
-			}
-			return hash;
-		}
+            var hash = Hashing.CRC64.Compute(s.ToLowerInvariant());
+            if (tryGetOverride != null && tryGetOverride(hash, out var hashOverride) == true)
+            {
+                return hashOverride;
+            }
+            return hash;
+        }
 
-		public static bool TryParseNameHash(string s, out ulong value)
-		{
-			return ulong.TryParse(s, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out value);
-		}
+        public static bool TryParseNameHash(string s, out ulong value)
+        {
+            return ulong.TryParse(s, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out value);
+        }
 
-		public static string RenderNameHash(ulong value)
-		{
-			return string.Format(CultureInfo.InvariantCulture, "{0:X16}", value);
-		}
+        public static string RenderNameHash(ulong value)
+        {
+            return string.Format(CultureInfo.InvariantCulture, "{0:X16}", value);
+        }
 
-		ulong IArchive<ulong>.ComputeNameHash(string s, TryGetHashOverride<ulong> tryGetOverride)
-		{
-			return ComputeNameHash(s, tryGetOverride);
-		}
+        ulong IArchive<ulong>.ComputeNameHash(string s, TryGetHashOverride<ulong> tryGetOverride)
+        {
+            return ComputeNameHash(s, tryGetOverride);
+        }
 
-		bool IArchive<ulong>.TryParseNameHash(string s, out ulong value)
-		{
-			return TryParseNameHash(s, out value);
-		}
+        bool IArchive<ulong>.TryParseNameHash(string s, out ulong value)
+        {
+            return TryParseNameHash(s, out value);
+        }
 
-		string IArchive<ulong>.RenderNameHash(ulong value)
-		{
-			return RenderNameHash(value);
-		}
+        string IArchive<ulong>.RenderNameHash(ulong value)
+        {
+            return RenderNameHash(value);
+        }
 
-		protected override IEntrySerializer<ulong> GetEntrySerializer(int version)
-		{
-			return _EntrySerializers.TryGetValue(version, out var entrySerializer) == true
-				? entrySerializer
-				: throw new InvalidOperationException("entry serializer is missing");
-		}
+        protected override IEntrySerializer<ulong> GetEntrySerializer(int version)
+        {
+            return _EntrySerializers.TryGetValue(version, out var entrySerializer) == true
+                ? entrySerializer
+                : throw new InvalidOperationException("entry serializer is missing");
+        }
 
-		protected override bool IsKnownVersion(Version version)
-		{
-			return _KnownVersions.Contains(version) == true;
-		}
+        protected override bool IsKnownVersion(Version version)
+        {
+            return _KnownVersions.Contains(version) == true;
+        }
 
-		private static readonly ReadOnlyCollection<Version> _KnownVersions;
-		private static readonly ReadOnlyDictionary<int, IEntrySerializer<ulong>> _EntrySerializers;
+        private static readonly ReadOnlyCollection<Version> _KnownVersions;
+        private static readonly ReadOnlyDictionary<int, IEntrySerializer<ulong>> _EntrySerializers;
 
-		static BigFileV2_64()
-		{
-			_KnownVersions = new ReadOnlyCollection<Version>(new Version[]
-			{
-				// Far Cry 6
-				(11, Platform.Any, 0),
-				(11, Platform.Windows, 0),
-			});
+        static BigFileV2_64()
+        {
+            _KnownVersions = new ReadOnlyCollection<Version>(new Version[]
+            {
+                // Far Cry 6
+                (11, Platform.Any, 0),
+                (11, Platform.Windows, 0),
+            });
 
-			_EntrySerializers = new ReadOnlyDictionary<int, IEntrySerializer<ulong>>(
-				new Dictionary<int, IEntrySerializer<ulong>>()
-				{
-					[11] = new EntrySerializerV11(),
-				});
-		}
-	}
+            _EntrySerializers = new ReadOnlyDictionary<int, IEntrySerializer<ulong>>(
+                new Dictionary<int, IEntrySerializer<ulong>>()
+                {
+                    [11] = new EntrySerializerV11(),
+                });
+        }
+    }
 }

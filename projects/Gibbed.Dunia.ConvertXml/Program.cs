@@ -31,9 +31,9 @@ using NDesk.Options;
 
 namespace Gibbed.Dunia.ConvertXml
 {
-	public class Program
-	{
-		private static string GetExecutableName()
+    public class Program
+    {
+        private static string GetExecutableName()
         {
             return Path.GetFileName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
         }
@@ -45,21 +45,9 @@ namespace Gibbed.Dunia.ConvertXml
 
             OptionSet options = new OptionSet()
             {
-                {
-                    "rml",
-                    "convert XML to RML", 
-                    v => mode = v != null ? Mode.ToRML : mode
-                },
-                {
-                    "xml",
-                    "convert RML to XML", 
-                    v => mode = v != null ? Mode.ToXML : mode
-                },
-                {
-                    "h|help",
-                    "show this message and exit", 
-                    v => showHelp = v != null
-                },
+                { "rml", "convert XML to RML", v => mode = v != null ? Mode.ToRML : mode },
+                { "xml", "convert RML to XML", v => mode = v != null ? Mode.ToXML : mode },
+                { "h|help", "show this message and exit", v => showHelp = v != null },
             };
 
             List<string> extras;
@@ -80,7 +68,7 @@ namespace Gibbed.Dunia.ConvertXml
                 extras.Count >= 1)
             {
                 var extension = Path.GetExtension(extras[0]);
-                
+
                 if (extension == ".rml")
                 {
                     mode = Mode.ToXML;
@@ -137,7 +125,7 @@ namespace Gibbed.Dunia.ConvertXml
                 {
                     rez.Deserialize(input);
                 }
-                
+
                 var settings = new XmlWriterSettings();
                 settings.Encoding = Encoding.UTF8;
                 settings.Indent = true;
@@ -154,7 +142,7 @@ namespace Gibbed.Dunia.ConvertXml
             {
                 throw new InvalidOperationException();
             }
-		}
+        }
 
         public static XmlResourceFile.Node ReadNode(XPathNavigator nav)
         {
@@ -169,10 +157,10 @@ namespace Gibbed.Dunia.ConvertXml
                 do
                 {
                     node.Attributes.Add(new XmlResourceFile.Attribute()
-                        {
-                            Name = nav.Name,
-                            Value = nav.Value,
-                        });
+                    {
+                        Name = nav.Name,
+                        Value = nav.Value,
+                    });
                 }
                 while (nav.MoveToNextAttribute() == true);
                 nav.MoveToParent();
@@ -212,5 +200,5 @@ namespace Gibbed.Dunia.ConvertXml
 
             writer.WriteEndElement();
         }
-	}
+    }
 }
