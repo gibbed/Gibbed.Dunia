@@ -1,0 +1,49 @@
+{
+	"name": "Far Cry 2",
+	"dependencies": [ "Shared" ],
+	"list_location": "Far Cry 2",
+	"install_locations": [
+		{
+			"actions": [
+				{ "type": "registry", "key": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Ubisoft\\Far Cry 2", "value": "InstallDir" },
+				{ "type": "combine", "value": "Data_Win32" }
+			]
+		},
+		{
+			"actions": [
+				{ "type": "registry", "key": "HKEY_LOCAL_MACHINE\\SOFTWARE\\WoW6432Node\\Ubisoft\\Far Cry 2", "value": "InstallDir" },
+				{ "type": "combine", "value": "Data_Win32" }
+			]
+		},
+		{
+			"actions": [
+				{ "type": "registry", "key": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 19900", "value": "InstallLocation" },
+				{ "type": "combine", "value": "Data_Win32" }
+			]
+		},
+		{
+			"actions": [
+				{ "type": "registry", "key": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 19900", "value": "InstallLocation" },
+				{ "type": "combine", "value": "Data_Win32" }
+			]
+		},
+		{
+			"actions": [
+				{ "type": "registry", "key": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Valve\\Steam", "value": "InstallPath" },
+				{ "type": "combine", "value": "steamapps" },
+				{ "type": "combine", "value": "common" },
+				{ "type": "combine", "value": "far cry 2" },
+				{ "type": "combine", "value": "Data_Win32" }
+			]
+		},
+		{
+			"actions": [
+				{ "type": "registry", "key": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Valve\\Steam", "value": "InstallPath" },
+				{ "type": "combine", "value": "steamapps" },
+				{ "type": "combine", "value": "common" },
+				{ "type": "combine", "value": "far cry 2" },
+				{ "type": "combine", "value": "Data_Win32" }
+			]
+		}
+	]
+}
