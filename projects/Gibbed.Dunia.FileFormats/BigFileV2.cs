@@ -84,7 +84,7 @@ namespace Gibbed.Dunia.FileFormats
 			var fileVersion = (int)(fileVersionAndEncryptionFlag & ~0x80000000u);
 			var indexIsEncrypted = (fileVersionAndEncryptionFlag & 0x80000000u) != 0;
 
-			if (VersionSupportsEncryption(fileVersion) == false)
+			if (indexIsEncrypted == true && VersionSupportsEncryption(fileVersion) == false)
 			{
 				throw new FormatException("encryption flag set when unsupported");
 			}
