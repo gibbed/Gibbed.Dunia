@@ -92,7 +92,7 @@ namespace Gibbed.Dunia.FileFormats
 			{
                 // Far Cry 2
                 (5, Platform.Any, 0),
-				(5, Platform.Windows, 0),
+				(5, Platform.Windows, 3),
 				(5, Platform.PS3, 4),
 
 				// Far Cry 3
