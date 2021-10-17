@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2021 Rick (rick 'at' gibbed 'dot' us)
+/* Copyright (c) 2021 Rick (rick 'at' gibbed 'dot' us)
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -70,7 +70,7 @@ namespace Gibbed.Dunia.Packing
                 { "nf|no-files", "don't extract files", v => options.ExtractFiles = v == null },
                 { "nu|no-unknowns", "don't extract unknown files", v => options.ExtractUnknowns = v == null },
                 { "ou|only-unknowns", "only extract unknown files", v => options.OnlyUnknowns = v != null },
-                { "f|filter=", "only extract files using pattern", v => options.Filter = !string.IsNullOrEmpty(v) ? new Regex(v) : null },
+                { "f|filter=", "only extract files using pattern", v => options.Filter = string.IsNullOrEmpty(v) == false ? new Regex(v) : null },
                 { "if|invert-filter", "only extract files not using pattern", v => options.InvertFilter = v != null },
                 { "d|difference=", "only extract files aren't in specified archive", v => options.DifferencePath = v },
                 { "m|multiple", "extract all archives from [input_path]", v => multiple = v != null },
@@ -132,9 +132,9 @@ namespace Gibbed.Dunia.Packing
                 Console.WriteLine("Warning: [recursive] has no effect when [multiple] is not set");
             }
 
-            if (multiple)
+            if (multiple == true)
             {
-                if (!Directory.Exists(sourcePath))
+                if (Directory.Exists(sourcePath) == false)
                 {
                     Console.WriteLine($"Input path \"{sourcePath}\" should be a directory path when [multiple] is set.");
                     return;
@@ -150,7 +150,7 @@ namespace Gibbed.Dunia.Packing
                 fatPaths = new string[] { sourcePath };
             }
 
-            if (options.Verbose)
+            if (options.Verbose == true)
             {
                 Console.WriteLine($"Loading {(fatPaths.Length == 1 ? "FAT" : $"{fatPaths.Length} FATs")}...");
             }
@@ -170,7 +170,7 @@ namespace Gibbed.Dunia.Packing
 
             if (archives.Length == 0)
             {
-                if (options.Verbose)
+                if (options.Verbose == true)
                 {
                     Console.WriteLine($"No archives found from \"{sourcePath}\" (recursive: {recursive})");
                 }
@@ -189,7 +189,7 @@ namespace Gibbed.Dunia.Packing
                 tryGetHashOverride
             );
 
-            if (options.Verbose)
+            if (options.Verbose == true)
             {
                 Console.WriteLine(
                     $"Beginning to extract {context.TotalEntryCount} " +
@@ -199,7 +199,7 @@ namespace Gibbed.Dunia.Packing
 
             Parallel.ForEach(archives, archive => ExtractArchive(archive, context, options));
 
-            if (options.Verbose)
+            if (options.Verbose == true)
             {
                 Console.WriteLine(
                     $"Finished extracting {context.TotalEntryCount} " +
