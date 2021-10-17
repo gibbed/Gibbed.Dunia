@@ -65,6 +65,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gibbed.FarCryNewDawn.Rebuil
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gibbed.FarCryNewDawn.Unpack", "projects\Gibbed.FarCryNewDawn.Unpack\Gibbed.FarCryNewDawn.Unpack.csproj", "{701C6A89-DABB-4DDB-B46B-0217363B1BA5}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Far Cry Primal", "Far Cry Primal", "{12E01168-3C6F-46CF-AF9D-D1979B09AC7A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gibbed.FarCryPrimal.Unpack", "projects\Gibbed.FarCryPrimal.Unpack\Gibbed.FarCryPrimal.Unpack.csproj", "{B1F46A93-47AA-4034-A4B5-24C7E6484D91}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gibbed.FarCryPrimal.RebuildFileLists", "projects\Gibbed.FarCryPrimal.RebuildFileLists\Gibbed.FarCryPrimal.RebuildFileLists.csproj", "{494A5E00-677F-4713-ACFF-905E96535280}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Gibbed.FarCryPrimal.Pack", "projects\Gibbed.FarCryPrimal.Pack\Gibbed.FarCryPrimal.Pack.csproj", "{262A905D-0D06-4B16-8945-1B96FFB8C108}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -167,6 +175,18 @@ Global
 		{701C6A89-DABB-4DDB-B46B-0217363B1BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{701C6A89-DABB-4DDB-B46B-0217363B1BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{701C6A89-DABB-4DDB-B46B-0217363B1BA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1F46A93-47AA-4034-A4B5-24C7E6484D91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1F46A93-47AA-4034-A4B5-24C7E6484D91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1F46A93-47AA-4034-A4B5-24C7E6484D91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1F46A93-47AA-4034-A4B5-24C7E6484D91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{494A5E00-677F-4713-ACFF-905E96535280}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{494A5E00-677F-4713-ACFF-905E96535280}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{494A5E00-677F-4713-ACFF-905E96535280}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{494A5E00-677F-4713-ACFF-905E96535280}.Release|Any CPU.Build.0 = Release|Any CPU
+		{262A905D-0D06-4B16-8945-1B96FFB8C108}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{262A905D-0D06-4B16-8945-1B96FFB8C108}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{262A905D-0D06-4B16-8945-1B96FFB8C108}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{262A905D-0D06-4B16-8945-1B96FFB8C108}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -200,6 +220,10 @@ Global
 		{6DB37742-DFCA-462B-AAA0-9D72719E7AAA} = {57BACEAA-56B1-4774-94C6-0BF2FC5FBC89}
 		{5A5583BF-3261-4AC5-B03B-D85B8A8B6EC1} = {57BACEAA-56B1-4774-94C6-0BF2FC5FBC89}
 		{701C6A89-DABB-4DDB-B46B-0217363B1BA5} = {57BACEAA-56B1-4774-94C6-0BF2FC5FBC89}
+		{12E01168-3C6F-46CF-AF9D-D1979B09AC7A} = {A6A06F66-21FF-4F84-A4F3-0ADD92AD0F89}
+		{B1F46A93-47AA-4034-A4B5-24C7E6484D91} = {12E01168-3C6F-46CF-AF9D-D1979B09AC7A}
+		{494A5E00-677F-4713-ACFF-905E96535280} = {12E01168-3C6F-46CF-AF9D-D1979B09AC7A}
+		{262A905D-0D06-4B16-8945-1B96FFB8C108} = {12E01168-3C6F-46CF-AF9D-D1979B09AC7A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {96768FCA-D0BA-47A5-AB37-CB1CA88C53AA}

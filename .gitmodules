@@ -26,3 +26,6 @@
 [submodule "configs/Far Cry New Dawn/files"]
 	path = configs/Far Cry New Dawn/files
 	url = https://github.com/gibbed/FarCryNewDawn-File-Lists.git
+[submodule "configs/Far Cry Primal/files"]
+	path = configs/Far Cry Primal/files
+	url = https://github.com/gibbed/FarCryPrimal-File-Lists.git
