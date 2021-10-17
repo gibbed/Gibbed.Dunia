@@ -16,13 +16,25 @@
     },
     {
       "actions": [
-        { "type": "registry", "key": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 552520", "value": "InstallLocation" },
+        { "type": "registryview", "view": "Registry64", "hive": "LocalMachine", "sub_key": "SOFTWARE\\Ubisoft\\Launcher\\Installs\\4311", "value": "InstallDir" },
         { "type": "combine", "value": "data_final" }
       ]
     },
     {
       "actions": [
-        { "type": "registry", "key": "HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 552520", "value": "InstallLocation" },
+        { "type": "registryview", "view": "Registry32", "hive": "LocalMachine", "sub_key": "SOFTWARE\\Ubisoft\\Launcher\\Installs\\4311", "value": "InstallDir" },
+        { "type": "combine", "value": "data_final" }
+      ]
+    },
+    {
+      "actions": [
+        { "type": "registryview", "view": "Registry64", "hive": "LocalMachine", "sub_key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 552520", "value": "InstallLocation" },
+        { "type": "combine", "value": "data_final" }
+      ]
+    },
+    {
+      "actions": [
+        { "type": "registryview", "view": "Registry32", "hive": "LocalMachine", "sub_key": "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 552520", "value": "InstallLocation" },
         { "type": "combine", "value": "data_final" }
       ]
     }
