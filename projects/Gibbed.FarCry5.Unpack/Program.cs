@@ -23,7 +23,7 @@
 using Gibbed.Dunia.FileFormats;
 using Gibbed.Dunia.Packing;
 
-namespace Gibbed.FarCry6.Unpack
+namespace Gibbed.FarCry5.Unpack
 {
     internal class Program
     {
