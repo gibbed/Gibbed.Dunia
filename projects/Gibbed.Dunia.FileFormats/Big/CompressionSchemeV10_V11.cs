@@ -24,7 +24,7 @@ using System;
 
 namespace Gibbed.Dunia.FileFormats.Big
 {
-    internal class CompressionSchemeV11
+    internal class CompressionSchemeV10_V11
     {
         public static CompressionScheme ToCompressionScheme(Version version, byte id)
         {

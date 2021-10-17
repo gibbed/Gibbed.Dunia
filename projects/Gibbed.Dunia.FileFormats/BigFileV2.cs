@@ -243,7 +243,8 @@ namespace Gibbed.Dunia.FileFormats
         {
             return version.FileVersion switch
             {
-                11 => CompressionSchemeV11.ToCompressionScheme(version, id),
+                10 => CompressionSchemeV10_V11.ToCompressionScheme(version, id),
+                11 => CompressionSchemeV10_V11.ToCompressionScheme(version, id),
                 _ => throw new NotSupportedException(),
             };
         }
@@ -257,7 +258,8 @@ namespace Gibbed.Dunia.FileFormats
         {
             return version.FileVersion switch
             {
-                11 => CompressionSchemeV11.FromCompressionScheme(version, compressionScheme),
+                10 => CompressionSchemeV10_V11.FromCompressionScheme(version, compressionScheme),
+                11 => CompressionSchemeV10_V11.FromCompressionScheme(version, compressionScheme),
                 _ => throw new NotSupportedException(),
             };
         }
