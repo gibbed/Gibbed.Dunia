@@ -33,13 +33,19 @@ namespace Gibbed.Dunia.Packing
         public string FatPath { get; private set; }
         public string DatPath { get; private set; }
 
-        public BoundArchive(string fatPath, string datPath = null)
+        public static BoundArchive<TArchive, THash> Bind(string fatPath, string datPath = null)
         {
-            Fat = new TArchive();
+            var fat = new TArchive();
             using var input = File.OpenRead(fatPath);
-            Fat.Deserialize(input);
-            FatPath = fatPath;
-            DatPath = datPath ?? Path.ChangeExtension(fatPath, ".dat");
+            fat.Deserialize(input);
+            datPath ??= Path.ChangeExtension(fatPath, ".dat");
+
+            return new BoundArchive<TArchive, THash>
+            {
+                Fat = fat,
+                FatPath = fatPath,
+                DatPath = datPath
+            };
         }
     }
 }
