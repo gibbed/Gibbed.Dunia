@@ -49,18 +49,32 @@ namespace Gibbed.Dunia.FileFormats
         {
             _KnownVersions = new ReadOnlyCollection<Version>(new Version[]
             {
+                // Far Cry 3
+                // Far Cry 3 Blood Dragon
+                // Far Cry 4
+                // Far Cry Primal
+                (9, Platform.Any, 0),
+
+                // Far Cry 3
+                // Far Cry 3 Blood Dragon
+                // Far Cry 4
+                (9, Platform.Windows, 3),
+
+                // Far Cry Primal
+                (9, Platform.Windows, 4),
+
                 // Far Cry 5
-                (10, Platform.Any, 0),
+                // Far Cry New Dawn
                 (10, Platform.Windows, 0),
 
                 // Far Cry 6
-                (11, Platform.Any, 0),
                 (11, Platform.Windows, 0),
             });
 
             _EntrySerializers = new ReadOnlyDictionary<int, IEntrySerializer<ulong>>(
                 new Dictionary<int, IEntrySerializer<ulong>>()
                 {
+                    [9] = new EntrySerializerV09(),
                     [10] = new EntrySerializerV10(),
                     [11] = new EntrySerializerV11(),
                 });
