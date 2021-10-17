@@ -32,13 +32,13 @@ namespace Gibbed.Dunia.FileFormats.Big
     {
         Any = 0,
         Windows, // data_win32 or data_win64 or data_final
-        Xenon, // no platform directory : Xbox 360
+        Xenon, // no platform directory (Xbox 360)
         PS3, // data_ps3
-        WiiU, // no platform directory : Wii U
-        Durango, // data_durango : Xbox 1
-        Orbis, // data_orbis : PS4
-        Scarlett, // data_scarlett : Xbox Series X
-        Prospero, // data_prospero : PS5
-        Yeti, // data_yeti : Stadia
+        WiiU, // no platform directory (Wii U)
+        Durango, // data_durango (Xbox One)
+        Orbis, // data_orbis (PS4)
+        Scarlett, // data_scarlett (Xbox Series X)
+        Prospero, // data_prospero (PS5)
+        Yeti, // data_yeti (Stadia)
     }
 }
