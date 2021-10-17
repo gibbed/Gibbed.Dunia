@@ -23,3 +23,6 @@
 [submodule "configs/Far Cry 5/files"]
 	path = configs/Far Cry 5/files
 	url = https://github.com/gibbed/FarCry5-File-Lists.git
+[submodule "configs/Far Cry New Dawn/files"]
+	path = configs/Far Cry New Dawn/files
+	url = https://github.com/gibbed/FarCryNewDawn-File-Lists.git
