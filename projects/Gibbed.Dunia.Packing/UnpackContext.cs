@@ -1,4 +1,4 @@
-﻿/* Copyright (c) 2021 Rick (rick 'at' gibbed 'dot' us)
+/* Copyright (c) 2021 Rick (rick 'at' gibbed 'dot' us)
  *
  * This software is provided 'as-is', without any express or implied
  * warranty. In no event will the authors be held liable for any damages
@@ -32,15 +32,12 @@ namespace Gibbed.Dunia.Packing
     internal sealed class UnpackContext<TArchive, THash>
         where TArchive : Big.IArchive<THash>, new()
     {
+        private long _ProcessedEntryCount = 0;
+
         public List<(string archiveName, long totalCount, long extractedCount, long IgnoredCount, long ExcludedCount, long ExistingCount)> Tallies { get; private set; } = new();
-        public string OutputPath { get; private set; }
-        public long TotalEntryCount { get; private set; } = 0;
-
-        private long processedEntryCount = 0;
-        public long ProcessedEntryCount => processedEntryCount;
-
-        private ProjectData.HashList<THash> hashes;
-        public ProjectData.HashList<THash> Hashes => hashes;
+        public readonly long TotalEntryCount;
+        public readonly string OutputPath;
+        public readonly ProjectData.HashList<THash> Hashes;
 
         public UnpackContext(
             ProjectData.Project project,
@@ -48,20 +45,22 @@ namespace Gibbed.Dunia.Packing
             string outputPath,
             Big.TryGetHashOverride<THash> tryGetHashOverride)
         {
-            TotalEntryCount = archives.Sum(archive => archive.Fat.Entries.Count);
-            OutputPath = outputPath;
+            this.TotalEntryCount = archives.Sum(archive => archive.Fat.Entries.Count);
+            this.OutputPath = outputPath;
             project.LoadListsFileNames(
-                (string s) => archives.First().Fat.ComputeNameHash(s, tryGetHashOverride), out hashes);
+                s => archives.First().Fat.ComputeNameHash(s, tryGetHashOverride), out Hashes);
         }
+
+        public long ProcessedEntryCount => _ProcessedEntryCount;
 
         public void Tally(string archiveName, long total, long extracted, long ignored, long excluded, long existing)
         {
-            Tallies.Add((archiveName, total, extracted, ignored, excluded, existing));
+            this.Tallies.Add((archiveName, total, extracted, ignored, excluded, existing));
         }
 
         public void IncrementProcessedEntryCount()
         {
-            Interlocked.Increment(ref processedEntryCount);
+            Interlocked.Increment(ref this._ProcessedEntryCount);
         }
     }
 }
