@@ -23,6 +23,7 @@
 using System;
 using System.IO;
 using Gibbed.IO;
+using Entry = Gibbed.Dunia.FileFormats.Big.Entry<ulong>;
 
 namespace Gibbed.Dunia.FileFormats.Big
 {
@@ -47,12 +48,12 @@ namespace Gibbed.Dunia.FileFormats.Big
 
         public int Size { get { return 20; } }
 
-        public void Serialize(Stream output, Entry<ulong> entry, Endian endian)
+        public void Serialize(Stream output, Entry entry, Endian endian)
         {
             throw new NotImplementedException();
         }
 
-        public void Deserialize(Stream input, Endian endian, out Entry<ulong> entry)
+        public void Deserialize(Stream input, Endian endian, out Entry entry)
         {
             var a = input.ReadValueU32(endian);
             var b = input.ReadValueU32(endian);
@@ -60,7 +61,7 @@ namespace Gibbed.Dunia.FileFormats.Big
             var d = input.ReadValueU32(endian);
             var e = input.ReadValueU32(endian);
 
-            entry = new Entry<ulong>()
+            entry = new()
             {
                 NameHash = ((ulong)a << 32) | b,
                 UncompressedSize = (int)((c >> 2) & 0x3FFFFFFFu),
