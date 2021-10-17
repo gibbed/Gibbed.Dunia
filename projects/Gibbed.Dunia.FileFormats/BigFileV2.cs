@@ -266,7 +266,7 @@ namespace Gibbed.Dunia.FileFormats
 
         public byte FromCompressionScheme(CompressionScheme compressionScheme)
         {
-            throw new NotImplementedException();
+            return FromCompressionScheme(this._Version, compressionScheme);
         }
 
         protected abstract bool IsKnownVersion(Version version);
