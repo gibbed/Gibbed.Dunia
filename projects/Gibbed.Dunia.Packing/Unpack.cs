@@ -29,6 +29,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Gibbed.Dunia.FileFormats;
+using Microsoft.Extensions.FileSystemGlobbing;
 using NDesk.Options;
 using Big = Gibbed.Dunia.FileFormats.Big;
 
@@ -49,8 +50,6 @@ namespace Gibbed.Dunia.Packing
                 throw new ArgumentNullException(nameof(projectName));
             }
 
-            bool multiple = false;
-            bool recursive = false;
             bool showHelp = false;
             var options = new UnpackOptions()
             {
@@ -73,8 +72,6 @@ namespace Gibbed.Dunia.Packing
                 { "f|filter=", "only extract files using pattern", v => options.Filter = string.IsNullOrEmpty(v) == false ? new Regex(v) : null },
                 { "if|invert-filter", "only extract files not using pattern", v => options.InvertFilter = v != null },
                 { "d|difference=", "only extract files aren't in specified archive", v => options.DifferencePath = v },
-                { "m|multiple", "extract all archives from [input_path]", v => multiple = v != null },
-                { "r|recursive", "extract all archives from [input_path] and its sub-directories", v => recursive = v != null },
                 { "sd|subdir", "create a sub-directory per archive", v => options.CreateSubDirectory = v != null },
                 { "v|verbose", "be verbose", v => options.Verbose = v != null },
                 { "h|help", "show this message and exit", v => showHelp = v != null },
@@ -96,7 +93,7 @@ namespace Gibbed.Dunia.Packing
 
             if (extras.Count < 1 || extras.Count > 2 || showHelp == true)
             {
-                Console.WriteLine("Usage: {0} [OPTIONS]+ input_path [output_dir]", Helpers.GetExecutableName());
+                Console.WriteLine("Usage: {0} [OPTIONS]+ input_path|input_glob [output_dir]", Helpers.GetExecutableName());
                 Console.WriteLine();
                 Console.WriteLine("Unpack files from a Big File (FAT/DAT pair).");
                 Console.WriteLine();
@@ -127,19 +124,25 @@ namespace Gibbed.Dunia.Packing
             string[] fatPaths;
             string sourcePath = extras[0];
 
-            if (recursive == true && multiple == false)
+            if (File.Exists(sourcePath) == false)
             {
-                Console.WriteLine("Warning: [recursive] has no effect when [multiple] is not set");
-            }
-
-            if (multiple == true)
-            {
-                if (Directory.Exists(sourcePath) == false)
+                var globTokens = new Stack<string>(sourcePath.Split(Path.DirectorySeparatorChar));
+                var globPatternTokens = new Stack<string>();
+                var globRootPath = "";
+                while (globTokens.Count > 0 && Directory.Exists(globRootPath = Path.Combine(globTokens.Reverse().ToArray())) == false)
                 {
-                    Console.WriteLine($"Input path \"{sourcePath}\" should be a directory path when [multiple] is set.");
+                    globPatternTokens.Push(globTokens.Pop());
+                }
+
+                if (globTokens.Count == 0)
+                {
+                    Console.WriteLine($"\"{sourcePath}\" pattern root path does not exist.");
                     return;
                 }
-                fatPaths = Directory.GetFiles(sourcePath, "*.fat", recursive ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
+
+                var glob = new Matcher();
+                glob.AddInclude(Path.Combine(globPatternTokens.ToArray()));
+                fatPaths = glob.GetResultsInFullPath(globRootPath).ToArray();
             }
             else
             {
@@ -172,7 +175,7 @@ namespace Gibbed.Dunia.Packing
             {
                 if (options.Verbose == true)
                 {
-                    Console.WriteLine($"No archives found from \"{sourcePath}\" (recursive: {recursive})");
+                    Console.WriteLine($"No archives found from \"{sourcePath}\"");
                 }
                 return;
             }
