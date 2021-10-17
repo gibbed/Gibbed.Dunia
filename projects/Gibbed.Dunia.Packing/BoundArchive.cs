@@ -20,20 +20,32 @@
  *    distribution.
  */
 
-using System.Text.RegularExpressions;
+using System;
+using System.IO;
+using Big = Gibbed.Dunia.FileFormats.Big;
 
 namespace Gibbed.Dunia.Packing
 {
-    internal struct UnpackOptions
+    internal sealed class BoundArchive<TArchive, THash>
+        where TArchive : Big.IArchive<THash>, new()
     {
-        public bool ExtractUnknowns;
-        public bool OnlyUnknowns;
-        public Regex Filter;
-        public bool ExtractFiles;
-        public bool OverwriteFiles;
-        public string DifferencePath;
-        public bool InvertFilter;
-        public bool Verbose;
-        public bool CreateSubDirectory;
+        public TArchive Fat { get; private set; }
+        public string FatPath { get; private set; }
+        public string DatPath { get; private set; }
+
+        public static BoundArchive<TArchive, THash> Bind(string fatPath, string datPath = null)
+        {
+            var fat = new TArchive();
+            using var input = File.OpenRead(fatPath);
+            fat.Deserialize(input);
+            datPath ??= Path.ChangeExtension(fatPath, ".dat");
+
+            return new BoundArchive<TArchive, THash>
+            {
+                Fat = fat,
+                FatPath = fatPath,
+                DatPath = datPath
+            };
+        }
     }
 }
