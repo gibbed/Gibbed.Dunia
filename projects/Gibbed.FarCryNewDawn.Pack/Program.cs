@@ -30,7 +30,7 @@ namespace Gibbed.FarCryNewDawn.Pack
     {
         private static void Main(string[] args)
         {
-            Pack<BigFileV2_64, ulong>.Main(args, Platform.Windows, null);
+            Pack<BigFileV2_64, NameHasher64, ulong>.Main(args, Platform.Windows, null);
         }
     }
 }

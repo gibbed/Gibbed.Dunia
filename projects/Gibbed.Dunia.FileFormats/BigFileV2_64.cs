@@ -23,7 +23,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using Gibbed.Dunia.FileFormats.Big;
 using Version = Gibbed.Dunia.FileFormats.Big.Version;
 
@@ -31,46 +30,6 @@ namespace Gibbed.Dunia.FileFormats
 {
     public class BigFileV2_64 : BigFileV2<ulong>, IArchive<ulong>
     {
-        public static ulong ComputeNameHash(string s, TryGetHashOverride<ulong> tryGetOverride)
-        {
-            if (s == null || s.Length == 0)
-            {
-                return 0xFFFFFFFFu;
-            }
-
-            var hash = Hashing.CRC64.Compute(s.ToLowerInvariant());
-            if (tryGetOverride != null && tryGetOverride(hash, out var hashOverride) == true)
-            {
-                return hashOverride;
-            }
-            return hash;
-        }
-
-        public static bool TryParseNameHash(string s, out ulong value)
-        {
-            return ulong.TryParse(s, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out value);
-        }
-
-        public static string RenderNameHash(ulong value)
-        {
-            return string.Format(CultureInfo.InvariantCulture, "{0:X16}", value);
-        }
-
-        ulong IArchive<ulong>.ComputeNameHash(string s, TryGetHashOverride<ulong> tryGetOverride)
-        {
-            return ComputeNameHash(s, tryGetOverride);
-        }
-
-        bool IArchive<ulong>.TryParseNameHash(string s, out ulong value)
-        {
-            return TryParseNameHash(s, out value);
-        }
-
-        string IArchive<ulong>.RenderNameHash(ulong value)
-        {
-            return RenderNameHash(value);
-        }
-
         protected override IEntrySerializer<ulong> GetEntrySerializer(int version)
         {
             return _EntrySerializers.TryGetValue(version, out var entrySerializer) == true

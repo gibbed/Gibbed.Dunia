@@ -21,6 +21,7 @@
  */
 
 using Gibbed.Dunia.FileFormats;
+using Gibbed.Dunia.FileFormats.Big;
 using Gibbed.Dunia.Packing;
 
 namespace Gibbed.FarCry2.RebuildFileLists
@@ -29,7 +30,7 @@ namespace Gibbed.FarCry2.RebuildFileLists
     {
         public static void Main(string[] args)
         {
-            RebuildFileLists<BigFileV2_32, uint>.Main(args, "Far Cry 2", null);
+            RebuildFileLists<BigFileV2_32, NameHasher32, uint>.Main(args, "Far Cry 2", null);
         }
     }
 }

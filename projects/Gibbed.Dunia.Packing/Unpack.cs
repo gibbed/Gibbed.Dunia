@@ -26,17 +26,18 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using Gibbed.Dunia.FileFormats;
 using Microsoft.Extensions.FileSystemGlobbing;
 using NDesk.Options;
+using static Gibbed.Dunia.FileFormats.InvariantShorthand;
 using Big = Gibbed.Dunia.FileFormats.Big;
 
 namespace Gibbed.Dunia.Packing
 {
-    public static class Unpack<TArchive, THash>
+    public static class Unpack<TArchive, TNameHasher, THash>
         where TArchive : Big.IArchive<THash>, new()
+        where TNameHasher : Big.INameHasher<THash>, new()
     {
         public static void Main(string[] args, string projectName)
         {
@@ -129,7 +130,9 @@ namespace Gibbed.Dunia.Packing
                 var globTokens = new Stack<string>(sourcePath.Split(Path.DirectorySeparatorChar));
                 var globPatternTokens = new Stack<string>();
                 var globRootPath = "";
-                while (globTokens.Count > 0 && Directory.Exists(globRootPath = Path.Combine(globTokens.Reverse().ToArray())) == false)
+                while (
+                    globTokens.Count > 0 &&
+                    Directory.Exists(globRootPath = Path.Combine(globTokens.Reverse().ToArray())) == false)
                 {
                     globPatternTokens.Push(globTokens.Pop());
                 }
@@ -168,7 +171,6 @@ namespace Gibbed.Dunia.Packing
                         $"{(archive.Fat.Entries.Count == 1 ? "entry" : "entries")}");
                 }
                 return archive;
-
             }).ToArray();
 
             if (archives.Length == 0)
@@ -185,12 +187,16 @@ namespace Gibbed.Dunia.Packing
                 Console.WriteLine("Loading file lists...");
             }
 
-            var context = new UnpackContext<TArchive, THash>(
-                project,
+            var nameHasher = new TNameHasher();
+            THash wrappedComputeNameHash(string s) =>
+                nameHasher.Compute(s, tryGetHashOverride);
+            project.LoadListsFileNames(wrappedComputeNameHash, out var hashes);
+
+            var context = new UnpackContext<TArchive, TNameHasher, THash>(
                 archives,
-                outputPath: extras.Count > 1 ? extras[1] : Path.ChangeExtension(sourcePath, null) + "_unpack",
-                tryGetHashOverride
-            );
+                nameHasher,
+                hashes,
+                outputPath: extras.Count > 1 ? extras[1] : Path.ChangeExtension(sourcePath, null) + "_unpack");
 
             if (options.Verbose == true)
             {
@@ -212,11 +218,11 @@ namespace Gibbed.Dunia.Packing
                 foreach (var (archiveName, totalCount, extractedCount, ignoredCount, excludedCount, existingCount) in context.Tallies)
                 {
                     Console.WriteLine(
-                        $"\t{archiveName}\n" +
-                        $"\t\t{totalCount} entries\n" +
-                        $"\t\t\t{extractedCount} extracted\n" +
-                        $"\t\t\t{ignoredCount} excluded\n" +
-                        $"\t\t\t{excludedCount} ignored by filters\n" +
+                        $"\t{archiveName}{Environment.NewLine}" +
+                        $"\t\t{totalCount} entries{Environment.NewLine}" +
+                        $"\t\t\t{extractedCount} extracted{Environment.NewLine}" +
+                        $"\t\t\t{ignoredCount} excluded{Environment.NewLine}" +
+                        $"\t\t\t{excludedCount} ignored by filters{Environment.NewLine}" +
                         $"\t\t\t{existingCount} already extracted");
                 }
             }
@@ -224,13 +230,13 @@ namespace Gibbed.Dunia.Packing
 
         private static bool GetEntryName(
             Stream input,
-            Big.IArchive<THash> archive,
-            Big.Entry<THash> entry,
-            ProjectData.HashList<THash> hashes,
+            TArchive archive,
+            UnpackContext<TArchive, TNameHasher, THash> context,
             UnpackOptions options,
+            Big.Entry<THash> entry,
             out string entryName)
         {
-            entryName = hashes[entry.NameHash];
+            entryName = context.Hashes[entry.NameHash];
             if (entryName != null)
             {
                 if (options.OnlyUnknowns == true)
@@ -284,7 +290,7 @@ namespace Gibbed.Dunia.Packing
                 }
             }
 
-            entryName = archive.RenderNameHash(entry.NameHash);
+            entryName = context.NameHasher.Render(entry.NameHash);
 
             if (string.IsNullOrEmpty(extension) == false)
             {
@@ -312,7 +318,7 @@ namespace Gibbed.Dunia.Packing
 
         private static void ExtractArchive(
             BoundArchive<TArchive, THash> archive,
-            UnpackContext<TArchive, THash> context,
+            UnpackContext<TArchive, TNameHasher, THash> context,
             UnpackOptions options)
         {
             THash[] hashDifference = null;
@@ -364,9 +370,9 @@ namespace Gibbed.Dunia.Packing
                     if (GetEntryName(
                         input,
                         archive.Fat,
-                        entry,
-                        context.Hashes,
+                        context,
                         options,
+                        entry,
                         out var entryName) == false)
                     {
                         ignoredCount++;
@@ -380,12 +386,7 @@ namespace Gibbed.Dunia.Packing
                         var entryExtension = Path.GetExtension(entryName);
                         entryName = Path.Combine(
                             "__DUPLICATE",
-                            string.Format(
-                                CultureInfo.InvariantCulture,
-                                "{0}__DUPLICATE_{1}{2}",
-                                entryBaseName,
-                                duplicateCount,
-                                entryExtension ?? ""));
+                            _($"{entryBaseName}__DUPLICATE_{duplicateCount}{entryExtension ?? ""}"));
                     }
                     else
                     {

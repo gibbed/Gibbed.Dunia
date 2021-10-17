@@ -30,7 +30,7 @@ namespace Gibbed.FarCry2.Pack
     {
         private static void Main(string[] args)
         {
-            Pack<BigFileV2_32, uint>.Main(args, Platform.Windows, null);
+            Pack<BigFileV2_32, NameHasher32, uint>.Main(args, Platform.Windows, null);
         }
     }
 }

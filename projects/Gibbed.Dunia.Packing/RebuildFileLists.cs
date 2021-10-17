@@ -32,8 +32,9 @@ using Big = Gibbed.Dunia.FileFormats.Big;
 
 namespace Gibbed.Dunia.Packing
 {
-    public static class RebuildFileLists<TArchive, THash>
+    public static class RebuildFileLists<TArchive, TNameHasher, THash>
         where TArchive : Big.IArchive<THash>, new()
+        where TNameHasher: Big.INameHasher<THash>, new()
     {
         public static void Main(string[] args, string projectName)
         {
@@ -175,9 +176,11 @@ namespace Gibbed.Dunia.Packing
                     .ToArray();
             }
 
+            var nameHasher = new TNameHasher();
+
             Console.WriteLine("Loading file lists...");
             THash wrappedComputeNameHash(string s) =>
-                fats.Values.First().ComputeNameHash(s, tryGetHashOverride);
+                nameHasher.Compute(s, tryGetHashOverride);
             project.LoadListsFileNames(wrappedComputeNameHash, out previousHashes);
 
             Console.WriteLine("Processing names for archives...");
@@ -198,7 +201,7 @@ namespace Gibbed.Dunia.Packing
                 }
 
                 var outputPath = Path.Combine(listsPath, listPath);
-                HandleEntries(fatHashes[listPath], parentHashes, previousHashes, tracking, fat, outputPath);
+                HandleEntries(fatHashes[listPath], parentHashes, previousHashes, tracking, fat, nameHasher, outputPath);
             }
 
             var fcbconverterPath = Path.Combine(listsPath, "files", "FCBConverterFileNames.list");
@@ -209,7 +212,7 @@ namespace Gibbed.Dunia.Packing
                 Known = allNames.Length,
                 Total = allHashes.Length,
             };
-            WriteList(default, null, allNames, totalBreakdown, null, fcbconverterPath);
+            WriteList(default, nameHasher, null, allNames, totalBreakdown, null, fcbconverterPath);
 
             var statusPath = Path.Combine(listsPath, "files", "status.txt");
             using (var output = new StreamWriter(statusPath, false, new UTF8Encoding(false)))
@@ -238,6 +241,7 @@ namespace Gibbed.Dunia.Packing
             HashList<THash> previousHashes,
             Tracking<THash> tracking,
             TArchive fat,
+            TNameHasher nameHasher,
             string outputPath)
         {
             var breakdown = new Breakdown();
@@ -265,13 +269,14 @@ namespace Gibbed.Dunia.Packing
             names = names.Distinct().ToList();
             breakdown.Known += names.Count;
 
-            WriteList(fat, previousHashes, names, breakdown, differenceCount, outputPath);
+            WriteList(fat, nameHasher, previousHashes, names, breakdown, differenceCount, outputPath);
 
             return hashes;
         }
 
         private static void WriteList(
             TArchive fat,
+            TNameHasher nameHasher,
             HashList<THash> previousHashes,
             IEnumerable<string> names,
             Breakdown breakdown,
@@ -298,15 +303,15 @@ namespace Gibbed.Dunia.Packing
                     {
                         writer.WriteLine("; archive={0}",
                             previousHashes?[dependentFat.ArchiveHash] ??
-                                fat.RenderNameHash(dependentFat.ArchiveHash));
+                                nameHasher.Render(dependentFat.ArchiveHash));
                     }
                     foreach (var dependency in dependentFat.Dependencies)
                     {
                         writer.WriteLine("; dependency={0} @ {1}",
                             previousHashes?[dependency.ArchiveHash] ??
-                                fat.RenderNameHash(dependency.ArchiveHash),
+                                nameHasher.Render(dependency.ArchiveHash),
                             previousHashes?[dependency.NameHash] ??
-                                fat.RenderNameHash(dependency.NameHash));
+                                nameHasher.Render(dependency.NameHash));
                     }
                 }
 

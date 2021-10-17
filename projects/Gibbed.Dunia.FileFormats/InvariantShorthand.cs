@@ -20,17 +20,15 @@
  *    distribution.
  */
 
-using Gibbed.Dunia.FileFormats;
-using Gibbed.Dunia.FileFormats.Big;
-using Gibbed.Dunia.Packing;
+using System;
 
-namespace Gibbed.FarCry5.Pack
+namespace Gibbed.Dunia.FileFormats
 {
-    internal class Program
+    public static class InvariantShorthand
     {
-        private static void Main(string[] args)
+        public static string _(FormattableString formattable)
         {
-            Pack<BigFileV2_64, NameHasher64, ulong>.Main(args, Platform.Windows, null);
+            return FormattableString.Invariant(formattable);
         }
     }
 }

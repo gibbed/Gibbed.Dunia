@@ -21,6 +21,7 @@
  */
 
 using Gibbed.Dunia.FileFormats;
+using Gibbed.Dunia.FileFormats.Big;
 using Gibbed.Dunia.Packing;
 
 namespace Gibbed.FarCry6.Unpack
@@ -29,7 +30,7 @@ namespace Gibbed.FarCry6.Unpack
     {
         public static void Main(string[] args)
         {
-            Unpack<BigFileV2_64, ulong>.Main(args, "Far Cry 6", null);
+            Unpack<BigFileV2_64, NameHasher64, ulong>.Main(args, "Far Cry 6", null);
         }
     }
 }

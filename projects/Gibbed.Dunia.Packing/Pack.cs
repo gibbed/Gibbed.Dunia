@@ -32,8 +32,9 @@ using Big = Gibbed.Dunia.FileFormats.Big;
 
 namespace Gibbed.Dunia.Packing
 {
-    public static partial class Pack<TArchive, THash>
+    public static partial class Pack<TArchive, TNameHasher, THash>
         where TArchive : Big.IArchive<THash>, new()
+        where TNameHasher : Big.INameHasher<THash>, new()
     {
         private static string GetExecutableName()
         {
@@ -153,6 +154,8 @@ namespace Gibbed.Dunia.Packing
 
             var pendingEntries = new SortedDictionary<THash, PendingEntry>();
 
+            var nameHasher = new TNameHasher();
+
             var fat = new TArchive()
             {
                 Version = (version.Value, platform, GetCompressionVersionForPlatform(platform)),
@@ -211,7 +214,7 @@ namespace Gibbed.Dunia.Packing
 
                         pendingEntry.Name = null;
 
-                        if (fat.TryParseNameHash(partName, out pendingEntry.NameHash) == false)
+                        if (nameHasher.TryParse(partName, out pendingEntry.NameHash) == false)
                         {
                             throw new InvalidOperationException();
                         }
@@ -219,7 +222,7 @@ namespace Gibbed.Dunia.Packing
                     else
                     {
                         pendingEntry.Name = string.Join("\\", pieces.Skip(index).ToArray()).ToLowerInvariant();
-                        pendingEntry.NameHash = fat.ComputeNameHash(
+                        pendingEntry.NameHash = nameHasher.Compute(
                             ProjectHelpers.Modifier(pendingEntry.Name),
                             tryGetHashOverride);
                     }
@@ -228,7 +231,7 @@ namespace Gibbed.Dunia.Packing
                     {
                         Console.WriteLine(
                             "Ignoring duplicate of {0}: {1}",
-                            fat.RenderNameHash(pendingEntry.NameHash),
+                            nameHasher.Render(pendingEntry.NameHash),
                             partPath);
 
                         if (verbose == true)

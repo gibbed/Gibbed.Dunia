@@ -37,10 +37,6 @@ namespace Gibbed.Dunia.FileFormats.Big
         void Serialize(Stream output);
         void Deserialize(Stream input);
 
-        T ComputeNameHash(string s, TryGetHashOverride<T> getOverride);
-        bool TryParseNameHash(string s, out T value);
-        string RenderNameHash(T value);
-
         CompressionScheme ToCompressionScheme(byte id);
         byte FromCompressionScheme(CompressionScheme compressionScheme);
     }

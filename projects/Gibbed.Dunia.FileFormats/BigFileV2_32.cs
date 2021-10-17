@@ -23,7 +23,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using Gibbed.Dunia.FileFormats.Big;
 using Version = Gibbed.Dunia.FileFormats.Big.Version;
 
@@ -31,46 +30,6 @@ namespace Gibbed.Dunia.FileFormats
 {
     public class BigFileV2_32 : BigFileV2<uint>, IArchive<uint>
     {
-        public static uint ComputeNameHash(string s, TryGetHashOverride<uint> tryGetOverride)
-        {
-            if (s == null || s.Length == 0)
-            {
-                return 0xFFFFFFFFu;
-            }
-
-            var hash = Hashing.CRC32.Compute(s.ToLowerInvariant());
-            if (tryGetOverride != null && tryGetOverride(hash, out var hashOverride) == true)
-            {
-                return hashOverride;
-            }
-            return hash;
-        }
-
-        public static bool TryParseNameHash(string s, out uint value)
-        {
-            return uint.TryParse(s, NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out value);
-        }
-
-        public static string RenderNameHash(uint value)
-        {
-            return string.Format(CultureInfo.InvariantCulture, "{0:X8}", value);
-        }
-
-        uint IArchive<uint>.ComputeNameHash(string s, TryGetHashOverride<uint> tryGetOverride)
-        {
-            return ComputeNameHash(s, tryGetOverride);
-        }
-
-        bool IArchive<uint>.TryParseNameHash(string s, out uint value)
-        {
-            return TryParseNameHash(s, out value);
-        }
-
-        string IArchive<uint>.RenderNameHash(uint value)
-        {
-            return RenderNameHash(value);
-        }
-
         protected override IEntrySerializer<uint> GetEntrySerializer(int version)
         {
             return _EntrySerializers.TryGetValue(version, out var entrySerializer) == true

@@ -20,17 +20,12 @@
  *    distribution.
  */
 
-using Gibbed.Dunia.FileFormats;
-using Gibbed.Dunia.FileFormats.Big;
-using Gibbed.Dunia.Packing;
-
-namespace Gibbed.FarCry5.Pack
+namespace Gibbed.Dunia.FileFormats.Big
 {
-    internal class Program
+    public interface INameHasher<T>
     {
-        private static void Main(string[] args)
-        {
-            Pack<BigFileV2_64, NameHasher64, ulong>.Main(args, Platform.Windows, null);
-        }
+        T Compute(string s, TryGetHashOverride<T> getOverride);
+        bool TryParse(string s, out T value);
+        string Render(T value);
     }
 }

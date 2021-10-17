@@ -21,34 +21,36 @@
  */
 
 using System;
-using Gibbed.Dunia.FileFormats;
 using System.Collections.Generic;
 using System.Linq;
-using Big = Gibbed.Dunia.FileFormats.Big;
 using System.Threading;
+using Gibbed.Dunia.FileFormats;
+using Big = Gibbed.Dunia.FileFormats.Big;
 
 namespace Gibbed.Dunia.Packing
 {
-    internal sealed class UnpackContext<TArchive, THash>
+    internal sealed class UnpackContext<TArchive, TNameHasher, THash>
         where TArchive : Big.IArchive<THash>, new()
+        where TNameHasher : Big.INameHasher<THash>
     {
         private long _ProcessedEntryCount = 0;
 
-        public List<(string archiveName, long totalCount, long extractedCount, long IgnoredCount, long ExcludedCount, long ExistingCount)> Tallies { get; private set; } = new();
+        public List<(string archiveName, long totalCount, long extractedCount, long ignoredCount, long excludedCount, long existingCount)> Tallies { get; private set; } = new();
         public readonly long TotalEntryCount;
         public readonly string OutputPath;
+        public readonly TNameHasher NameHasher;
         public readonly ProjectData.HashList<THash> Hashes;
 
         public UnpackContext(
-            ProjectData.Project project,
             BoundArchive<TArchive, THash>[] archives,
-            string outputPath,
-            Big.TryGetHashOverride<THash> tryGetHashOverride)
+            TNameHasher nameHasher,
+            ProjectData.HashList<THash> hashes,
+            string outputPath)
         {
             this.TotalEntryCount = archives.Sum(archive => archive.Fat.Entries.Count);
             this.OutputPath = outputPath;
-            project.LoadListsFileNames(
-                s => archives.First().Fat.ComputeNameHash(s, tryGetHashOverride), out Hashes);
+            this.NameHasher = nameHasher ?? throw new ArgumentNullException(nameof(nameHasher));
+            this.Hashes = hashes ?? throw new ArgumentNullException(nameof(hashes));
         }
 
         public long ProcessedEntryCount => _ProcessedEntryCount;

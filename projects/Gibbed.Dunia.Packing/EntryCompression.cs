@@ -30,7 +30,7 @@ using LZOErrorCode = MiniLZO.ErrorCode;
 
 namespace Gibbed.Dunia.Packing
 {
-    public static partial class Pack<TArchive, THash>
+    public static partial class Pack<TArchive, TNameHasher, THash>
     {
         internal static class EntryCompression
         {
