@@ -33,9 +33,9 @@ namespace Gibbed.Dunia.Packing
         {
             get
             {
-                return this.Total == 0
-                    ? 0
-                    : (int)Math.Floor(((float)this.Known / this.Total) * 100.0f);
+                return this.Total == 0 || this.Known == this.Total
+                    ? 100
+                    : (int)Math.Floor((float)this.Known / this.Total * 100.0f);
             }
         }
 
